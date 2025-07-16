@@ -21,3 +21,23 @@ User {
   height                  String
   target_weight           String
 }
+model Records {
+  id                      Int           @id @default(autoincrement())
+  user_id                 Int           @FK
+  user                    User          @relation(fields: [user_id], references: [id])
+  data                    DateTime
+  weight                  Float
+  steps                   Int
+  memo                    String
+}
+model Faq {
+  id                      Int
+  question                String
+  answer                  String
+}
+model Inquiry {
+  id                      Int
+  name                    String
+  email                   String
+  content                 String
+}
