@@ -14,16 +14,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-User {
+model User {
   id                      Int              @id @default(autoincrement())
   name                    String
   supabase_user_id        String           @unique
   height                  String
   target_weight           String
+  records                 Records[]  
 }
 model Records {
   id                      Int           @id @default(autoincrement())
-  user_id                 Int           @FK
+  user_id                 Int           
   user                    User          @relation(fields: [user_id], references: [id])
   data                    DateTime
   weight                  Float
@@ -31,12 +32,12 @@ model Records {
   memo                    String
 }
 model Faq {
-  id                      Int
+  id                      Int           @id @default(autoincrement())
   question                String
   answer                  String
 }
 model Inquiry {
-  id                      Int
+  id                      Int           @id @default(autoincrement())
   name                    String
   email                   String
   content                 String
