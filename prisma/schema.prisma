@@ -10,8 +10,11 @@ generator client {
 }
 
 datasource db {
+  // ① providerを "postgresql" に書き換える
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // ② directURLを追加する
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
