@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: 'a2dae7', //テーマカラー
-        choiceBtn: 'eafaff', // cspell:ignore eafaff ボタンカラー
+        primary: '#a2dae7', //テーマカラー
+        choiceBtn: '#eafaff', // cspell:ignore eafaff ボタンカラー
 
 
 
