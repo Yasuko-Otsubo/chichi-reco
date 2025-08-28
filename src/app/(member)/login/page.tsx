@@ -8,9 +8,11 @@ export default function Paget() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const [disable, setDisable] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setDisable(true)
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -29,6 +31,8 @@ export default function Paget() {
     } catch(e:unknown) {
       console.error('通信エラー：', e)
       alert('通信エラーが発生しました。')
+    } finally {
+      setDisable(false)
     }
 
   }
@@ -51,6 +55,7 @@ export default function Paget() {
             placeholder="name@company.com"
             required
             onChange={(e) => setEmail(e.target.value)}
+            disabled={disable}
           />
         </div>
         <div>
@@ -68,6 +73,7 @@ export default function Paget() {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required
             onChange={(e) => setPassword(e.target.value)}
+            disabled={disable}
           />
         </div>
 
@@ -75,8 +81,8 @@ export default function Paget() {
           <button
             type="submit"
             className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          >
-            ログイン
+            >
+            {disable ? '送信中' : 'ログイン'}
           </button>
         </div>
       </form>
