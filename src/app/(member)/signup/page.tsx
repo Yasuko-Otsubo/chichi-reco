@@ -1,7 +1,6 @@
 'use client';
 
 import { supabase } from "@/utils/supabase";
-import { Finlandica } from "next/font/google";
 import { useState } from "react";
 
 export default function Page() {
