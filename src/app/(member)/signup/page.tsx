@@ -1,28 +1,40 @@
 'use client';
 
 import { supabase } from "@/utils/supabase";
+import { Finlandica } from "next/font/google";
 import { useState } from "react";
 
 export default function Page() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [disable, setDisable] = useState(false);
 
   const handleSubmit = async (event : React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setDisable(true)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `http://localhost:3000/login`,
-      },
-    })
-    if (error) {
-      alert('登録に失敗しました');
-    } else {
-      setEmail('')
-      setPassword('')
-      alert('確認メールを送信しました')
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `http://localhost:3000/login`,
+        },
+      })
+      if (error) {
+        console.error('認証エラーです：', error.message)
+        alert('登録に失敗しました');
+      } else {
+        setEmail('')
+        setPassword('')
+        alert('確認メールを送信しました')
+      }
+
+    } catch (e: unknown) {
+      console.error('通信エラー：', e)
+      alert('通信エラーが発生しました。')
+    } finally {
+      setDisable(false)
     }
   }
   return(
@@ -44,6 +56,7 @@ export default function Page() {
             required
             onChange={(e) => setEmail(e.target.value)}
             value={email}
+            disabled={disable}
           />
         </div>
         <div>
@@ -62,6 +75,7 @@ export default function Page() {
             required
             onChange={(e) => setPassword(e.target.value)}
             value={password}
+            disabled={disable}
           />
         </div>
 
@@ -70,7 +84,7 @@ export default function Page() {
             type="submit"
             className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
-            登録
+            {disable ? '送信中' : '登録'}
           </button>
         </div>
       </form>
