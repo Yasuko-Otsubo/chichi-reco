@@ -12,16 +12,25 @@ export default function Paget() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    }) 
-    
-    if ( error ) {
-      alert('ログインに失敗しました')
-    } else {
-      router.replace('/entry/[date]')
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      }) 
+
+      if ( error ) {
+        console.error('認証エラーです：', error.message)
+        alert('ログインに失敗しました')
+      } else {
+        router.replace('/entry/[date]')
+      }
+
+
+    } catch(e:unknown) {
+      console.error('通信エラー：', e)
+      alert('通信エラーが発生しました。')
     }
+
   }
 
   return (
