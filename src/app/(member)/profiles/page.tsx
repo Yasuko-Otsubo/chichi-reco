@@ -4,6 +4,7 @@ import { supabase } from "@/utils/supabase";
 //import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react";
 import type { User } from "@supabase/supabase-js";
+import FormSection from "./FormSection";
 
 export default function Page() {
   const [name, setName] = useState("");
@@ -11,8 +12,10 @@ export default function Page() {
   const [targetWeight, setTargetWeight] = useState("");
   const [disable, setDisable] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [confirmMode, setConfirmMode] = useState(false);
 
   useEffect(() => {
+    console.log(user)
     const fetchUser = async () => {
       const {
         data: { user },
@@ -21,9 +24,14 @@ export default function Page() {
     };
     fetchUser();
   }, []);
+  
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleConfirm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setConfirmMode(true);
+  };
+
+  const handleSubmit = async () => {
     setDisable(true);
 
     if (!user) {
@@ -31,23 +39,28 @@ export default function Page() {
       setDisable(false);
       return;
     }
-
     try {
-      const { error } = await supabase.from("profiles").upsert({
-        name,
-        height,
-        target_weight: targetWeight,
+      const { error } = await supabase.from("profiles").upsert(
+        {
         user_id: user?.id, // 認証済みユーザーのID
-      });
+        name,
+        height: Number(height),
+        target_weight: Number(targetWeight),
+      },
+      { onConflict: "user_id" }
+
+    );
 
       if (error) {
         console.error("認証エラーです：", error.message);
+        console.log("user.id:", user?.id);
         alert("登録に失敗しました");
       } else {
         setName("");
         setHeight("");
         setTargetWeight("");
         alert("登録しました");
+        setConfirmMode(false);
       }
     } catch (e: unknown) {
       console.error("通信エラー：", e);
@@ -57,89 +70,43 @@ export default function Page() {
     }
   };
   return (
-    <div className="flex justify-center pt-[240px]">
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[400px]">
-        <div>
-          <label
-            htmlFor="name"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            名前
-          </label>
-          <input
-            type="name"
-            name="name"
-            id="name"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            placeholder="name"
-            required
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-            disabled={disable}
-          />
-          <label
-            htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            メールアドレス
-          </label>
-          <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-            {user?.email ?? "未取得"}
+    <div className="flex justify-center pt-[50px]">
+      {confirmMode ? (
+        <div className="space-y-4 w-full max-w-[400px]">
+          <h2 className="text-lg font-semibold">入力内容の確認</h2>
+          <p>名前：{name}</p>
+          <p>メールアドレス：{user?.email ?? "未取得"}</p>
+          <p>身長：{height} cm</p>
+          <p>目標体重：{targetWeight} kg</p>
+          <div className="flex gap-4">
+            <button
+              onClick={() => setConfirmMode(false)}
+              className="w-full text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            >
+              戻る
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              disabled={disable}
+            >
+              {disable ? "送信中" : "登録"}
+            </button>
           </div>
-          <label
-            htmlFor="password"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            パスワード
-          </label>
-          <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-            ・・・・・・・
-          </div>
-          <label
-            htmlFor="height"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            身長
-          </label>
-          <input
-            type="number"
-            name="height"
-            id="height"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            placeholder="height"
-            required
-            onChange={(e) => setHeight(e.target.value)}
-            value={height}
-            disabled={disable}
-          />
-
-          <label
-            htmlFor="targetWeight"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            目標体重
-          </label>
-          <input
-            type="number"
-            name="targetWeight"
-            id="targetWeight"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            placeholder="targetWeight"
-            required
-            onChange={(e) => setTargetWeight(e.target.value)}
-            value={targetWeight}
-            disabled={disable}
-          />
         </div>
-        <div>
-          <button
-            type="submit"
-            className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          >
-            {disable ? "送信中" : "登録"}
-          </button>
-        </div>
-      </form>
+      ) : (
+        <FormSection
+          name={name}
+          height={height}
+          targetWeight={targetWeight}
+          disable={disable}
+          user={user}
+          onChangeName={setName}
+          onChangeHeight={setHeight}
+          onChangeTargetWeight={setTargetWeight}
+          onSubmit={handleConfirm}
+        />
+      )}
     </div>
   );
 }
