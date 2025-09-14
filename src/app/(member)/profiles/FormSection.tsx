@@ -2,6 +2,14 @@
 
 import type { User } from "@supabase/supabase-js";
 import React from "react";
+import Input from "./Input";
+
+const heightOptions = Array.from({ length: 101 }, (_, i) =>
+  (140 + i * 0.5).toFixed(1)
+);
+const weightOptions = Array.from({ length: 101 }, (_, i) =>
+  (50 + i * 0.5).toFixed(1)
+);
 
 type Props = {
   name: string;
@@ -29,21 +37,15 @@ export default function FormSection({
   return (
     <form onSubmit={onSubmit} className="space-y-4 w-full max-w-[400px]">
       <div>
-        <label
-          htmlFor="name"
-          className="block mb-2 text-sm font-medium text-gray-900"
-        >
-          名前
-        </label>
-        <input
-          type="text"
-          name="name"
+        <Input
           id="name"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          placeholder="name"
-          required
-          onChange={(e) => onChangeName(e.target.value)}
+          name="name"
+          label="名前"
+          type="text"
           value={name}
+          onChange={onChangeName}
+          placeholder="山田　太郎"
+          required
           disabled={disable}
         />
         <label
@@ -64,56 +66,34 @@ export default function FormSection({
         <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
           ・・・・・・・
         </div>
-        <label
-          htmlFor="height"
-          className="block mb-2 text-sm font-medium text-gray-900"
-        >
-          身長
-        </label>
-        <input
-          type="number"
-          name="height"
+        <Input
           id="height"
-          list="height-options"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          placeholder="例 : 65.5"
-          required
-          onChange={(e) => onChangeHeight(e.target.value)}
+          name="height"
+          label="身長"
+          type="text"
+          inputMode="decimal"
           value={height}
-          disabled={disable}
-        />
-        <datalist id="height-options">
-          {Array.from({ length: 61 }, (_, i) => (150 + i * 0.1).toFixed(1)).map(
-            (h) => (
-              <option key={h} value={h} />
-            )
-          )}
-        </datalist>
-        <label
-          htmlFor="targetWeight"
-          className="block mb-2 text-sm font-medium text-gray-900"
-        >
-          目標体重
-        </label>
-        <input
-          type="number"
-          name="targetWeight"
-          id="targetWeight"
-          list="targetWeight-options"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          placeholder="例 : 60.5"
+          onChange={onChangeHeight}
+          placeholder="例：160"
           required
-          onChange={(e) => onChangeTargetWeight(e.target.value)}
-          value={targetWeight}
           disabled={disable}
+          list="height-options"
+          datalistOptions={heightOptions}
         />
-        <datalist id="targetWeight-options">
-          {Array.from({ length: 61 }, (_, i) => (50 + i * 0.1).toFixed(1)).map(
-            (h) => (
-              <option key={h} value={h} />
-            )
-          )}
-        </datalist>
+        <Input
+          id="targetWeight"
+          name="targetWeight"
+          label="目標体重"
+          type="text"
+          inputMode="decimal"
+          value={targetWeight}
+          onChange={onChangeTargetWeight}
+          placeholder="65.5"
+          required
+          disabled={disable}
+          list="targetWeight-options"
+          datalistOptions={weightOptions}
+        />
       </div>
       <div>
         <button
