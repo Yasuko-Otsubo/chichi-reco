@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+//プロフィールテーブル
+model Profiles {
+  id                    Int         @id @default(autoincrement())
+  name                  String
+  supabase_user_id      Int         @unique
+  height                Float
+  target_weight         Float
+  records               Records[]
+}
+
+//記録テーブル
+model Records {
+  id                    Int          @id @default(autoincrement())
+  date                  DateTime
+  weight                Float
+  steps                 Int
+  memo                  String
+  profileId             Int
+  profile               Profiles     @relation(fields: [profileId], references: [id])
+
+}
+
+//faqテーブル
+model Faq {
+  id                    Int           @id @default(autoincrement())
+  question              String
+  answer                String
+}
+
+//お問い合わせテーブル
+model Inquiries {
+  id                    Int           @id @default(autoincrement())
+  name                  String
+  email                 String        @unique
+  content               String
+}
