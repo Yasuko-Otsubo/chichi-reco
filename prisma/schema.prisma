@@ -14,7 +14,7 @@ datasource db {
 model Profiles {
   id                    Int         @id @default(autoincrement())
   name                  String
-  supabase_user_id      Int         @unique
+  supabase_user_id      String      @unique
   height                Float
   target_weight         Float
   records               Records[]
