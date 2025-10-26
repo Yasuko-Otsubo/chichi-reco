@@ -1,0 +1,22 @@
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient()
+
+export const POST = async ( request: Request, context: any ) => {
+  try  {
+    const body = await request.json()
+
+    const { id, name, supabase_user_id, height, target_weight} = body
+
+    const data = await prisma.profiles.create({
+      data: {
+        id,
+        name,
+        supabase_user_id,
+        height,
+        target_weight
+      },
+    })
+  }
+}
