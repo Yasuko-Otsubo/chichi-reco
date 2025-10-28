@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient()
 
-export const POST = async ( request: Request, context: any ) => {
+export const POST = async ( request: Request/*, context: any*/ ) => {
   try  {
     const body = await request.json()
 
@@ -18,5 +18,14 @@ export const POST = async ( request: Request, context: any ) => {
         target_weight
       },
     })
+    return NextResponse.json ({
+      status: 'OK',
+      message: '記録しました',
+      id: data.id,
+    })
+  } catch(error) {
+    if(error instanceof Error) {
+      return NextResponse.json({ status: error.message}, { status: 400 })
+    }  
   }
 }
