@@ -5,42 +5,6 @@ import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
-export const POST = async (request: Request /*, context: any*/) => {
-  try {
-    const body = await request.json();
-    const { name, supabase_user_id, height, target_weight } = body;
-
-    const data = await prisma.profiles.create({
-      data: {
-        name,
-        supabase_user_id,
-        height,
-        target_weight,
-      },
-    });
-    return NextResponse.json({
-      status: "OK",
-      message: "記録しました",
-      id: data.id,
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ status: error.message }, { status: 400 });
-    }
-  }
-};
-
-export const GET = async (request: NextRequest) => {
-  try {
-    const profiles = await prisma.profiles.findMany();
-    return NextResponse.json({ status: "OK", profiles }, { status: 200 });
-  } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ status: error.message }, { status: 400 });
-    }
-  }
-};
-
 export const PUT = async (
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -48,6 +12,12 @@ export const PUT = async (
   const { id } = params;
   const { name, email, password, height, target_weight, memo } =
     await request.json();
+
+    const idNumber = Number(id);
+  if (isNaN(idNumber)) {
+    return NextResponse.json({ error: "Invalid ID format" }, { status: 400 });
+  }
+
 
   try {
     const supabase = createServerComponentClient({ cookies });
@@ -66,9 +36,7 @@ export const PUT = async (
     }
 
     const profile = await prisma.profiles.update({
-      where: {
-        id: parseInt(id),
-      },
+      where: { id: idNumber },
       data: {
         name,
         height,
@@ -76,7 +44,7 @@ export const PUT = async (
       },
     });
 
-    return NextResponse.json({ status: "OK", profile }, { status: 200 });
+    return NextResponse.json({ status: "OK", profile }, { status: 202 });
   } catch (error) {
     if (error instanceof Error)
       return NextResponse.json({ status: error.message }, { status: 400 });
