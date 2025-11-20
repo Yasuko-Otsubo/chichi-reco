@@ -53,4 +53,26 @@ export const PUT = async (
     if (error instanceof Error)
       return NextResponse.json({ status: error.message }, { status: 400});
   }  
-}
+};
+
+export const DELETE = async (
+  request: NextRequest,
+  {params}: { params : {id : string }},
+) => {
+  const { id } = params;
+
+  try {
+    await prisma.records.delete({
+      where: {
+        id: parseInt(id),
+      },
+    })
+
+    return NextResponse.json({ status: "OK"}, { status : 200 })
+  } catch(error) {
+    if(error instanceof Error) 
+      return NextResponse.json ({ status: error.message}, { status: 400 })
+
+  }
+};
+
