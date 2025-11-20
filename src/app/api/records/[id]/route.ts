@@ -1,0 +1,56 @@
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+//  型定義
+type RecordFields = {
+  date?: string;
+  weight?: number;
+  steps?: number;
+  memo?: string;
+};
+
+
+export const GET = async (/*request: NextRequest*/) => {
+  try {
+    const records = await prisma.records.findMany();
+    return NextResponse.json({ status: "OK", records }, { status: 200 });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ status: error.message }, { status: 400 });
+    }
+  }
+};
+
+export const PUT = async (
+  request: NextRequest,
+  { params } : { params: { id: string }}
+) => {
+  const { id } = params;
+  const { date, weight, steps, memo } = await request.json();
+
+  try {
+    const metadata: RecordFields = {};
+    
+    if(date) metadata.date = date;
+    if(weight) metadata.weight = weight;
+    if(steps) metadata.steps = steps;
+    if(memo) metadata.memo = memo;
+
+    if(Object.keys(metadata).length === 0 ) {
+      return NextResponse.json({ status: "更新対象がありません"}, { status: 400 });
+    }
+      const record = await prisma.records.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: metadata ,
+    });
+
+    return NextResponse.json({ status: "OK", record }, { status: 200 });
+  } catch (error) {
+    if (error instanceof Error)
+      return NextResponse.json({ status: error.message }, { status: 400});
+  }  
+}

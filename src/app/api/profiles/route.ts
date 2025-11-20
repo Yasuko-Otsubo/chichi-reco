@@ -46,7 +46,7 @@ export const PUT = async (
   { params }: { params: { id: string } }
 ) => {
   const { id } = params;
-  const { name, email, password, height, target_weight, memo } =
+  const { name, email, password, height, target_weight } =
     await request.json();
 
   try {
@@ -73,6 +73,7 @@ export const PUT = async (
         name,
         height,
         target_weight,
+        
       },
     });
 
