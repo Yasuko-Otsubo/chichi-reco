@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -11,11 +11,13 @@ export const POST = async (request: Request/*, context: any*/) => {
     const data = await prisma.records.create({
       data: {
         /*user_id,*/
-        date,
+        date : new Date(date),
         weight,
         steps,
         memo,
-        profileId,
+        profile: {
+          connect: { id: profileId }
+        },
       },
     });
     return NextResponse.json({
