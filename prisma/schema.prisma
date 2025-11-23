@@ -39,9 +39,10 @@ model Faq {
 }
 
 //お問い合わせテーブル
-model Inquiries {
+model Contact {
   id                    Int           @id @default(autoincrement())
   name                  String
   email                 String        @unique
   content               String
+  createdAt             DateTime      @default(now())
 }
