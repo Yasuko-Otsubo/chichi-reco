@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { ProfileFields, ProfileResponse } from "@/types/Profiles";
 
 const prisma = new PrismaClient();
 
 export const POST = async (request: Request /*, context: any*/) => {
   try {
-    const body = await request.json();
+    const body: ProfileFields = await request.json();
     const { name, supabase_user_id, height, target_weight } = body;
 
     const data = await prisma.profiles.create({
@@ -18,14 +19,17 @@ export const POST = async (request: Request /*, context: any*/) => {
         target_weight,
       },
     });
-    return NextResponse.json({
+
+    const response: ProfileResponse = {
       status: "OK",
       message: "記録しました",
       id: data.id,
-    });
+    };
+    return NextResponse.json({ response });
   } catch (error) {
     if (error instanceof Error) {
-      return NextResponse.json({ status: error.message }, { status: 400 });
+      const response: ProfileResponse = { status: "NG", message: error.message }
+      return NextResponse.json( response, { status: 400 });
     }
   }
 };
