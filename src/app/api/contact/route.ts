@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { ContactFields } from "@/types/contact";
 
 const prisma = new PrismaClient();
 
 export const POST = async (request: Request) => {
   try {
-    const body = await request.json();
+    const body: ContactFields = await request.json();
     const { name, email, content } = body;
 
-    const data = await prisma.contact.create({
+    const data. = await prisma.contact.create({
       data: {
         name,
         email,
