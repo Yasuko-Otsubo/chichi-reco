@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { ProfileFields, ProfileResponse } from "@/types/Profiles";
+import { ProfileFields, ProfileResponse } from "@/types/profiles";
 
 const prisma = new PrismaClient();
 
@@ -28,18 +28,34 @@ export const POST = async (request: Request /*, context: any*/) => {
     return NextResponse.json({ response });
   } catch (error) {
     if (error instanceof Error) {
-      const response: ProfileResponse = { status: "NG", message: error.message }
-      return NextResponse.json( response, { status: 400 });
+      const response: ProfileResponse = {
+        status: "NG",
+        message: error.message,
+      };
+      return NextResponse.json(response, { status: 400 });
     }
   }
 };
 
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
   try {
-    const profiles = await prisma.profiles.findMany();
-    return NextResponse.json({ status: "OK", profiles }, { status: 200 });
+    const profiles = await prisma.profiles.findUnique({
+      where: { supabase_user_id: user.id },
+    });
+
+    const response: ProfileResponse = {
+      status: "OK",
+      message: "取得しました",
+      profiles,
+    };
+
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
+      const response: ProfileResponse = {
+        status: "NG",
+        message: error.message,
+      };
       return NextResponse.json({ status: error.message }, { status: 400 });
     }
   }
@@ -50,8 +66,7 @@ export const PUT = async (
   { params }: { params: { id: string } }
 ) => {
   const { id } = params;
-  const { name, email, password, height, target_weight } =
-    await request.json();
+  const { name, email, password, height, target_weight } = await request.json();
 
   try {
     const supabase = createServerComponentClient({ cookies });
@@ -77,7 +92,6 @@ export const PUT = async (
         name,
         height,
         target_weight,
-        
       },
     });
 
