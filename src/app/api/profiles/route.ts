@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { ProfileFields, ProfileResponse } from "@/types/profiles";
+import {
+  ProfileFields,
+  ProfileResponse,
+  ProfileUpdateRequest,
+} from "@/types/profiles";
 import { getAuthenticatedUser } from "@/utils/auth";
 
 const prisma = new PrismaClient();
@@ -27,7 +31,7 @@ export const POST = async (request: Request /*, context: any*/) => {
       message: "記録しました",
       profiles: [data],
     };
-    return NextResponse.json( response, {status: 200} );
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
       const response: ProfileResponse = {
@@ -69,11 +73,13 @@ export const PUT = async (
   { params }: { params: { id: string } }
 ) => {
   const { id } = params;
-  const { name, email, password, height, target_weight } = await request.json();
 
   try {
     const user = await getAuthenticatedUser();
     const supabase = createServerComponentClient({ cookies });
+
+    const body: ProfileUpdateRequest = await request.json();
+    const { name, email, password, height, target_weight } = body;
 
     if (email) {
       const { error: emailError } = await supabase.auth.updateUser({ email });
@@ -89,9 +95,7 @@ export const PUT = async (
     }
 
     const profile = await prisma.profiles.update({
-      where: {
-        id: parseInt(id),
-      },
+      where: { id: Number(id), supabase_user_id: user.id },
       data: {
         name,
         height,
@@ -99,11 +103,20 @@ export const PUT = async (
       },
     });
 
-    const response :
+    const response: ProfileResponse = {
+      status: "OK",
+      message: "プロフィールを更新しました",
+      profiles: [profile],
+    };
 
-    return NextResponse.json({ status: "OK", profile }, { status: 200 });
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
-    if (error instanceof Error)
-      return NextResponse.json({ status: error.message }, { status: 400 });
+    if (error instanceof Error) {
+      const response: ProfileResponse = {
+        status: "NG",
+        message: error.message,
+      };
+      return NextResponse.json(response, { status: 400 });
+    }
   }
 };

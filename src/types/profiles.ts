@@ -4,18 +4,18 @@ export type ProfileFields = {
   supabase_user_id: string;
   height: number;
   target_weight: number;
-}
+};
 
 export type ProfileResponse = {
   status: "OK" | "NG";
   message: string;
   profiles?: ProfileFields[];
-}
+};
 
-export type ProfileUpdateRequest =  {
+export type ProfileUpdateRequest = {
   name?: string;
   email?: string;
   password?: string;
   height?: number;
   target_weight?: number;
-}
+};
