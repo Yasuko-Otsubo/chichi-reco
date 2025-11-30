@@ -3,18 +3,20 @@ import { PrismaClient } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { ProfileFields, ProfileResponse } from "@/types/profiles";
+import { getAuthenticatedUser } from "@/utils/auth";
 
 const prisma = new PrismaClient();
 
 export const POST = async (request: Request /*, context: any*/) => {
   try {
+    const user = await getAuthenticatedUser();
     const body: ProfileFields = await request.json();
-    const { name, supabase_user_id, height, target_weight } = body;
+    const { name, height, target_weight } = body;
 
     const data = await prisma.profiles.create({
       data: {
         name,
-        supabase_user_id,
+        supabase_user_id: user.id,
         height,
         target_weight,
       },
@@ -23,9 +25,9 @@ export const POST = async (request: Request /*, context: any*/) => {
     const response: ProfileResponse = {
       status: "OK",
       message: "記録しました",
-      id: data.id,
+      profiles: [data],
     };
-    return NextResponse.json({ response });
+    return NextResponse.json( response, {status: 200} );
   } catch (error) {
     if (error instanceof Error) {
       const response: ProfileResponse = {
@@ -39,14 +41,15 @@ export const POST = async (request: Request /*, context: any*/) => {
 
 export const GET = async () => {
   try {
-    const profiles = await prisma.profiles.findUnique({
+    const user = await getAuthenticatedUser();
+    const profile = await prisma.profiles.findUnique({
       where: { supabase_user_id: user.id },
     });
 
     const response: ProfileResponse = {
       status: "OK",
       message: "取得しました",
-      profiles,
+      profiles: profile ? [profile] : [],
     };
 
     return NextResponse.json(response, { status: 200 });
@@ -69,6 +72,7 @@ export const PUT = async (
   const { name, email, password, height, target_weight } = await request.json();
 
   try {
+    const user = await getAuthenticatedUser();
     const supabase = createServerComponentClient({ cookies });
 
     if (email) {
@@ -94,6 +98,8 @@ export const PUT = async (
         target_weight,
       },
     });
+
+    const response :
 
     return NextResponse.json({ status: "OK", profile }, { status: 200 });
   } catch (error) {

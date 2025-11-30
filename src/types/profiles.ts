@@ -11,3 +11,11 @@ export type ProfileResponse = {
   message: string;
   profiles?: ProfileFields[];
 }
+
+export type ProfileUpdateRequest =  {
+  name?: string;
+  email?: string;
+  password?: string;
+  height?: number;
+  target_weight?: number;
+}
