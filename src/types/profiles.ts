@@ -1,4 +1,5 @@
 export type ProfileFields = {
+  id: number;
   name: string;
   supabase_user_id: string;
   height: number;
@@ -6,7 +7,7 @@ export type ProfileFields = {
 }
 
 export type ProfileResponse = {
-  status: string;
+  status: "OK" | "NG";
   message: string;
-  id?: number;
+  profiles?: ProfileFields[];
 }
