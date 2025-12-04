@@ -1,9 +1,8 @@
-import { getSupabaseClient } from "@/utils/cookie"
+import { getCurrentUser } from "@/utils/supabase";
+import { NextRequest } from "next/server";
 
-
-export const getAuthenticatedUser = async () => {
-  const supabase = getSupabaseClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if(error || !user) throw new Error("認証されていません");
-  return user;
+export const getAuthenticatedUser = async (request: NextRequest) => {
+  const { currentUser, error } = await getCurrentUser(request);
+  if(error || !currentUser?.user ) throw new Error("認証されていません");
+  return currentUser.user;
 }
