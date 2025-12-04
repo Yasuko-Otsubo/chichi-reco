@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 import {
   ProfileFields,
   ProfileResponse,
@@ -76,7 +75,6 @@ export const PUT = async (
 
   try {
     const user = await getAuthenticatedUser();
-    const supabase = createServerComponentClient({ cookies });
 
     const body: ProfileUpdateRequest = await request.json();
     const { name, email, password, height, target_weight } = body;

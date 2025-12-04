@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { supabase } from "@/utils/supabase";
+import { error } from "console";
 
 const prisma = new PrismaClient();
 
 export const PUT = async (
+
   request: NextRequest,
   { params }: { params: { id: string } }
 ) => {
@@ -13,14 +15,20 @@ export const PUT = async (
   const { name, email, password, height, target_weight, memo } =
     await request.json();
 
-    const idNumber = Number(id);
+  const idNumber = Number(id);
   if (isNaN(idNumber)) {
     return NextResponse.json({ error: "Invalid ID format" }, { status: 400 });
   }
 
+    const token =  request.headers.get('Authorization') ?? ''
+
+  const { error } = await supabase.auth.getUser(token);
+  if(error) 
+    return NextResponse.json({status:  error.message} , { status: 400 })
+
+
 
   try {
-    const supabase = createServerComponentClient({ cookies });
 
     if (email) {
       const { error: emailError } = await supabase.auth.updateUser({ email });
