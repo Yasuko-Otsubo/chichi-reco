@@ -7,7 +7,7 @@ export const getAuthenticatedUser = async (request: NextRequest) => {
   return currentUser.user;
 }
 
-const requireUser = async(request: NextRequest) => {
+export const requireUser = async(request: NextRequest) => {
   const { currentUser, error } = await getCurrentUser(request);
   if(error || !currentUser?.user) {
     throw new Error("認証されていません");

@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
   ProfileFields,
   ProfileResponse,
   ProfileUpdateRequest,
 } from "@/types/profiles";
-import { getAuthenticatedUser } from "@/utils/auth";
+import { requireUser } from "@/utils/auth";
+import { supabase } from "@/utils/supabase";
 
 const prisma = new PrismaClient();
 
-export const POST = async (request: Request /*, context: any*/) => {
+export const POST = async (request: NextRequest /*, context: any*/) => {
   try {
-    const user = await getAuthenticatedUser();
+    const user = await requireUser(request);
     const body: ProfileFields = await request.json();
     const { name, height, target_weight } = body;
 
@@ -42,9 +42,11 @@ export const POST = async (request: Request /*, context: any*/) => {
   }
 };
 
-export const GET = async () => {
+export const GET = async (request: NextRequest) => {
+  
   try {
-    const user = await getAuthenticatedUser();
+  const user = await requireUser(request);
+
     const profile = await prisma.profiles.findUnique({
       where: { supabase_user_id: user.id },
     });
@@ -58,11 +60,8 @@ export const GET = async () => {
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
-      const response: ProfileResponse = {
-        status: "NG",
-        message: error.message,
-      };
-      return NextResponse.json({ status: error.message }, { status: 400 });
+      const response: ProfileResponse = {status: "NG", message: error.message};
+      return NextResponse.json(response, { status: 400 });
     }
   }
 };
@@ -74,8 +73,7 @@ export const PUT = async (
   const { id } = params;
 
   try {
-    const user = await getAuthenticatedUser();
-
+    const user = await requireUser(request);
     const body: ProfileUpdateRequest = await request.json();
     const { name, email, password, height, target_weight } = body;
 
@@ -91,7 +89,6 @@ export const PUT = async (
       if (passwordError)
         throw new Error(`パスワード更新失敗: ${passwordError.message}`);
     }
-
     const profile = await prisma.profiles.update({
       where: { id: Number(id), supabase_user_id: user.id },
       data: {
