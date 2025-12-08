@@ -13,7 +13,7 @@ export type ProfileResponse = {
 };
 
 export type ProfileUpdateRequest = {
-  name?: string;
-  height?: number;
-  target_weight?: number;
+  name: string;
+  height: number;
+  target_weight: number;
 };

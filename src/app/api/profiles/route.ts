@@ -14,13 +14,17 @@ export const POST = async (request: NextRequest /*, context: any*/) => {
     const body: ProfileFields = await request.json();
     const { name, height, target_weight } = body;
 
-    const data = await prisma.profiles.create({
-      data: {
+    const data = await prisma.profiles.upsert({
+      where: {supabase_user_id: user.id},
+      updata: {
         name,
-        supabase_user_id: user.id,
         height,
         target_weight,
       },
+      create{
+        name,
+        hei
+      }
     });
 
     const response: ProfileResponse = {
