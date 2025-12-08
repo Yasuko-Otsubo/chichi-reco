@@ -11,9 +11,18 @@ export type ProfileResponse = {
   message: string;
   profiles?: ProfileFields[];
 };
-
-export type ProfileUpdateRequest = {
+//新規作成用
+export type ProfileCreateRequest = {
   name: string;
   height: number;
   target_weight: number;
 };
+
+//更新用
+export type ProfileUpdateRequest = {
+  name?: string;
+  email?: string;
+  password?: string;
+  height?: number;
+  target_weight?: number;
+}
