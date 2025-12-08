@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import {
+  ProfileCreateRequest,
   ProfileFields,
   ProfileResponse,
 } from "@/types/profiles";
@@ -11,20 +12,22 @@ const prisma = new PrismaClient();
 export const POST = async (request: NextRequest /*, context: any*/) => {
   try {
     const user = await requireUser(request);
-    const body: ProfileFields = await request.json();
+    const body: ProfileCreateRequest = await request.json();
     const { name, height, target_weight } = body;
 
     const data = await prisma.profiles.upsert({
-      where: {supabase_user_id: user.id},
-      updata: {
+      where: { supabase_user_id: user.id },
+      update: {
         name,
         height,
         target_weight,
       },
-      create{
+      create: {
         name,
-        hei
-      }
+        height,
+        target_weight,
+        supabase_user_id: user.id,
+      },
     });
 
     const response: ProfileResponse = {
@@ -45,9 +48,8 @@ export const POST = async (request: NextRequest /*, context: any*/) => {
 };
 
 export const GET = async (request: NextRequest) => {
-  
   try {
-  const user = await requireUser(request);
+    const user = await requireUser(request);
 
     const profile = await prisma.profiles.findUnique({
       where: { supabase_user_id: user.id },
@@ -56,13 +58,16 @@ export const GET = async (request: NextRequest) => {
     const response: ProfileResponse = {
       status: "OK",
       message: "取得しました",
-      profiles: profile ? [profile] : [],
+      profiles: profile ? [profile as ProfileFields] : [],
     };
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
-      const response: ProfileResponse = {status: "NG", message: error.message};
+      const response: ProfileResponse = {
+        status: "NG",
+        message: error.message,
+      };
       return NextResponse.json(response, { status: 400 });
     }
   }

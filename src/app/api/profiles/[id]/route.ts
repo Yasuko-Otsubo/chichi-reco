@@ -36,13 +36,14 @@ export const PUT = async (
         throw new Error(`パスワード更新失敗: ${passwordError.message}`);
     }
 
+    const updateData: Partial<ProfileUpdateRequest> = {};
+    if (name !== undefined) updateData.name = name;
+    if (height !== undefined) updateData.height = height;
+    if (target_weight !== undefined) updateData.target_weight = target_weight;
+
     const profile = await prisma.profiles.update({
       where: { id: Number(id), supabase_user_id: user.id },
-      data: {
-        name,
-        height,
-        target_weight,
-      },
+      data: updateData,
     });
 
     const response: ProfileResponse = {
