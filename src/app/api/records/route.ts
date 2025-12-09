@@ -1,23 +1,27 @@
 import {  NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { RecordFields } from "@/types/records";
 
 const prisma = new PrismaClient();
 
-export const POST = async (request: Request/*, context: any*/) => {
+export const POST = async (request: Request) => {
   try {
-    const body = await request.json();
-    const { /*user_id, */date, weight, steps, memo, profileId } = body;
+    const body: RecordFields = await request.json();
+    const { date, weight, steps, memo, profileId } = body;
 
-    const data = await prisma.records.create({
-      data: {
-        /*user_id,*/
+    const data = await prisma.records.upsert({
+      where: { supabase_user_id: user.id},
+      update : {
+        date,
+        weight,
+        steps,
+        memo,
+      },
+      create: {
         date : new Date(date),
         weight,
         steps,
         memo,
-        profile: {
-          connect: { id: profileId }
-        },
       },
     });
     return NextResponse.json({
