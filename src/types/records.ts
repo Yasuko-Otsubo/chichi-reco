@@ -5,6 +5,11 @@ export type RecordFields = {
   steps: number;
   memo: string;
   profileId: string;
-  profile: string;
+  profile?: string;
 }
 
+export type RecordResponse = {
+  status: "OK" | "NG";
+  message: string;
+  records?: RecordFields[];
+}

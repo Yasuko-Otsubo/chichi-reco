@@ -1,6 +1,6 @@
 import {  NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { RecordFields } from "@/types/records";
+import { RecordFields, RecordResponse } from "@/types/records";
 
 const prisma = new PrismaClient();
 
@@ -10,28 +10,47 @@ export const POST = async (request: Request) => {
     const { date, weight, steps, memo, profileId } = body;
 
     const data = await prisma.records.upsert({
-      where: { supabase_user_id: user.id},
+      where: { id: body.id},
       update : {
-        date,
+        date: new Date(date),
         weight,
         steps,
         memo,
+        profileId: Number(profileId),
       },
       create: {
         date : new Date(date),
         weight,
         steps,
         memo,
+        profileId: Number(profileId),
       },
     });
-    return NextResponse.json({
+
+    const record: RecordFields = {
+      id: data.id,
+      date: data.date.toISOString(),
+      weight: data.weight,
+      steps: data.steps,
+      memo: data.memo,
+      profileId: String(data.profileId),
+    };
+
+    
+
+    const response: RecordResponse = {
       status: "OK",
       message: "記録しました",
-      id: data.id,
-    });
+      records: [record],
+    };
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
     if ( error instanceof Error) {
-      return NextResponse.json({ status: error.message}, { status: 400});
+      const response: RecordResponse = {
+        status: "NG",
+        message: error.message,
+      };
+      return NextResponse.json(response, { status: 400});
     }
   }
 } ;
