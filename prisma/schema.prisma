@@ -23,12 +23,14 @@ model Profiles {
 //記録テーブル
 model Records {
   id                    Int          @id @default(autoincrement())
-  date                  DateTime
+  date                  DateTime     
   weight                Float
   steps                 Int
   memo                  String
   profileId             Int
   profile               Profiles     @relation(fields: [profileId], references: [id])
+
+  @@unique([profileId, date])  // ← ユーザーごとに日付は一意
 }
 
 //faqテーブル
