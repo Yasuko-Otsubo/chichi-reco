@@ -1,24 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { toRecordFields } from "@/utils/records";
+import { requireUser } from "@/utils/auth";
+import { RecordFields, RecordResponse } from "@/types/records";
 
 const prisma = new PrismaClient();
 
-//  型定義
-type RecordFields = {
-  date?: string;
-  weight?: number;
-  steps?: number;
-  memo?: string;
-};
 
-
-export const GET = async (/*request: NextRequest*/) => {
+export const GET = async (
+  request: NextRequest,
+  { params } : { params: { date: string }}
+) => {
   try {
-    const records = await prisma.records.findMany();
-    return NextResponse.json({ status: "OK", records }, { status: 200 });
+    const user = await requireUser(request);
+
+    const record = await prisma.records.findUnique({
+      where: {
+        profileId_date: {
+          profileId: Number(user.id),
+          date: new Date(params.date),
+        },
+       },
+    });
+
+    const response: RecordResponse = {
+      status: "OK",
+      message: "取得しました",
+      records: record ? [toRecordFields(record)] : []
+    };
+
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ status: error.message }, { status: 400 });
+    if(error instanceof Error) {
+      const response: RecordResponse = {
+        status: "NG",
+        message: error.message,
+      };
+      return NextResponse.json(response, { status: 400 });
     }
   }
 };
