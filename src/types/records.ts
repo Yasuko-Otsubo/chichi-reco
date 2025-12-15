@@ -14,3 +14,10 @@ export type RecordResponse = {
   records?: RecordFields[];
 }
 
+//更新用
+export type RecordUpdateRequest = {
+  date?: string;
+  weight?: number;
+  steps?: number;
+  memo?: string;
+}

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { toRecordFields } from "@/utils/records";
 import { requireUser } from "@/utils/auth";
-import { RecordFields, RecordResponse } from "@/types/records";
+import { RecordFields, RecordResponse, RecordUpdateRequest } from "@/types/records";
+import { supabase } from "@/utils/supabase";
 
 const prisma = new PrismaClient();
 
@@ -46,32 +47,72 @@ export const PUT = async (
   { params } : { params: { id: string }}
 ) => {
   const { id } = params;
-  const { date, weight, steps, memo } = await request.json();
+  const token = request.headers.get('Authorization') ?? ''
+  const { data, error } = await supabase.auth.getUser(token);
 
-  try {
-    const metadata: RecordFields = {};
-    
-    if(date) metadata.date = date;
-    if(weight) metadata.weight = weight;
-    if(steps) metadata.steps = steps;
-    if(memo) metadata.memo = memo;
+  if(error){
+    return NextResponse.json(
+      { status: "NG" , message: error.message } , 
+      { status: 401})
+  }
 
-    if(Object.keys(metadata).length === 0 ) {
-      return NextResponse.json({ status: "更新対象がありません"}, { status: 400 });
-    }
-      const record = await prisma.records.update({
-      where: {
-        id: parseInt(id),
-      },
-      data: metadata ,
+    const user = data.user;
+
+    try {
+      const body: RecordUpdateRequest = await request.json();
+      const { date, weight, steps, memo } = body;
+
+    const updateData: Partial<RecordUpdateRequest> = {};
+    if (date !== undefined) updateData.date = date;
+    if (weight !== undefined) updateData.weight = weight;
+    if (steps !== undefined) updateData.steps = steps;
+    if (memo !== undefined) updateData.memo = memo;
+
+    const profile = await prisma.profiles.findUnique({
+      where: { supabase_user_id: user.id }, // ← UUIDで検索
     });
 
-    return NextResponse.json({ status: "OK", record }, { status: 200 });
+
+    if (!profile) {
+      return NextResponse.json(
+        { status: "NG", message: "プロフィールが見つかりません" },
+        { status: 404 }
+      );
+    }
+
+
+    const record = await prisma.records.update({
+      where: { id: Number(id), profileId: profile.id },
+      data: updateData,
+    });
+
+    const response: RecordResponse = {
+      status: "OK",
+      message: "記録を更新しました",
+ records: [
+        {
+          id: record.id,
+          date: record.date.toISOString(), // Date → string に変換
+          weight: record.weight,
+          steps: record.steps,
+          memo: record.memo,
+          profileId: String(record.profileId), // number → string に変換
+        },
+      ],
+    };
+
+    return NextResponse.json(response, { status: 200});
   } catch (error) {
-    if (error instanceof Error)
-      return NextResponse.json({ status: error.message }, { status: 400});
-  }  
+    if (error instanceof Error) {
+      const response: RecordResponse = {
+        status: "NG",
+        message: error.message,
+      };
+      return NextResponse.json(response, { status: 400 });
+    }
+  }
 };
+
 
 export const DELETE = async (
   request: NextRequest,
