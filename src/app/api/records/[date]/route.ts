@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { toRecordFields } from "@/utils/records";
 import { requireUser } from "@/utils/auth";
-import { RecordFields, RecordResponse, RecordUpdateRequest } from "@/types/records";
+import { RecordResponse, RecordUpdateRequest } from "@/types/records";
 import { supabase } from "@/utils/supabase";
 
 const prisma = new PrismaClient();

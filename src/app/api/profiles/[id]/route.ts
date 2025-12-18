@@ -16,7 +16,7 @@ export const PUT = async (
   const { data , error } = await supabase.auth.getUser(token);
 
   if(error) 
-    return NextResponse.json({status:  error.message} , { status: 401 })
+    return NextResponse.json({status: "NG", message: error.message} , { status: 401 })
   const user = data.user;
   try {
 
