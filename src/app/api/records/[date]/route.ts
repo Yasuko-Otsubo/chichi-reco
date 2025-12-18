@@ -114,23 +114,55 @@ export const PUT = async (
 };
 
 
-export const DELETE = async (
-  request: NextRequest,
-  {params}: { params : {id : string }},
-) => {
-  const { id } = params;
+export const DELETE = async ( request: NextRequest ) => {
+  const token = request.headers.get('Authorization') ?? ''
+  const { data, error } = await supabase.auth.getUser(token);
+
+
+    if(error){
+    return NextResponse.json(
+      { status: "NG" , message: error.message } , 
+      { status: 401})
+  }
+
+    const user = data.user;
 
   try {
+    const body = await request.json();
+    const { date } = body; // リクエストから日付を受け取る
+    
+    if(!date) {
+      return NextResponse.json(
+        { status: "NG", message: "日付が指定されていません" },
+        { status: 400 }
+      );
+    }
+    
+    const profile = await prisma.profiles.findUnique({
+      where: { supabase_user_id: user.id },
+    });
+
+    if (!profile) {
+      return NextResponse.json(
+        { status: "NG", message: "プロフィールが見つかりません" },
+        { status: 404 }
+      );
+    }
+
+    
     await prisma.records.delete({
       where: {
-        id: parseInt(id),
+        profileId_date: {
+          profileId: profile.id,
+          date: new Date(date)
+        }
       },
-    })
+    }) ;
 
     return NextResponse.json({ status: "OK"}, { status : 200 })
   } catch(error) {
     if(error instanceof Error) 
-      return NextResponse.json ({ status: error.message}, { status: 400 })
+      return NextResponse.json ({ status: "NG", message: "この日付には記録がありません"}, { status: 404 })
 
   }
 };
