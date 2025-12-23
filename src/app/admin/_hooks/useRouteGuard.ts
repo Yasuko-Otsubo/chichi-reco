@@ -1,21 +1,20 @@
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useSupabaseSession } from '@/app/_hooks/useSupabaseSession'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export const useRouteGuard = () => {
-  const router = useRouter();
-  const { session } = useSupabaseSession();
+  const router = useRouter()
+  const { session } = useSupabaseSession()
 
   useEffect(() => {
-    if (session === undefined) return;
+    if (session === undefined) return // sessionがundefinedの場合は読み込み中なので何もしない
 
-    const fethcer = async () => {
+    const fetcher = async () => {
       if (session === null) {
-        router.replace("/login");
+        router.replace('/login')
       }
-    };
-    fethcer();
-  }, [router, session]);
-};
+    }
 
-/*個々の修正から？子パイロットで確認*/
+    fetcher()
+  }, [router, session])
+}
