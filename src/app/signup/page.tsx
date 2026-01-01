@@ -30,7 +30,7 @@ export default function Page() {
   return (
     <div className="flex justify-center pt-[240px]">
       <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[400px]">
-<Input
+      <Input
           label="メールアドレス"
           type="email"
           placeholder="name@company.com"
