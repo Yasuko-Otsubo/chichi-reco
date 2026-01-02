@@ -28,7 +28,7 @@ export default function Page() {
     }
   }
   return (
-    <div className="flex justify-center pt-[240px]">
+    <div className="flex justify-center pt-[240px] bg-blue-500">
       <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[400px]">
       <Input
           label="メールアドレス"
