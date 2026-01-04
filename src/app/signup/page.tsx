@@ -28,8 +28,8 @@ export default function Page() {
     }
   }
   return (
-    <div className="flex justify-center pt-[240px] bg-blue-500 w-[500px] mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[400px]">
+    <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full bg-[#a2dae7]  mx-auto">
+      <form onSubmit={handleSubmit} className="bg-white rounded-[50px] p-10 space-y-4 w-full max-w-[400px]">
       <Input
           label="メールアドレス"
           type="email"
