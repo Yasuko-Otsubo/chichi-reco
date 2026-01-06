@@ -3,12 +3,14 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
-    <header className="bg-blue-500">aaa</header>
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+    <header className="">ここにHeader</header>
+    <div className="w-[500px] mx-auto min-h-screen">
+      <main className="bg-blue-500 flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+        <div className="bg-[#eafaff] w-full">ここにトップ画像</div>
         ここがトップページです
+        <button className="bg-[#a2dae7] py-[15px] px-[70px] rounded-[10px]">今すぐ始める</button>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+      <footer className="fixed bottom-0 row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
