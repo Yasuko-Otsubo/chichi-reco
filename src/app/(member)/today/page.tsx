@@ -2,13 +2,20 @@
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
 
 export default function Page() {
   const [date, setDate] = useState<string>("");
   const [weight, setWeight] = useState("");
   const [steps, setSteps] = useState("");
   const [memo, setMemo] = useState("");
+
+  useEffect(() => {
+  const today = new Date().toISOString().slice(0, 10);
+  setDate(today);
+}, []);
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -26,7 +33,7 @@ export default function Page() {
 
     const data = await res.json();
 
-    if(!res){
+    if(!res.ok){
       console.error(data.error);
       return;
     }
@@ -35,7 +42,7 @@ export default function Page() {
   };
   return(
     <>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Input
           label="日付"
           type="date"
@@ -44,19 +51,19 @@ export default function Page() {
         />
         <Input
           label="体重"
-          type="weight"
+          type="number"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
         />
         <Input
           label="歩数"
-          type="steps"
+          type="number"
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
           />
         <Input
           label="一言メモ"
-          type="memo"
+          type="text"
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
           />
