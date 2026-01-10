@@ -14,8 +14,8 @@ export const POST = async (request: Request) => {
     const data = await prisma.records.create({
       data: {
         date : new Date(date),
-        weight,
-        steps,
+        weight: Number(weight),
+        steps: Number(steps),
         memo,
         profileId: Number(profileId),
       },

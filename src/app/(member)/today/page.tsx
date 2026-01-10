@@ -2,10 +2,12 @@
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 
 
 export default function Page() {
+  const router = useRouter()
   const [date, setDate] = useState<string>("");
   const [weight, setWeight] = useState("");
   const [steps, setSteps] = useState("");
@@ -27,16 +29,20 @@ export default function Page() {
       date,
       weight,
       steps,
-      memo
+      memo,
+      profileId: 1
       })
     });
 
     const data = await res.json();
 
     if(!res.ok){
-      console.error(data.error);
+      console.log("API error:" , data)
+      alert("記録に失敗しました");
       return;
     }
+
+    router.replace('/')
 
     console.log("保存成功", data);
   };
