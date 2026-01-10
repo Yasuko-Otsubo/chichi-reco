@@ -42,7 +42,7 @@ export default function Page() {
       return;
     }
 
-    router.replace('/')
+    router.replace('/calendar')
 
     console.log("保存成功", data);
   };
