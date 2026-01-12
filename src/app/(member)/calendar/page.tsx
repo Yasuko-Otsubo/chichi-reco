@@ -1,6 +1,7 @@
 'use client'
 
 import { supabase } from "@/utils/supabase";
+import { useEffect, useState } from "react";
 
 
 type Record = {
@@ -46,6 +47,24 @@ export default function Page() {
     }
     return data as Record[]
 };
+  
+  //supabaseからの記録をカレンダーに使う準備
+  const [records, setRecords] = useState<Record[]>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+
+    fetchMonthlyRecords(year, month).then((data) =>{
+      setRecords(data);
+    })
+  }, []);
+  const recordMap = new Map<string, Record>();
+
+  records.forEach((r) =>{
+    recordMap.set(r.date, r);
+  });
 
 
 return(
