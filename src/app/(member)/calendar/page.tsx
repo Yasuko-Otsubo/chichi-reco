@@ -1,6 +1,7 @@
 'use client'
 
 import { supabase } from "@/utils/supabase";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
@@ -20,14 +21,29 @@ type CalendarCell = {
 
 
 export default function Page() {
+
+  const router = useRouter();
+  
+  ////////////////ここから
+  useEffect(() => {
+  supabase.auth.getUser().then(({ data }) => {
+    console.log("ログイン状態:", data.user);
+
+    if (!data.user) {
+      router.push("/login");
+    }
+  });
+}, []);
+  /////////////////ここまで最終的にLayout.tsxにまとめる（作業中はページごとに記入）
+
   //月の開始日と終了日を作る関数
   const getMonthRange = (year: number, month: number) => {
-    const start = new Date(year, month, 1); 
-    const end = new Date(year, month + 1, 0 );
+    const start = new Date(Date.UTC(year, month, 1)); 
+    const end = new Date(Date.UTC(year, month + 1, 0 ));
 
     return {
-      startStr: start.toISOString().slice(0, 10),
-      endStr: end.toISOString().slice(0, 10),
+      startStr: start.toISOString().slice(0, 10)  + "T00:00:00",
+      endStr: end.toISOString().slice(0, 10) + "T23:59:59",
     };
   };
     
@@ -40,6 +56,9 @@ export default function Page() {
     .select("*")
     .gte("date", startStr)
     .lte("date", endStr);
+
+    console.log("startStr:", startStr);
+    console.log("endStr:", endStr);
 
     if(error) {
       console.log("Supabase error", error);
@@ -57,6 +76,8 @@ export default function Page() {
     const month = today.getMonth();
 
     fetchMonthlyRecords(year, month).then((data) =>{
+      console.log("取得した data:", data);
+
       setRecords(data);
     })
   }, []);
