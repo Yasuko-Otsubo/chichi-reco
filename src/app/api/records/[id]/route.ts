@@ -19,12 +19,20 @@ export const PUT = async (
 
     const user = data.user;
 
+    type PrismaRecordUpdate = {
+      date?: Date;
+      weight?: number;
+      steps?: number;
+      memo?: string;
+    };
+
     try {
       const body: RecordUpdateRequest = await request.json();
       const { date, weight, steps, memo } = body;
 
-    const updateData: Partial<RecordUpdateRequest> = {};
-    if (date !== undefined) updateData.date = date;
+    const updateData: PrismaRecordUpdate = {};
+
+    if (date !== undefined) updateData.date = new Date(date);
     if (weight !== undefined) updateData.weight = weight;
     if (steps !== undefined) updateData.steps = steps;
     if (memo !== undefined) updateData.memo = memo;
@@ -50,14 +58,14 @@ export const PUT = async (
     const response: RecordResponse = {
       status: "OK",
       message: "記録を更新しました",
- records: [
+      records: [
         {
           id: record.id,
-          date: record.date, // Date → string に変換
+          date: record.date, 
           weight: record.weight,
           steps: record.steps,
           memo: record.memo,
-          profileId: (record.profileId), // number → string に変換
+          profileId: record.profileId, 
         },
       ],
     };
