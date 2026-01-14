@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import {
   ProfileCreateRequest,
   ProfileFields,
   ProfileResponse,
 } from "@/types/profiles";
 import { requireUser } from "@/utils/auth";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest /*, context: any*/) => {
   try {

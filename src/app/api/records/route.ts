@@ -1,10 +1,9 @@
 import {  NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { RecordFields, RecordResponse } from "@/types/records";
 import { toRecordFields } from "@/utils/records";
 import { requireUser } from "@/utils/auth";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export const POST = async (request: Request) => {
   try {
