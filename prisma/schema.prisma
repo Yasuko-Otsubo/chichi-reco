@@ -18,6 +18,8 @@ model Profiles {
   height                Float
   target_weight         Float
   records               Records[]
+
+  @@map("profiles")
 }
 
 //記録テーブル
@@ -31,6 +33,7 @@ model Records {
   profile               Profiles     @relation(fields: [profileId], references: [id])
 
   @@unique([profileId, date])  // ← ユーザーごとに日付は一意
+  @@map("records")
 }
 
 //faqテーブル
@@ -38,6 +41,8 @@ model Faq {
   id                    Int           @id @default(autoincrement())
   question              String
   answer                String
+
+  @@("faq")
 }
 
 //お問い合わせテーブル
@@ -47,4 +52,6 @@ model Contact {
   email                 String        @unique
   content               String
   createdAt             DateTime      @default(now())
+
+  @@map("contact")
 }
