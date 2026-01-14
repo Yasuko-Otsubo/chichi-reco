@@ -1,10 +1,10 @@
 export type RecordFields = {
   id: number;
-  date: string;
+  date: Date;
   weight: number;
   steps: number;
   memo: string;
-  profileId: string;
+  profileId: number;
   profile?: string;
 }
 

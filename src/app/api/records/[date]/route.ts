@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { toRecordFields } from "@/utils/records";
 import { requireUser } from "@/utils/auth";
 import { RecordResponse, RecordUpdateRequest } from "@/types/records";
 import { supabase } from "@/utils/supabase";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 
 export const GET = async (
@@ -92,11 +91,11 @@ export const PUT = async (
  records: [
         {
           id: record.id,
-          date: record.date.toISOString(), // Date → string に変換
+          date: record.date, // Date → string に変換
           weight: record.weight,
           steps: record.steps,
           memo: record.memo,
-          profileId: String(record.profileId), // number → string に変換
+          profileId: (record.profileId), // number → string に変換
         },
       ],
     };

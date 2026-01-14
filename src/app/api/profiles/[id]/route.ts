@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { supabase } from "@/utils/supabase";
 import { ProfileResponse, ProfileUpdateRequest } from "@/types/profiles";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export const PUT = async (
 

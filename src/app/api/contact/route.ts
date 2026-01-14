@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { ContactFields, ContactResponse } from "@/types/contact";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export const POST = async (request: Request) => {
   try {
