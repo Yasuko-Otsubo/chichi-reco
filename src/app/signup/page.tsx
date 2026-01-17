@@ -28,13 +28,14 @@ export default function Page() {
     }
   }
   return (
-    <div className="flex justify-center pt-[240px]">
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[400px]">
-<Input
+    <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full max-w-[500px] bg-[#a2dae7]  mx-auto ">
+      <form onSubmit={handleSubmit} className="bg-white rounded-[50px] p-10 space-y-4 w-full max-w-[400px]">
+      <Input
           label="メールアドレス"
           type="email"
           placeholder="name@company.com"
           required
+          className='bg-white'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -44,6 +45,7 @@ export default function Page() {
           type="password"
           placeholder="••••••••"
           required
+          className='bg-white'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

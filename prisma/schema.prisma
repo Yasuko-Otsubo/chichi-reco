@@ -42,6 +42,8 @@ model Faq {
   id                    Int           @id @default(autoincrement())
   question              String
   answer                String
+
+  @@("faq")
 }
 
 //お問い合わせテーブル

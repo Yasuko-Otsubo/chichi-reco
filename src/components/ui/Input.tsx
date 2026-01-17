@@ -17,7 +17,7 @@ export const Input = ({
   ...props
 }: InputProps) => {
   return (
-<div className="space-y-1">
+<div className="space-y-1 background-color">
       {label && <Label required={required}>{label}</Label>}
 
       <input

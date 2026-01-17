@@ -28,7 +28,7 @@ export default function LoginForm (){
     if (error) {
       alert('ログインに失敗しました')
     } else {
-      router.replace('/admin/posts')
+      router.replace('/')
     }
   }
 
