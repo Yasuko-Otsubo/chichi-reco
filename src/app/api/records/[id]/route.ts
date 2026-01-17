@@ -1,8 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { RecordResponse, RecordUpdateRequest } from "@/types/records";
-import { requireUser } from "@/utils/auth";
+import { getUserFromHeader } from "@/utils/auth";
 import { toRecordFields } from "@/utils/records";
-import { supabase } from "@/utils/supabase";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -11,7 +10,7 @@ export const GET = async (
   { params } : { params: { id: string }}
 ) => {
   try {
-    const user = await requireUser(request);
+    const user = await getUserFromHeader(request);
 
     const record = await prisma.records.findUnique({
       where: {
@@ -19,10 +18,24 @@ export const GET = async (
        },
     });
 
-    if (!record || record.profileId !== Number(user.id)) {
+    const profile = await prisma.profiles.findUnique({
+      where: { supabase_user_id: user.id}
+    });
+
+    if(!profile) {
       return NextResponse.json(
-        { status: "NG", message: "記録が見つかりません" },
+        { status: "NG", message: "プロフィールが見つかりません" },
         { status: 404 }
+      );
+    }
+
+    if (!record || record.profileId !== profile.id) {
+      return NextResponse.json(
+        { status: "OK", 
+          message: "記録はありません",
+          records: [] 
+        },
+        { status: 200 }
       );
     }
 
@@ -49,17 +62,8 @@ export const PUT = async (
   { params }: { params: { id: string } }
 ) => {
   const { id } = params;
-  const token = request.headers.get('Authorization') ?? ''
-  const { data, error } = await supabase.auth.getUser(token);
 
-
-  if(error){
-    return NextResponse.json(
-      { status: "NG" , message: error.message } , 
-      { status: 401})
-  }
-
-    const user = data.user;
+    const user = await getUserFromHeader(request);
 
     type PrismaRecordUpdate = {
       date?: Date;
@@ -127,20 +131,10 @@ export const PUT = async (
 
 export const DELETE = async (
    request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string }  }
    ) => {
-     const { id } = await context.params;
-  const token = request.headers.get('Authorization') ?? ''
-  const { data, error } = await supabase.auth.getUser(token);
-
-
-    if(error){
-    return NextResponse.json(
-      { status: "NG" , message: error.message } , 
-      { status: 401})
-  }
-
-    const user = data.user;
+     const { id } = params;
+    const user = await getUserFromHeader(request);
 
   try {
     
@@ -158,7 +152,8 @@ export const DELETE = async (
     
     await prisma.records.delete({
       where: {
-          id: Number(id)
+          id: Number(id),
+          profileId: profile.id
       },
     }) ;
 
