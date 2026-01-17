@@ -20,6 +20,7 @@ model Profiles {
   records               Records[]
 
   @@map("profiles")
+
 }
 
 //記録テーブル
