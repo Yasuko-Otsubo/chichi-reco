@@ -11,27 +11,27 @@ datasource db {
 }
 
 //プロフィールテーブル
-model Profiles {
+model Profile {
   id                    Int         @id @default(autoincrement())
   name                  String
-  supabase_user_id      String      @unique
+  supabaseUserId        String      @unique @map("supabase_user_id")
   height                Float
-  target_weight         Float
-  records               Records[]
+  targetWeight          Float       @map("target_weight")
+  records               Record[]
 
   @@map("profiles")
 
 }
 
 //記録テーブル
-model Records {
+model Record {
   id                    Int          @id @default(autoincrement())
   date                  DateTime     
   weight                Float
   steps                 Int
   memo                  String
   profileId             Int
-  profile               Profiles     @relation(fields: [profileId], references: [id])
+  profile               Profile      @relation(fields: [profileId], references: [id])
 
   @@unique([profileId, date])  // ← ユーザーごとに日付は一意
   @@map("records")
@@ -43,7 +43,7 @@ model Faq {
   question              String
   answer                String
 
-  @@("faq")
+  @@map("faqs")
 }
 
 //お問い合わせテーブル
