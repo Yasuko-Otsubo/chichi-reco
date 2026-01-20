@@ -20,7 +20,7 @@ export const PUT = async (
   try {
 
     const body: ProfileUpdateRequest = await request.json();
-    const { name, email, password, height, target_weight } = body;
+    const { name, email, password, height, targetWeight } = body;
 
     if (email) {
       const { error: emailError } = await supabase.auth.updateUser({ email });
@@ -38,10 +38,10 @@ export const PUT = async (
     const updateData: Partial<ProfileUpdateRequest> = {};
     if (name !== undefined) updateData.name = name;
     if (height !== undefined) updateData.height = height;
-    if (target_weight !== undefined) updateData.target_weight = target_weight;
+    if (targetWeight !== undefined) updateData.targetWeight = targetWeight;
 
-    const profile = await prisma.profiles.update({
-      where: { id: Number(id), supabase_user_id: user.id },
+    const profile = await prisma.profile.update({
+      where: { id: Number(id), supabaseUserId: user.id },
       data: updateData,
     });
 

@@ -12,20 +12,20 @@ export const POST = async (request: NextRequest /*, context: any*/) => {
   try {
     const user = await requireUser(request);
     const body: ProfileCreateRequest = await request.json();
-    const { name, height, target_weight } = body;
+    const { name, height, targetWeight } = body;
 
-    const data = await prisma.profiles.upsert({
-      where: { supabase_user_id: user.id },
+    const data = await prisma.profile.upsert({
+      where: { supabaseUserId: user.id },
       update: {
         name,
         height,
-        target_weight,
+        targetWeight,
       },
       create: {
         name,
         height,
-        target_weight,
-        supabase_user_id: user.id,
+        targetWeight,
+        supabaseUserId: user.id,
       },
     });
 
@@ -50,8 +50,8 @@ export const GET = async (request: NextRequest) => {
   try {
     const user = await requireUser(request);
 
-    const profile = await prisma.profiles.findUnique({
-      where: { supabase_user_id: user.id },
+    const profile = await prisma.profile.findUnique({
+      where: { supabaseUserId: user.id },
     });
 
     const response: ProfileResponse = {

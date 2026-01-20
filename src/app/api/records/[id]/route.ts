@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { RecordResponse, RecordUpdateRequest } from "@/types/records";
-import { getUserFromHeader } from "@/utils/auth";
+import { requireUser } from "@/utils/auth";
 import { toRecordFields } from "@/utils/records";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,16 +10,16 @@ export const GET = async (
   { params } : { params: { id: string }}
 ) => {
   try {
-    const user = await getUserFromHeader(request);
+    const user = await requireUser(request);
 
-    const record = await prisma.records.findUnique({
+    const record = await prisma.record.findUnique({
       where: {
           id: Number(params.id),
        },
     });
 
-    const profile = await prisma.profiles.findUnique({
-      where: { supabase_user_id: user.id}
+    const profile = await prisma.profile.findUnique({
+      where: { supabaseUserId: user.id}
     });
 
     if(!profile) {
@@ -63,7 +63,7 @@ export const PUT = async (
 ) => {
   const { id } = params;
 
-    const user = await getUserFromHeader(request);
+    const user = await requireUser(request);
 
     type PrismaRecordUpdate = {
       date?: Date;
@@ -83,8 +83,8 @@ export const PUT = async (
     if (steps !== undefined) updateData.steps = steps;
     if (memo !== undefined) updateData.memo = memo;
 
-    const profile = await prisma.profiles.findUnique({
-      where: { supabase_user_id: user.id }, // ← UUIDで検索
+    const profile = await prisma.profile.findUnique({
+      where: { supabaseUserId: user.id }, // ← UUIDで検索
     });
 
 
@@ -96,7 +96,7 @@ export const PUT = async (
     }
 
 
-    const record = await prisma.records.update({
+    const record = await prisma.record.update({
       where: { id: Number(id), profileId: profile.id },
       data: updateData,
     });
@@ -107,7 +107,7 @@ export const PUT = async (
       records: [
         {
           id: record.id,
-          date: record.date, 
+          date: record.date.toISOString(), 
           weight: record.weight,
           steps: record.steps,
           memo: record.memo,
@@ -134,12 +134,12 @@ export const DELETE = async (
   { params }: { params: { id: string }  }
    ) => {
      const { id } = params;
-    const user = await getUserFromHeader(request);
+      const user = await requireUser(request);
 
   try {
     
-    const profile = await prisma.profiles.findUnique({
-      where: { supabase_user_id: user.id },
+    const profile = await prisma.profile.findUnique({
+      where: { supabaseUserId: user.id },
     });
 
     if (!profile) {
@@ -150,7 +150,7 @@ export const DELETE = async (
     }
 
     
-    await prisma.records.delete({
+    await prisma.record.delete({
       where: {
           id: Number(id),
           profileId: profile.id

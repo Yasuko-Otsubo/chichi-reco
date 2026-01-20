@@ -2,7 +2,7 @@ import { RecordResponse } from "@/types/records";
 import { requireUser } from "@/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { Records } from "@prisma/client";
+import { Record } from "@prisma/client";
 
 export const GET = async (request: NextRequest) => {
   try {
@@ -15,7 +15,7 @@ export const GET = async (request: NextRequest) => {
     const start = new Date(Date.UTC(year, month, 1));
     const end = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59));
 
-    const records = await prisma.records.findMany({
+    const records = await prisma.record.findMany({
       where: {
         profileId: Number(user.id),
         date: {
@@ -29,9 +29,9 @@ export const GET = async (request: NextRequest) => {
     const response: RecordResponse = {
       status: "OK",
       message: "取得しました",
-      records: records.map((r: Records) => ({
+      records: records.map((r: Record) => ({
         id: r.id,
-        date: r.date,
+        date: r.date.toISOString(),
         weight: r.weight,
         steps: r.steps,
         memo: r.memo,

@@ -1,9 +1,9 @@
 export type ProfileFields = {
   id: number;
   name: string;
-  supabase_user_id: string;
+  supabaseUserId: string;
   height: number;
-  target_weight: number;
+  targetWeight: number;
 };
 
 export type ProfileResponse = {
@@ -15,7 +15,7 @@ export type ProfileResponse = {
 export type ProfileCreateRequest = {
   name: string;
   height: number;
-  target_weight: number;
+  targetWeight: number;
 };
 
 //更新用
@@ -24,5 +24,5 @@ export type ProfileUpdateRequest = {
   email?: string;
   password?: string;
   height?: number;
-  target_weight?: number;
+  targetWeight?: number;
 }
