@@ -1,6 +1,6 @@
 export type RecordFields = {
   id: number;
-  date: Date;
+  date: string;
   weight: number;
   steps: number;
   memo: string;
