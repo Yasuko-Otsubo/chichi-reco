@@ -1,24 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/utils/supabase";
 import { ProfileResponse, ProfileUpdateRequest } from "@/types/profiles";
-import { prisma } from "@/lib/prisma";
-
+import { prisma } from "@/app/_libs/prisma";
 
 export const PUT = async (
-
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) => {
   const { id } = params;
 
-  const token = request.headers.get('Authorization') ?? ''
-  const { data , error } = await supabase.auth.getUser(token);
+  const token = request.headers.get("Authorization") ?? "";
+  const { data, error } = await supabase.auth.getUser(token);
 
-  if(error) 
-    return NextResponse.json({status: "NG", message: error.message} , { status: 401 })
+  if (error)
+    return NextResponse.json(
+      { status: "NG", message: error.message },
+      { status: 401 },
+    );
   const user = data.user;
   try {
-
     const body: ProfileUpdateRequest = await request.json();
     const { name, email, password, height, targetWeight } = body;
 
@@ -49,16 +49,16 @@ export const PUT = async (
       status: "OK",
       message: "プロフィールを更新しました",
       profiles: [profile],
-    }
+    };
 
-    return NextResponse.json(response,  { status: 200 });
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
       const response: ProfileResponse = {
         status: "NG",
         message: error.message,
       };
-      return NextResponse.json(response, {status: 400});
+      return NextResponse.json(response, { status: 400 });
     }
   }
 };

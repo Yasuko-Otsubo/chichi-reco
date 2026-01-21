@@ -1,7 +1,7 @@
 import { RecordResponse } from "@/types/records";
 import { requireUser } from "@/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/app/_libs/prisma";
 import { Record } from "@prisma/client";
 
 export const GET = async (request: NextRequest) => {

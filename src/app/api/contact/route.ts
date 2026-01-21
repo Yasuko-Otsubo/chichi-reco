@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { ContactFields, ContactResponse } from "@/types/contact";
-import { prisma } from "@/lib/prisma";
-
+import { prisma } from "@/app/_libs/prisma";
 
 export const POST = async (request: Request) => {
   try {
@@ -18,11 +17,14 @@ export const POST = async (request: Request) => {
       id: data.id,
     };
 
-    return NextResponse.json( response );
+    return NextResponse.json(response);
   } catch (error) {
-    if ( error instanceof Error) {
-        const response: ContactResponse = { status: "NG" , message: error.message }
-      return NextResponse.json(response, { status: 400 })
+    if (error instanceof Error) {
+      const response: ContactResponse = {
+        status: "NG",
+        message: error.message,
+      };
+      return NextResponse.json(response, { status: 400 });
     }
   }
 };

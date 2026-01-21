@@ -5,8 +5,7 @@ import {
   ProfileResponse,
 } from "@/types/profiles";
 import { requireUser } from "@/utils/auth";
-import { prisma } from "@/lib/prisma";
-
+import { prisma } from "@/app/_libs/prisma";
 
 export const POST = async (request: NextRequest /*, context: any*/) => {
   try {
