@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/utils/supabase";
 import { ProfileResponse, ProfileUpdateRequest } from "@/types/profiles";
 import { prisma } from "@/app/_libs/prisma";
+import { supabase } from "@/app/_libs/supabase";
 
 export const PUT = async (
   request: NextRequest,

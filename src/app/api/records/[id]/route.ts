@@ -1,6 +1,6 @@
 import { prisma } from "@/app/_libs/prisma";
+import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 import { RecordResponse, RecordUpdateRequest } from "@/types/records";
-import { requireUser } from "@/utils/auth";
 import { toRecordFields } from "@/utils/records";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,7 +9,7 @@ export const GET = async (
   { params }: { params: { id: string } },
 ) => {
   try {
-    const user = await requireUser(request);
+    const user = await getAuthenticatedUser(request);
 
     const record = await prisma.record.findUnique({
       where: {
@@ -59,7 +59,7 @@ export const PUT = async (
 ) => {
   const { id } = params;
 
-  const user = await requireUser(request);
+  const user = await getAuthenticatedUser(request);
 
   type PrismaRecordUpdate = {
     date?: Date;
@@ -127,7 +127,7 @@ export const DELETE = async (
   { params }: { params: { id: string } },
 ) => {
   const { id } = params;
-  const user = await requireUser(request);
+  const user = await getAuthenticatedUser(request);
 
   try {
     const profile = await prisma.profile.findUnique({

@@ -1,12 +1,12 @@
 import { RecordResponse } from "@/types/records";
-import { requireUser } from "@/utils/auth";
+import { getAuthenticatedUser } from "@/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/_libs/prisma";
 import { Record } from "@prisma/client";
 
 export const GET = async (request: NextRequest) => {
   try {
-    const user = await requireUser(request);
+    const user = await getAuthenticatedUser(request);
 
     const { searchParams } = new URL(request.url);
     const year = Number(searchParams.get("year"));

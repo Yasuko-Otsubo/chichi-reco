@@ -4,12 +4,12 @@ import {
   ProfileFields,
   ProfileResponse,
 } from "@/types/profiles";
-import { requireUser } from "@/utils/auth";
 import { prisma } from "@/app/_libs/prisma";
+import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 
 export const POST = async (request: NextRequest /*, context: any*/) => {
   try {
-    const user = await requireUser(request);
+    const user = await getAuthenticatedUser(request);
     const body: ProfileCreateRequest = await request.json();
     const { name, height, targetWeight } = body;
 
@@ -47,7 +47,7 @@ export const POST = async (request: NextRequest /*, context: any*/) => {
 
 export const GET = async (request: NextRequest) => {
   try {
-    const user = await requireUser(request);
+    const user = await getAuthenticatedUser(request);
 
     const profile = await prisma.profile.findUnique({
       where: { supabaseUserId: user.id },

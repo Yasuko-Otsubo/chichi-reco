@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RecordFields, RecordResponse } from "@/types/records";
 import { toRecordFields } from "@/utils/records";
-import { requireUser } from "@/utils/auth";
 import { prisma } from "@/app/_libs/prisma";
+import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 
 export const POST = async (request: NextRequest) => {
   try {
     const body: RecordFields = await request.json();
-    const user = await requireUser(request);
+    const user = await getAuthenticatedUser(request);
     const { date, weight, steps, memo } = body;
     console.log("Authorization header:", request.headers.get("authorization"));
 
@@ -53,7 +53,7 @@ export const POST = async (request: NextRequest) => {
 
 export const GET = async (request: NextRequest) => {
   try {
-    const user = await requireUser(request);
+    const user = await getAuthenticatedUser(request);
 
     const profile = await prisma.profile.findUnique({
       where: { supabaseUserId: user.id },
