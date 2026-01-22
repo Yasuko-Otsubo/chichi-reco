@@ -1,8 +1,8 @@
 import { RecordResponse } from "@/types/records";
-import { getAuthenticatedUser } from "@/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/_libs/prisma";
 import { Record } from "@prisma/client";
+import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 
 export const GET = async (request: NextRequest) => {
   try {
