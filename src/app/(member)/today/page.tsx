@@ -1,5 +1,6 @@
 'use client'
 
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useRouter } from "next/navigation";
@@ -12,6 +13,8 @@ export default function Page() {
   const [weight, setWeight] = useState("");
   const [steps, setSteps] = useState("");
   const [memo, setMemo] = useState("");
+  const { token } = useSupabaseSession()
+  console.log("token:", token); 
 
   useEffect(() => {
   const today = new Date().toISOString().slice(0, 10);
@@ -22,9 +25,13 @@ export default function Page() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!token) { alert("ログイン情報がありません"); return; }
+
     const res = await fetch("/api/records", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+       },
       body: JSON.stringify({
       date,
       weight,
