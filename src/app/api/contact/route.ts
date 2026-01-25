@@ -28,3 +28,21 @@ export const POST = async (request: Request) => {
     }
   }
 };
+
+export const GET = async () => {
+  try {
+    const contacts = await prisma.contact.findMany({
+      orderBy: { id: "desc" },
+    });
+    
+    return NextResponse.json(
+      { status: "OK", message: "取得しました", content: contacts },
+      { status: 200 }
+    );
+  } catch {
+    return NextResponse.json(
+      { status: "NG", message: "エラーが発生しました"},
+      { status: 500 }
+    );
+  }
+};
