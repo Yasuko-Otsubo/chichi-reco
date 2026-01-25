@@ -50,6 +50,11 @@ export default function Page() {
   const fetchMonthlyRecords = async (year: number, month: number) => {
     const { startStr, endStr } = getMonthRange(year, month);
 
+    //access_token取得
+    const { data: sessionData } = await supabase.auth.getSession();
+    console.log("access_token:", sessionData.session?.access_token);
+
+
     const { data, error } = await supabase
       .from("records")
       .select("*")
