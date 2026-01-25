@@ -8,19 +8,31 @@ export const GET = async (request: NextRequest) => {
   try {
     const user = await getAuthenticatedUser(request);
 
+    const profile = await prisma.profile.findFirst({
+      where: { supabaseUserId: user.id },
+    });
+
+    if(!profile) {
+      return NextResponse.json(
+        { status: "NG" , message: "Profile not found" },
+        { status: 404 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const year = Number(searchParams.get("year"));
-    const month = Number(searchParams.get("month"));
+    const monthParam = Number(searchParams.get("month"));
+    const month = monthParam - 1;
 
     const start = new Date(Date.UTC(year, month, 1));
-    const end = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59));
+    const end = new Date(Date.UTC(year, month + 1, 1));
 
     const records = await prisma.record.findMany({
       where: {
-        profileId: Number(user.id),
+        profileId: profile.id,
         date: {
           gte: start,
-          lte: end,
+          lt: end,
         },
       },
       orderBy: { date: "asc" },
