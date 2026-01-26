@@ -34,10 +34,9 @@ export default function Page() {
        },
       body: JSON.stringify({
       date,
-      weight,
-      steps,
+      weight: Number(weight),
+      steps: Number(steps),
       memo,
-      profileId: 1
       })
     });
 
