@@ -1,8 +1,8 @@
 import { prisma } from "@/app/_libs/prisma";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
-import { RecordResponse, RecordUpdateRequest } from "@/types/records";
-import { toRecordFields } from "@/utils/records";
+import { RecordResponse, RecordUpdateRequest, toRecordFields } from "@/types/records";
 import { NextRequest, NextResponse } from "next/server";
+import { Record as PrismaRecord } from "@prisma/client";
 
 export const GET = async (
   request: NextRequest,
@@ -38,7 +38,7 @@ export const GET = async (
     const response: RecordResponse = {
       status: "OK",
       message: "取得しました",
-      records: record ? [toRecordFields(record)] : [],
+      records: [toRecordFields(record as PrismaRecord)],
     };
 
     return NextResponse.json(response, { status: 200 });
@@ -98,16 +98,7 @@ export const PUT = async (
     const response: RecordResponse = {
       status: "OK",
       message: "記録を更新しました",
-      records: [
-        {
-          id: record.id,
-          date: record.date.toISOString(),
-          weight: record.weight,
-          steps: record.steps,
-          memo: record.memo,
-          profileId: record.profileId,
-        },
-      ],
+      records: [toRecordFields(record as PrismaRecord)],
     };
 
     return NextResponse.json(response, { status: 200 });
