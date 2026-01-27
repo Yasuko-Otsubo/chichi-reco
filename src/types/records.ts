@@ -1,3 +1,5 @@
+import { Record as PrismaRecord } from "@prisma/client";
+//レスポンス用
 export type RecordFields = {
   id: number;
   date: string;
@@ -5,8 +7,25 @@ export type RecordFields = {
   steps?: number;
   memo?: string;
   profileId: number;
-  profile?: string;
 }
+
+//POST用
+export type RecordCreateRequest = {
+  date: string;
+  weight?: number;
+  steps?: number;
+  memo?: string;
+};
+
+//DB ⇒ APIの変換
+export const toRecordFields = (record: PrismaRecord): RecordFields => ({
+  id: record.id,
+  date: record.date.toISOString(),
+  weight: record.weight ?? undefined,
+  steps: record.steps ?? undefined,
+  memo: record.memo ?? undefined,
+  profileId: record.profileId,
+});
 
 export type RecordResponse = {
   status: "OK" | "NG";
