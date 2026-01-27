@@ -1,8 +1,8 @@
-import { RecordResponse } from "@/types/records";
+import { RecordResponse, toRecordFields } from "@/types/records";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/_libs/prisma";
-import { Record } from "@prisma/client";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
+import { Record as PrismaRecord } from "@prisma/client";
 
 export const GET = async (request: NextRequest) => {
   try {
@@ -24,6 +24,13 @@ export const GET = async (request: NextRequest) => {
     const monthParam = Number(searchParams.get("month"));
     const month = monthParam - 1;
 
+    if(!year || !monthParam) {
+      return NextResponse.json(
+        { status: "NG", message: "year, month が必要です"},
+        { status: 400 }
+      );
+    }
+
     const start = new Date(Date.UTC(year, month, 1));
     const end = new Date(Date.UTC(year, month + 1, 1));
 
@@ -41,14 +48,7 @@ export const GET = async (request: NextRequest) => {
     const response: RecordResponse = {
       status: "OK",
       message: "取得しました",
-      records: records.map((r: Record) => ({
-        id: r.id,
-        date: r.date.toISOString(),
-        weight: r.weight,
-        steps: r.steps,
-        memo: r.memo,
-        profileId: r.profileId,
-      })),
+      records: records.map((r) => toRecordFields(r as PrismaRecord)),
     };
 
     return NextResponse.json(response, { status: 200 });
@@ -56,7 +56,7 @@ export const GET = async (request: NextRequest) => {
     if (error instanceof Error) {
       const response: RecordResponse = {
         status: "NG",
-        message: error.message,
+        message: error instanceof Error ? error.message : "Unknown error",
       };
       return NextResponse.json(response, { status: 400 });
     }
