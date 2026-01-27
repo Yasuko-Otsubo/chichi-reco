@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RecordFields, RecordResponse } from "@/types/records";
-import { toRecordFields } from "@/utils/records";
+import { RecordCreateRequest, RecordResponse, toRecordFields } from "@/types/records";
 import { prisma } from "@/app/_libs/prisma";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
+import { Record as PrismaRecord } from "@prisma/client";
 
 export const POST = async (request: NextRequest) => {
   try {
-    const body: RecordFields = await request.json();
+    const body: RecordCreateRequest = await request.json();
     const user = await getAuthenticatedUser(request);
     const { date, weight, steps, memo } = body;
     console.log("Authorization header:", request.headers.get("authorization"));
@@ -22,27 +22,42 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    const existring = await prisma.record.findFirst({
+      where: {
+        profileId: profile.id,
+        date: new Date(date),
+      },
+    });
+
+    if(existring) {
+      return NextResponse.json({
+        status: "NG",
+        message: "この日付は既に記録されています",
+        record: [toRecordFields(existring as PrismaRecord)]
+      },
+    { status: 400 }
+    );
+  }
+
     const data = await prisma.record.create({
       data: {
         date: new Date(date),
-        weight: Number(weight),
-        steps: Number(steps),
-        memo,
+        weight: weight ?? null,
+        steps: steps ?? null,
+        memo: memo ?? null,
         profileId: profile.id,
       },
     });
 
-    const record = toRecordFields(data);
+    //const record = toRecordFields(data);
 
     const response: RecordResponse = {
       status: "OK",
       message: "記録しました",
-      records: [record],
+      records: [toRecordFields(data as PrismaRecord)],
     };
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
-    console.error("CREATE ERROR:", error);
-
     const response: RecordResponse = {
       status: "NG",
       message: error instanceof Error ? error.message : "Unknown error",
