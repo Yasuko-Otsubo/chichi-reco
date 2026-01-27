@@ -1,9 +1,9 @@
 export type ProfileFields = {
   id: number;
-  name: string;
+  name?: string;
   supabaseUserId: string;
-  height: number;
-  targetWeight: number;
+  height?: number;
+  targetWeight?: number;
 };
 
 export type ProfileResponse = {

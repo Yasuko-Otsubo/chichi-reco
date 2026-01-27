@@ -1,9 +1,9 @@
 export type RecordFields = {
   id: number;
   date: string;
-  weight: number;
-  steps: number;
-  memo: string;
+  weight?: number;
+  steps?: number;
+  memo?: string;
   profileId: number;
   profile?: string;
 }
