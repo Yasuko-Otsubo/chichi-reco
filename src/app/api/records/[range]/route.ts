@@ -17,5 +17,7 @@ export const GET = async (request: NextRequest) => {
       );
     }
 
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get("type");
   }
 }
