@@ -18,6 +18,34 @@ export const GET = async (request: NextRequest) => {
     }
 
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get("type");
+    const type = searchParams.get("type")
+
+    const now = new Date();
+    let start: Date;
+
+    start = new Date(now)
+
+    switch(type) {
+      case "week":
+        start.setDate(start.getDate() -6)
+        break;
+      
+      case "month":
+        start.setMonth(start.getMonth() - 1)
+        break;
+
+      case "half-year":
+        start.setMonth(start.getMonth() - 6)
+        break;
+
+      case "year":
+        start.setFullYear(start.getFullYear() - 1)
+        break;
+
+      case "all":
+        start.setFullYear(start.getFullYear() - 3)
+        break;
+
+    }
   }
 }
