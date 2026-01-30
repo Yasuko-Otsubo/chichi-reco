@@ -21,9 +21,8 @@ export const GET = async (request: NextRequest) => {
     const type = searchParams.get("type")
 
     const now = new Date();
-    let start: Date;
-
-    start = new Date(now)
+    const start = new Date(now)
+    const end  =  new Date(now)
 
     switch(type) {
       case "week":
@@ -45,7 +44,17 @@ export const GET = async (request: NextRequest) => {
       case "all":
         start.setFullYear(start.getFullYear() - 3)
         break;
-
     }
+
+    const record = await prisma.record.findMany({
+      where: {
+        profileId: profile.id,
+        date: {
+          gte: start,
+          lt: end,
+        },
+      },
+      orderBy: { date: "asc" },
+    });
   }
 }
