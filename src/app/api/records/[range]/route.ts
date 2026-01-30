@@ -1,6 +1,9 @@
 import { prisma } from "@/app/_libs/prisma";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
+import { RecordResponse, toRecordFields } from "@/types/records";
 import { NextRequest, NextResponse } from "next/server";
+import { Record as PrismaRecord } from "@prisma/client";
+
 
 export const GET = async (request: NextRequest) => {
   try {
@@ -18,7 +21,7 @@ export const GET = async (request: NextRequest) => {
     }
 
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get("type")
+    const type = searchParams.get("type") ?? "week"
 
     const now = new Date();
     const start = new Date(now)
@@ -46,7 +49,7 @@ export const GET = async (request: NextRequest) => {
         break;
     }
 
-    const record = await prisma.record.findMany({
+    const records = await prisma.record.findMany({
       where: {
         profileId: profile.id,
         date: {
@@ -56,5 +59,21 @@ export const GET = async (request: NextRequest) => {
       },
       orderBy: { date: "asc" },
     });
+
+    const response: RecordResponse = {
+      status: "OK",
+      message: "取得しました",
+      records: records.map((r) => toRecordFields(r as PrismaRecord)),
+    };
+
+    return NextResponse.json(response, { status: 200 });
+  } catch (error) {
+    if (error instanceof Error ) {
+      const response: RecordResponse = {
+        status: "NG",
+        message: error instanceof Error ? error.message: "Unknown error",
+      };
+      return NextResponse.json(response, { status: 400 });
+    }
   }
-}
+};
