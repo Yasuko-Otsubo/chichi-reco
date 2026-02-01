@@ -1,6 +1,10 @@
 import { prisma } from "@/app/_libs/prisma";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
-import { ProfileCreateRequest, ProfileResponse, toProfileFields } from "@/types/profiles";
+import {
+  ProfileCreateRequest,
+  ProfileResponse,
+  toProfileFields,
+} from "@/types/profiles";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (request: NextRequest) => {
@@ -8,13 +12,13 @@ export const POST = async (request: NextRequest) => {
     const body: ProfileCreateRequest = await request.json();
     const user = await getAuthenticatedUser(request);
     const { name, targetWeight, height } = body;
-    
+
     const data = await prisma.profile.create({
       data: {
         name,
         supabaseUserId: user.id,
         targetWeight,
-        height, 
+        height,
       },
     });
 
@@ -27,7 +31,7 @@ export const POST = async (request: NextRequest) => {
   } catch (error) {
     const response: ProfileResponse = {
       status: "NG",
-      message: error instanceof Error ? error.message: "Unknown error",
+      message: error instanceof Error ? error.message : "Unknown error",
     };
     return NextResponse.json(response, { status: 400 });
   }
@@ -41,28 +45,28 @@ export const POST = async (request: NextRequest) => {
         where: { supabaseUserId: user.id },
       });
 
-      if(!profile) {
+      if (!profile) {
         return NextResponse.json(
-          { status: "NG", message: "プロフィールが見つかりません"},
+          { status: "NG", message: "プロフィールが見つかりません" },
           { status: 404 },
         );
       }
 
       return NextResponse.json(
         {
-        status: "OK",
-        message: "取得しました",
-        profiles: [toProfileFields(profile)],
-      },
-      { status: 200 }
-    );
+          status: "OK",
+          message: "取得しました",
+          profiles: [toProfileFields(profile)],
+        },
+        { status: 200 },
+      );
     } catch (error) {
-      return NextResponse.json({
+      return NextResponse.json(
+        {
           status: "NG",
-          message: error instanceof Error ?  error.message: "Unknown error",
-    },
-  {status: 401})
+          message: error instanceof Error ? error.message : "Unknown error",
+        },
+        { status: 401 },
+      );
     }
   };
-
-
