@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 import {
   ProfileCreateRequest,
   ProfileResponse,
+  ProfileUpdateRequest,
   toProfileFields,
 } from "@/types/profiles";
 import { NextRequest, NextResponse } from "next/server";
@@ -68,5 +69,59 @@ export const POST = async (request: NextRequest) => {
         },
         { status: 401 },
       );
+    }
+  };
+
+  export const PUT = async (request: NextRequest) => {
+    const user = await getAuthenticatedUser(request);
+
+    type PrismaProfileUpdate = {
+      name?: string;
+      targetWeight?: number;
+      height?: number;
+    }
+
+    try {
+      const body: ProfileUpdateRequest = await request.json();
+      const { name, targetWeight, height } = body;
+
+      const updateData: PrismaProfileUpdate = {};
+
+      if (name !== undefined) updateData.name = name;
+      if (targetWeight !== undefined) updateData.targetWeight = targetWeight;
+      if (height !== undefined) updateData.height = height;
+
+      const profile = await prisma.profile.findFirst({
+        where: { supabaseUserId: user.id },
+      });
+
+      if (!profile) {
+        return NextResponse.json(
+          { status: "NG", message: "プロフィールが見つかりません" },
+          { status: 404 },
+        );
+      }
+
+
+      const updatedProfile = await prisma.profile.update({
+        where: { supabaseUserId: user.id },
+        data: updateData,
+      });
+
+      const response: ProfileResponse = {
+        status: "OK",
+        message: "プロフィールを更新しました",
+        profiles: [toProfileFields(updatedProfile)],
+      };
+
+      return NextResponse.json(response, { status: 200 });
+    } catch (error) {
+      if (error instanceof Error) {
+        const response: ProfileResponse = {
+          status: "NG",
+          message: error.message,
+        };
+        return NextResponse.json(response, { status: 400 });
+      }
     }
   };
