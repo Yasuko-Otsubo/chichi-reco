@@ -1,11 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ContactFields, ContactResponse } from "@/types/contact";
 import { prisma } from "@/app/_libs/prisma";
+import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 
-export const POST = async (request: Request) => {
+export const POST = async (request: NextRequest) => {
   try {
     const body: ContactFields = await request.json();
+    await getAuthenticatedUser(request);
     const { name, email, content } = body;
+
+    if (!name || !email || !content ) {
+      throw new Error("すべての項目を記入してください");
+    }
+
+    if (!email.includes("@")) {
+      throw new Error("有効なメールアドレスを入力してください");
+    }
 
     const data = await prisma.contact.create({
       data: { name, email, content },
@@ -29,20 +39,3 @@ export const POST = async (request: Request) => {
   }
 };
 
-export const GET = async () => {
-  try {
-    const contacts = await prisma.contact.findMany({
-      orderBy: { id: "desc" },
-    });
-    
-    return NextResponse.json(
-      { status: "OK", message: "取得しました", content: contacts },
-      { status: 200 }
-    );
-  } catch {
-    return NextResponse.json(
-      { status: "NG", message: "エラーが発生しました"},
-      { status: 500 }
-    );
-  }
-};
