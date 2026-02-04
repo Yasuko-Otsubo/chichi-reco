@@ -34,8 +34,8 @@ export default function Page() {
        },
       body: JSON.stringify({
       date,
-      weight: Number(weight),
-      steps: Number(steps),
+      weight: weight ? Number(weight): null,
+      steps: steps ? Number(steps): null,
       memo,
       })
     });
