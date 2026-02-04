@@ -4,8 +4,12 @@ import { prisma } from "@/app/_libs/prisma";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 import { Record as PrismaRecord } from "@prisma/client";
 
-export const GET = async (request: NextRequest) => {
+export const GET = async (
+  request: NextRequest,
+{ params }: { params: { month: string }}
+) => {
   try {
+    console.log("AUTH HEADER:", request.headers.get("authorization"));
     const user = await getAuthenticatedUser(request);
 
     const profile = await prisma.profile.findFirst({
@@ -19,10 +23,10 @@ export const GET = async (request: NextRequest) => {
       );
     }
 
-    const { searchParams } = new URL(request.url);
-    const year = Number(searchParams.get("year"));
-    const monthParam = Number(searchParams.get("month"));
-    const month = monthParam - 1;
+    const [yearStr, monthStr] = params.month.split("-");
+    const year = Number(yearStr);
+    const monthParam = Number(monthStr);
+    const month = monthParam -1;
 
     if(!year || !monthParam) {
       return NextResponse.json(
