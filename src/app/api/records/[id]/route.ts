@@ -6,14 +6,15 @@ import { Record as PrismaRecord } from "@prisma/client";
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { id: string } },
+{ params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const user = await getAuthenticatedUser(request);
+    const { id } = await params;
 
     const record = await prisma.record.findUnique({
       where: {
-        id: Number(params.id),
+        id: Number(id),
       },
     });
 
@@ -55,9 +56,9 @@ export const GET = async (
 
 export const PUT = async (
   request: NextRequest,
-  { params }: { params: { id: string } },
+{ params }: { params: Promise<{ id: string }> }
 ) => {
-  const { id } = params;
+  const { id } = await params;
 
   const user = await getAuthenticatedUser(request);
 
@@ -91,7 +92,7 @@ export const PUT = async (
     }
 
     const record = await prisma.record.update({
-      where: { id: Number(id), profileId: profile.id },
+      where: { id: Number(id) },
       data: updateData,
     });
 
@@ -115,9 +116,9 @@ export const PUT = async (
 
 export const DELETE = async (
   request: NextRequest,
-  { params }: { params: { id: string } },
+{ params }: { params: Promise<{ id: string }> }
 ) => {
-  const { id } = params;
+  const { id } = await params;
   const user = await getAuthenticatedUser(request);
 
   try {
