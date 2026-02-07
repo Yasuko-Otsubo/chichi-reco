@@ -1,7 +1,7 @@
 import { useSupabaseSession } from "../useSupabaseSession"
 import { TodayFormData } from "@/app/(member)/today/[date]/TodayForm";
 
-export const useRecordCreate = () => {
+export const useRecordActions = () => {
   const { token } = useSupabaseSession();
 
   const headers = {
@@ -35,6 +35,14 @@ export const useRecordCreate = () => {
     });
     return res;
   };
-  
-  return { createRecord, updateRecord };
+
+  //delete
+  const deleteRecord = async (id: string) => {
+    const res = await fetch(`/api/records/${id}`, {
+      method: "DELETE",
+      headers,
+    });
+    return res;
+  }
+  return { createRecord, updateRecord, deleteRecord };
 }
