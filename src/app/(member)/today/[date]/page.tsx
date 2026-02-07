@@ -1,33 +1,37 @@
-import { prisma } from "@/app/_libs/prisma";
-import { supabase } from "@/app/_libs/supabase";
-import { redirect } from "next/navigation";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { useRouter } from "next/navigation";
+import { TodayFormData } from "./TodayForm";
 
-export default async function Page(
-  { params }: { params: { date: string }}
-)  {
-  const date = params.date;
+export default function Page() {
+  const route = useRouter();
+  const { token } = useSupabaseSession();
 
-  //supabaseからuser取得
-  const {
-     data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      redirect("/login");
+  const handleCreate = async(data: TodayFormData) => {
+    if(!token) {
+      alert("ログイン情報がありません");
+      return;
     }
 
-    //Profile取得
-    const profile = await prisma.profile.findUniqueOrThrow({
-      where: { supabaseUserId: user.id },
+    const res = await fetch("/api/records", {
+      method: "POST",
+      headers: { "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        date: data.date,
+        weight: Number(data.weight) ? Number(data.weight): null,
+        steps: Number(data.steps) ? Number(data.steps): null,
+        memo: data.memo ? data.memo: null,
+      })
     });
 
-    
+    if(!res.ok) {
+      console.log("API error:", data)
+      alert("記録に失敗しました");
+      return;
+    }
 
-    //Recordを取得
-    const record = await prisma.record.findFirst({
-      where: {
-        profileId: profile.id,
-        date: date,
-      }
-    })
-} 
+    route.replace('/calendar')
+    console.log("保存成功")
+  }
+}
