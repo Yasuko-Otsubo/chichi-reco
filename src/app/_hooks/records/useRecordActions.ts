@@ -20,5 +20,22 @@ export const useRecordCreate = () => {
     });
   return res;
   };
-  return { createRecord };
+
+  const updateRecord = async (id: string, data: TodayFormData) => {
+    const res = await fetch(`/api/records/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        date: data.date,
+        weight: data.weight !== "" ? Number(data.weight): null,
+        steps: data.steps !== "" ? Number(data.steps): null,
+        memo: data.memo !== "" ? data.memo: null,
+      }),
+    });
+    return res;
+  }
+  return { createRecord, updateRecord };
 }
