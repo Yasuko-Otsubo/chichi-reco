@@ -1,37 +1,34 @@
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import { useRouter } from "next/navigation";
-import { TodayFormData } from "./TodayForm";
+import { supabase } from "@/app/_libs/supabase";
+import TodayForm from "./TodayForm";
 
-export default function Page() {
-  const route = useRouter();
-  const { token } = useSupabaseSession();
+export default async function Page ({ params }: { params: { date: string }}) {
+  const date = params.date;
 
-  const handleCreate = async(data: TodayFormData) => {
-    if(!token) {
-      alert("ログイン情報がありません");
-      return;
-    }
+  const { data: record, error } = await supabase
+  .from("records")
+  .select("*")
+  .eq("date", date)
+  .single();
 
-    const res = await fetch("/api/records", {
-      method: "POST",
-      headers: { "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        date: data.date,
-        weight: Number(data.weight) ? Number(data.weight): null,
-        steps: Number(data.steps) ? Number(data.steps): null,
-        memo: data.memo ? data.memo: null,
-      })
-    });
+  if (error) {
+  console.error(error);
+}
 
-    if(!res.ok) {
-      console.log("API error:", data)
-      alert("記録に失敗しました");
-      return;
-    }
 
-    route.replace('/calendar')
-    console.log("保存成功")
-  }
+  //新規 or 編集の判定
+  const isEdit = !!record;
+
+  const defaultValues = record ?? {
+    date,
+    memo: "",
+    condition: "",
+  };
+
+  return (
+    <TodayForm
+      defaultValues={defaultValues}
+      isEdit = { isEdit }
+      recordId = { record?.id ?? null }
+      />
+  );
 }
