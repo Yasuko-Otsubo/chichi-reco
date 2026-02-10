@@ -4,29 +4,45 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input"
 import React, { useState } from "react"
 
+export type RecordData = {
+  id: number;
+  date: string;
+  weight: number | null;
+  steps: number | null;
+  memo: string | null;
+  profileId: number;
+  createdAt: string;
+  updatedAt: string | null;
+}
+
 export type TodayFormData = {
   date: string;
-  weight: string;
-  steps: string;
-  memo: string;
+  weight: string | null;
+  steps: string | null;
+  memo: string | null;
 }
 
 type TodayFormProps = {
-    initialDate?: string; 
-    onSubmit: (data: TodayFormData) => void;
+  defaultValues: TodayFormData;
+  isEdit: boolean;
+  recordId: string | null;
+  prevRecord: RecordData | null;
 }
 
-export default function TodayForm(
-  { initialDate, onSubmit }: TodayFormProps ) {
-  const [date, setDate] = useState(initialDate ?? "");
-  const [weight, setWeight] = useState("");
-  const [steps, setSteps] = useState("");
-  const [memo, setMemo] = useState("");
+export default function TodayForm({
+  defaultValues, isEdit, recordId, prevRecord,
+}: TodayFormProps ) {
+  const [date, setDate] = useState(defaultValues.date);
+  const [weight, setWeight] = useState(defaultValues.weight ?? "");
+  const [steps, setSteps] = useState(defaultValues.steps ?? "");
+  const [memo, setMemo] = useState(defaultValues.memo ?? "");
+  void recordId;
+  void prevRecord;
   
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    onSubmit({ date, weight, steps, memo });
+    //onSubmit({ date, weight, steps, memo });
 
   }
 
@@ -59,7 +75,7 @@ export default function TodayForm(
           onChange={(e) => setMemo(e.target.value)}
           />
           <Button type="submit">
-            記録する
+            {isEdit ? "更新する": "記録する"}
           </Button>
       </form>
     </div>
