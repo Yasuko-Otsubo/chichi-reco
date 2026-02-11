@@ -40,3 +40,15 @@ export type RecordUpdateRequest = {
   steps?: number;
   memo?: string;
 }
+
+//API ⇒ UI の変換後のデータ型
+export type RecordData = {
+  id: number;
+  date: string;
+  weight: number | null;
+  steps: number | null;
+  memo: string | null;
+  profileId: number;
+  createdAt: string;
+  updatedAt: string | null;
+}

@@ -3,17 +3,7 @@
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input"
 import React, { useState } from "react"
-
-export type RecordData = {
-  id: number;
-  date: string;
-  weight: number | null;
-  steps: number | null;
-  memo: string | null;
-  profileId: number;
-  createdAt: string;
-  updatedAt: string | null;
-}
+import { RecordData } from "@/types/records";
 
 export type TodayFormData = {
   date: string;
@@ -41,9 +31,6 @@ export default function TodayForm({
   
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    //onSubmit({ date, weight, steps, memo });
-
   }
 
   return (
