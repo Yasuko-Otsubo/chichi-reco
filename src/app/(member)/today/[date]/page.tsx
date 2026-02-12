@@ -59,6 +59,11 @@ export default async function Page({ params }: { params: { date: string } }) {
   .order("date", { ascending: false })
   .limit(1);
 */
+
+if (!defaultValues) {
+  return null; // or ローディング
+}
+
   return (
     <TodayForm
       defaultValues={defaultValues}

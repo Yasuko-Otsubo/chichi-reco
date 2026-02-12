@@ -13,21 +13,33 @@ export type TodayFormData = {
 }
 
 type TodayFormProps = {
-  defaultValues: TodayFormData;
+  defaultValues?: TodayFormData;
   isEdit: boolean;
   recordId: string | null;
   prevRecord: RecordData | null;
 }
 
-export default function TodayForm({
-  defaultValues, isEdit, recordId, prevRecord,
-}: TodayFormProps ) {
-  const [date, setDate] = useState(defaultValues.date);
-  const [weight, setWeight] = useState(defaultValues.weight ?? "");
-  const [steps, setSteps] = useState(defaultValues.steps ?? "");
-  const [memo, setMemo] = useState(defaultValues.memo ?? "");
-  void recordId;
-  void prevRecord;
+export default function TodayForm(props: TodayFormProps ) {
+
+  const { defaultValues, isEdit } = props;
+
+  const [date, setDate] = useState("");
+  const [weight, setWeight] = useState("");;
+  const [steps, setSteps] = useState("");;
+  const [memo, setMemo] = useState("");;
+
+  React.useEffect(() => {
+    if(defaultValues) {
+      setDate(defaultValues.date);
+      setDate(defaultValues.weight ?? "");
+      setDate(defaultValues.steps ?? "");
+      setDate(defaultValues.memo ?? "");
+    }
+  }, [defaultValues]);
+
+  if(defaultValues) {
+    return <div>Loading...</div>
+  }
   
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
