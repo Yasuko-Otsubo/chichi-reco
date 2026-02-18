@@ -31,13 +31,13 @@ export default function TodayForm(props: TodayFormProps ) {
   React.useEffect(() => {
     if(defaultValues) {
       setDate(defaultValues.date);
-      setDate(defaultValues.weight ?? "");
-      setDate(defaultValues.steps ?? "");
-      setDate(defaultValues.memo ?? "");
+      setWeight(defaultValues.weight ?? "");
+      setSteps(defaultValues.steps ?? "");
+      setMemo(defaultValues.memo ?? "");
     }
   }, [defaultValues]);
 
-  if(defaultValues) {
+  if(!defaultValues) {
     return <div>Loading...</div>
   }
   
