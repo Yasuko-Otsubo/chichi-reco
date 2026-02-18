@@ -11,12 +11,12 @@ type LoginInput  = {
   password: string;
 };
 
-export default function LoginForm (){
+export default function Page (){
   const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginInput>();
 
   const onSubmit = async (data: LoginInput) => {
@@ -27,9 +27,9 @@ export default function LoginForm (){
 
     if (error) {
       alert("ログインに失敗しました");
-    } else {
-      router.replace("/");
-    }
+      return;
+    } 
+      router.replace("/today")
   };
 
   return (
@@ -54,7 +54,7 @@ export default function LoginForm (){
           {...register("password", { required: "パスワードは必須です" })}
         />
 
-        <Button type="submit" fullWidth>
+        <Button type="submit" fullWidth disabled={isSubmitting}>
           ログイン
         </Button>
         
