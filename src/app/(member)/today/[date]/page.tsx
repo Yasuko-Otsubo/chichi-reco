@@ -1,5 +1,5 @@
 import { supabase } from "@/app/_libs/supabase";
-import TodayForm, { TodayFormData } from "./TodayForm";
+import TodayForm, { TodayFormData } from "../_components/TodayForm";
 
 export default async function Page({ params }: { params: { date: string } }) {
   const date = params.date;

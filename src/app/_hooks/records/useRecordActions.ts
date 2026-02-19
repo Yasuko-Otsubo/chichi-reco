@@ -1,5 +1,5 @@
+import { TodayFormData } from "@/app/(member)/today/_components/TodayForm";
 import { useSupabaseSession } from "../useSupabaseSession"
-import { TodayFormData } from "@/app/(member)/today/[date]/TodayForm";
 
 export const useRecordActions = () => {
   const { token } = useSupabaseSession();
