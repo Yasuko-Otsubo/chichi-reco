@@ -14,7 +14,7 @@ export const getAuthenticatedUser = async (request: NextRequest) => {
   const { data, error } = await supabase.auth.getUser(token);
 
   if(error || !data.user){
-    throw new Error("認証されていません")
+    return null;
   }
   return data.user;
 };
