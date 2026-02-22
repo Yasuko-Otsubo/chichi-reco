@@ -3,33 +3,26 @@ import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 import { RecordResponse, RecordUpdateRequest, toRecordFields } from "@/types/records";
 import { NextRequest, NextResponse } from "next/server";
 import { Record as PrismaRecord } from "@prisma/client";
+import { getProfileByUserId } from "@/app/_libs/prisma/profile";
 
 export const GET = async (
   request: NextRequest,
 { params }: { params: Promise<{ id: string }> }
 ) => {
-  try {
     const user = await getAuthenticatedUser(request);
+    const profile = await getProfileByUserId(user.id);
+  try {
     const { id } = await params;
 
-    const record = await prisma.record.findUnique({
+    const record = await prisma.record.findFirst({
       where: {
         id: Number(id),
+        profileId: profile.id,
       },
     });
 
-    const profile = await prisma.profile.findUnique({
-      where: { supabaseUserId: user.id },
-    });
 
-    if (!profile) {
-      return NextResponse.json(
-        { status: "NG", message: "プロフィールが見つかりません" },
-        { status: 404 },
-      );
-    }
-
-    if (!record || record.profileId !== profile.id) {
+    if (!record) {
       return NextResponse.json(
         { status: "OK", message: "記録はありません", records: [] },
         { status: 200 },
@@ -59,8 +52,8 @@ export const PUT = async (
 { params }: { params: Promise<{ id: string }> }
 ) => {
   const { id } = await params;
-
-  const user = await getAuthenticatedUser(request);
+    const user = await getAuthenticatedUser(request);
+    const profile = await getProfileByUserId(user.id);
 
   type PrismaRecordUpdate = {
     date?: Date;
@@ -80,26 +73,31 @@ export const PUT = async (
     if (steps !== undefined) updateData.steps = steps;
     if (memo !== undefined) updateData.memo = memo;
 
-    const profile = await prisma.profile.findUnique({
-      where: { supabaseUserId: user.id }, // ← UUIDで検索
-    });
-
-    if (!profile) {
-      return NextResponse.json(
-        { status: "NG", message: "プロフィールが見つかりません" },
-        { status: 404 },
-      );
-    }
-
-    const record = await prisma.record.update({
-      where: { id: Number(id) },
+    await prisma.record.update({
+      where: { 
+        id: Number(id),
+        profileId: profile.id,
+      },
       data: updateData,
     });
 
+    const record = await prisma.record.findFirst({
+      where: {
+        id: Number(id),
+        profileId: profile.id,
+      },
+    });
+
+    if (!record) {
+      return NextResponse.json(
+      { status: "NG", message: "記録が見つかりません" },
+      { status: 404 }
+    );
+  }
     const response: RecordResponse = {
       status: "OK",
       message: "記録を更新しました",
-      records: [toRecordFields(record as PrismaRecord)],
+      records: [toRecordFields(record)],
     };
 
     return NextResponse.json(response, { status: 200 });
@@ -119,21 +117,12 @@ export const DELETE = async (
 { params }: { params: Promise<{ id: string }> }
 ) => {
   const { id } = await params;
-  const user = await getAuthenticatedUser(request);
+    const user = await getAuthenticatedUser(request);
+    const profile = await getProfileByUserId(user.id);
+
 
   try {
-    const profile = await prisma.profile.findUnique({
-      where: { supabaseUserId: user.id },
-    });
-
-    if (!profile) {
-      return NextResponse.json(
-        { status: "NG", message: "プロフィールが見つかりません" },
-        { status: 404 },
-      );
-    }
-
-    await prisma.record.delete({
+    await prisma.record.deleteMany({
       where: {
         id: Number(id),
         profileId: profile.id,
