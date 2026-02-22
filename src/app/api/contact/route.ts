@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ContactFields, ContactResponse } from "@/types/contact";
 import { prisma } from "@/app/_libs/prisma";
-import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 
 export const POST = async (request: NextRequest) => {
   try {
     const body: ContactFields = await request.json();
-    await getAuthenticatedUser(request);
     const { name, email, content } = body;
 
     if (!name || !email || !content ) {
