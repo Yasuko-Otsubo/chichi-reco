@@ -1,18 +1,21 @@
 import { supabase } from '@/app/_libs/supabase';
 import { NextRequest } from 'next/server';
 
-/** APIリクエストのtokenの検証。検証できればログインユーザー（Supabase）情報を返す */
-export const getCurrentUser = async (request: NextRequest) => {
-  const authHeader = request.headers.get("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "");
-  const { data, error } = await supabase.auth.getUser(token)
-
-  return { currentUser: data, error }
-}
-
+/** requestからtokenを取り出して認証済みユーザーを返す */
 export const getAuthenticatedUser = async (request: NextRequest) => {
-  const { currentUser, error } = await getCurrentUser(request);
-  if (error || !currentUser?.user) throw new Error("認証されていません");
-  return currentUser.user;
+  const authHeader = request.headers.get("Authorization") || "";
+
+  if(!authHeader) {
+    throw new Error("Authorizationヘッダーがありません")
+  }
+
+  const token = authHeader.replace("Bearer ", "").trim();
+
+  const { data, error } = await supabase.auth.getUser(token);
+
+  if(error || !data.user){
+    throw new Error("認証されていません")
+  }
+  return data.user;
 };
 
