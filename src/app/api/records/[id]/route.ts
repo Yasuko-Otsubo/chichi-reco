@@ -1,16 +1,25 @@
 import { prisma } from "@/app/_libs/prisma";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
-import { RecordResponse, RecordUpdateRequest, toRecordFields } from "@/types/records";
+import {
+  RecordResponse,
+  RecordUpdateRequest,
+  toRecordFields,
+} from "@/types/records";
 import { NextRequest, NextResponse } from "next/server";
 import { Record as PrismaRecord } from "@prisma/client";
 import { getProfileByUserId } from "@/app/_libs/prisma/profile";
 
 export const GET = async (
   request: NextRequest,
-{ params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) => {
-    const user = await getAuthenticatedUser(request);
-    const profile = await getProfileByUserId(user.id);
+  const user = await getAuthenticatedUser(request);
+  if (!user)
+    return NextResponse.json(
+      { status: "NG", message: "認証されていません" },
+      { status: 401 },
+    );
+  const profile = await getProfileByUserId(user.id);
   try {
     const { id } = await params;
 
@@ -20,7 +29,6 @@ export const GET = async (
         profileId: profile.id,
       },
     });
-
 
     if (!record) {
       return NextResponse.json(
@@ -49,11 +57,16 @@ export const GET = async (
 
 export const PUT = async (
   request: NextRequest,
-{ params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) => {
   const { id } = await params;
-    const user = await getAuthenticatedUser(request);
-    const profile = await getProfileByUserId(user.id);
+  const user = await getAuthenticatedUser(request);
+  if (!user)
+    return NextResponse.json(
+      { status: "NG", message: "認証されていません" },
+      { status: 401 },
+    );
+  const profile = await getProfileByUserId(user.id);
 
   type PrismaRecordUpdate = {
     date?: Date;
@@ -68,18 +81,23 @@ export const PUT = async (
 
     const updateData: PrismaRecordUpdate = {};
 
+    // 数値変換とNaNチェック
+    const numWeight = weight !== undefined ? Number(weight) : undefined;
+    const numSteps = steps !== undefined ? Number(steps) : undefined;
+
     if (date !== undefined) updateData.date = new Date(date);
-    if (weight !== undefined) updateData.weight = weight;
-    if (steps !== undefined) updateData.steps = steps;
+    if (numWeight !== undefined && !isNaN(numWeight))
+      updateData.weight = numWeight;
+    if (numSteps !== undefined && !isNaN(numSteps)) updateData.steps = numSteps;
     if (memo !== undefined) updateData.memo = memo;
 
-    await prisma.record.update({
-      where: { 
-        id: Number(id),
-        profileId: profile.id,
-      },
-      data: updateData,
-    });
+    // 更新項目がない場合は返す
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json(
+        { status: "NG", message: "更新する項目がありません" },
+        { status: 400 },
+      );
+    }
 
     const record = await prisma.record.findFirst({
       where: {
@@ -90,14 +108,41 @@ export const PUT = async (
 
     if (!record) {
       return NextResponse.json(
-      { status: "NG", message: "記録が見つかりません" },
-      { status: 404 }
-    );
-  }
+        { status: "NG", message: "記録が見つかりません" },
+        { status: 404 },
+      );
+    }
+
+    // 差分チェック
+    const isSame =
+      (weight === undefined || weight === record.weight) &&
+      (steps === undefined || steps === record.steps) &&
+      (memo === undefined || memo === record.memo) &&
+      (date === undefined ||
+        new Date(date).getTime() === record.date.getTime());
+
+    if (isSame) {
+      return NextResponse.json(
+        {
+          status: "OK",
+          message: "更新の必要はありません",
+          records: [toRecordFields(record)],
+        },
+        { status: 200 },
+      );
+    }
+
+    const updatedRecord = await prisma.record.update({
+      where: {
+        id: record.id,
+      },
+      data: updateData,
+    });
+
     const response: RecordResponse = {
       status: "OK",
       message: "記録を更新しました",
-      records: [toRecordFields(record)],
+      records: [toRecordFields(updatedRecord)],
     };
 
     return NextResponse.json(response, { status: 200 });
@@ -114,12 +159,16 @@ export const PUT = async (
 
 export const DELETE = async (
   request: NextRequest,
-{ params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) => {
   const { id } = await params;
-    const user = await getAuthenticatedUser(request);
-    const profile = await getProfileByUserId(user.id);
-
+  const user = await getAuthenticatedUser(request);
+  if (!user)
+    return NextResponse.json(
+      { status: "NG", message: "認証されていません" },
+      { status: 401 },
+    );
+  const profile = await getProfileByUserId(user.id);
 
   try {
     await prisma.record.deleteMany({
