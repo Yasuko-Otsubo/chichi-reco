@@ -73,7 +73,6 @@ export const POST = async (request: NextRequest) => {
   };
 
   export const PUT = async (request: NextRequest) => {
-    const user = await getAuthenticatedUser(request);
 
     type PrismaProfileUpdate = {
       name?: string;
@@ -84,6 +83,7 @@ export const POST = async (request: NextRequest) => {
     try {
       const body: ProfileUpdateRequest = await request.json();
       const { name, targetWeight, height } = body;
+      const user = await getAuthenticatedUser(request);
 
       const updateData: PrismaProfileUpdate = {};
 
