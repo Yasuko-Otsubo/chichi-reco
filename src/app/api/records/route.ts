@@ -46,6 +46,14 @@ export const POST = async (request: NextRequest) => {
     const body: CreateRecordRequestBody = await request.json();
     const { date, weight, steps, memo } = body;
 
+    const inputDate = new Date(date);
+    const today = new Date();
+    today.setHours(0,0,0,0)
+
+    if(inputDate > today) {
+      return NextResponse.json({ status: "NG", messsage: "未来の日付は登録できません"},{ status: 400});
+    }
+
     const data = await prisma.record.create({
       data: {
         profileId: profile.id,
@@ -91,14 +99,14 @@ export const GET = async (request: NextRequest) => {
       const m = Number(month.slice(4, 6));
 
       const from = new Date(year, m - 1, 1);
-      const to = new Date(year, m, 0);
+      const to = new Date(year, m, 1);
 
       const records = await prisma.record.findMany({
         where: {
           profileId: profile.id,
           date: {
             gte: from,
-            lte: to,
+            lt: to,
           },
         },
         orderBy: { date: "asc" },
@@ -121,12 +129,14 @@ export const GET = async (request: NextRequest) => {
         case "6month":
           from.setMonth(today.getMonth() - 6);
           break;
-        case "1Year":
+        case "1year":
           from.setFullYear(today.getFullYear() - 1);
           break;
-        case "3Year":
+        case "3year":
           from.setFullYear(today.getFullYear() - 3);
           break;
+        default:
+          return NextResponse.json({ message: "invalid range"}, { status: 400 })
       }
       return NextResponse.json({
         records: await prisma.record.findMany({
