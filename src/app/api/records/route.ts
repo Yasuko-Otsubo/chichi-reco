@@ -91,6 +91,24 @@ export const GET = async (request: NextRequest) => {
   try {
     //month
     const { searchParams } = new URL(request.url);
+    const date = searchParams.get("date");
+    if (date) {
+      const from = new Date(date);
+      const to = new Date(date);
+      to.setHours(23,59,59,999);
+
+      const records = await prisma.record.findMany({
+        where: {
+          profileId: profile.id,
+          date: {
+            gte: from,
+            lte: to
+          }
+        },
+      });
+      return NextResponse.json({ staus: "OK", message: "取得しました", records });
+    }
+
     const month = searchParams.get("month");
     const range = searchParams.get("range");
 
