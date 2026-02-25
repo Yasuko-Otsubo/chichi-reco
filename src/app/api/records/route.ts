@@ -106,7 +106,7 @@ export const GET = async (request: NextRequest) => {
           }
         },
       });
-      return NextResponse.json({ staus: "OK", message: "取得しました", records });
+      return NextResponse.json({ status: "OK", message: "取得しました", records });
     }
 
     const month = searchParams.get("month");
@@ -129,7 +129,7 @@ export const GET = async (request: NextRequest) => {
         },
         orderBy: { date: "asc" },
       });
-      return NextResponse.json({ records });
+      return NextResponse.json<RecordsIndexResponse>({ records }, { status: 200 });
     }
 
     //range
