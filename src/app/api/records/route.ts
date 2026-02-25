@@ -1,6 +1,7 @@
 import { prisma } from "@/app/_libs/prisma";
 import { getProfileByUserId } from "@/app/_libs/prisma/profile";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
+import type { Record } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export type CreateRecordRequestBody = {
@@ -14,26 +15,39 @@ export type CreateRecordResponse = {
   id: number;
 };
 
-export type RecordsIndexResponse = {
-  records: {
-    id: number;
-    date: Date;
-    weight: number | null;
-    steps: number | null;
-    memo: string | null;
-    profileId: number;
-    createdAt: Date;
-    updatedAt: Date | null;
-  }[];
+export type RecordsData = {
+    id: number
+    date: string
+    weight: number | null
+    steps: number | null
+    memo: string | null
 };
+
+export type RecordsResponse = {
+  status: "OK" | "NG"
+  message: string
+  records: RecordsData[]
+}
+
+const formatRecords = (records: Record[]): RecordsData[] => {
+  return records.map((record) => ({
+    id: record.id,
+    date: record.date.toISOString(),
+    weight: record.weight,
+    steps: record.steps,
+    memo: record.memo,
+  }))
+}
 
 export const POST = async (request: NextRequest) => {
   const user = await getAuthenticatedUser(request);
-  if (!user)
+  if (!user){
     return NextResponse.json(
       { status: "NG", message: "認証されていません" },
       { status: 401 },
     );
+  }
+
   const profile = await getProfileByUserId(user.id);
   if (!profile) {
     return NextResponse.json(
@@ -51,7 +65,9 @@ export const POST = async (request: NextRequest) => {
     today.setHours(0,0,0,0)
 
     if(inputDate > today) {
-      return NextResponse.json({ status: "NG", messsage: "未来の日付は登録できません"},{ status: 400});
+      return NextResponse.json(
+        { status: "NG", message: "未来の日付は登録できません"},
+        { status: 400});
     }
 
     const data = await prisma.record.create({
@@ -68,18 +84,22 @@ export const POST = async (request: NextRequest) => {
     });
   } catch (error) {
     if (error instanceof Error) {
-      return NextResponse.json({ message: error.message }, { status: 400 });
+      return NextResponse.json(
+        { message: error.message }, 
+        { status: 400 });
     }
   }
 };
 
 export const GET = async (request: NextRequest) => {
   const user = await getAuthenticatedUser(request);
-  if (!user)
+  if (!user){
     return NextResponse.json(
       { status: "NG", message: "認証されていません" },
       { status: 401 },
     );
+  }
+
   const profile = await getProfileByUserId(user.id);
   if (!profile) {
     return NextResponse.json(
@@ -103,10 +123,15 @@ export const GET = async (request: NextRequest) => {
           date: {
             gte: from,
             lte: to
-          }
+          },
         },
       });
-      return NextResponse.json({ status: "OK", message: "取得しました", records });
+      const formattedRecords = formatRecords(records);
+      return NextResponse.json<RecordsResponse>({
+        status: "OK",
+        message: "取得しました",
+        records: formattedRecords,
+       });
     }
 
     const month = searchParams.get("month");
@@ -129,7 +154,13 @@ export const GET = async (request: NextRequest) => {
         },
         orderBy: { date: "asc" },
       });
-      return NextResponse.json<RecordsIndexResponse>({ records }, { status: 200 });
+
+      const formattedRecords = formatRecords(records);
+      return NextResponse.json<RecordsResponse>({
+        status: "OK",
+        message: "取得しました",
+        records: formattedRecords,
+       });
     }
 
     //range
@@ -154,10 +185,13 @@ export const GET = async (request: NextRequest) => {
           from.setFullYear(today.getFullYear() - 3);
           break;
         default:
-          return NextResponse.json({ message: "invalid range"}, { status: 400 })
+          return NextResponse.json(
+          { status: "NG", message: "invalid range"},
+          { status: 400 }
+        );
       }
-      return NextResponse.json({
-        records: await prisma.record.findMany({
+
+        const records = await prisma.record.findMany({
           where: {
             profileId: profile.id,
             date: {
@@ -166,21 +200,35 @@ export const GET = async (request: NextRequest) => {
             },
           },
           orderBy: { date: "asc" },
-        }),
-      });
-    }
+        });
+
+        const  formattedRecords = formatRecords(records)
+        return NextResponse.json<RecordsResponse>({
+          status: "OK",
+          message: "取得しました",
+          records: formattedRecords,
+        });
+      };
 
     //全件
-    return NextResponse.json({
-      records: await prisma.record.findMany({
+      const records = await prisma.record.findMany({
         where: {
           profileId: profile.id,
         },
         orderBy: { date: "asc" },
-      }),
-    });
+      });
+
+      const formattedRecords = formatRecords(records);
+      return NextResponse.json<RecordsResponse>({
+        status: "OK",
+        message: "取得しました",
+        records: formattedRecords,
+      });
+
   } catch (error) {
     if (error instanceof Error)
-      return NextResponse.json({ message: error.message }, { status: 400 });
+      return NextResponse.json(
+        { message: error.message },
+        { status: 400 });
   }
 };
