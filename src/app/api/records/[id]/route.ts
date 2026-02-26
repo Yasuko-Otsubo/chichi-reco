@@ -1,60 +1,141 @@
 import { prisma } from "@/app/_libs/prisma";
-import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
-import {
-  RecordResponse,
-  RecordUpdateRequest,
-  toRecordFields,
-} from "@/types/records";
-import { NextRequest, NextResponse } from "next/server";
-import { Record as PrismaRecord } from "@prisma/client";
-import { getProfileByUserId } from "@/app/_libs/prisma/profile";
+import { getProfileByUserId } from "@/app/_libs/prisma/profile"
+import { getAuthenticatedUser } from "@/app/_libs/supabase/auth"
+import { NextRequest, NextResponse } from "next/server"
+import type { Record } from "@prisma/client";
+
+export type RecordData = {
+  id: number
+  date: string
+  weight: number | null
+  steps: number | null
+  memo: string | null
+}
+export type RecordResponse = {
+  status: "OK" | "NG"
+  message: string
+  record: RecordData
+}
+
+const formatRecord = (record: Record): RecordData => {
+  return {
+    id: record.id,
+    date: record.date.toISOString(),
+    weight: record.weight,
+    steps: record.steps,
+    memo: record.memo,
+  }
+}
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) => {
+  { params }: { params : Promise<{ id: string }>},
+)  => {
   const user = await getAuthenticatedUser(request);
-  if (!user)
+  if (!user){
     return NextResponse.json(
-      { status: "NG", message: "認証されていません" },
-      { status: 401 },
-    );
+    { status: "NG", message: "認証されていません"},
+    { status: 401},
+  );
+  }
   const profile = await getProfileByUserId(user.id);
-  try {
-    const { id } = await params;
+  if(!profile) {
+    return NextResponse.json(
+      { status: "NG", message: "プロフィールが見つかりません"},
+      { status: 404 }, 
+    );
+  }
 
-    const record = await prisma.record.findFirst({
+  const { id }= await params
+
+  try {
+    const record = await prisma.record.findUnique({
       where: {
         id: Number(id),
         profileId: profile.id,
       },
     });
 
-    if (!record) {
+    if(!record) {
       return NextResponse.json(
-        { status: "OK", message: "記録はありません", records: [] },
-        { status: 200 },
-      );
+        { status: "NG", message: "記録はありません" },
+        { status: 404 }
+      )
     }
 
-    const response: RecordResponse = {
+    const recordData = formatRecord(record);
+    return NextResponse.json<RecordResponse>({
       status: "OK",
       message: "取得しました",
-      records: [toRecordFields(record as PrismaRecord)],
-    };
-
-    return NextResponse.json(response, { status: 200 });
+      record: recordData,
+    });
   } catch (error) {
-    if (error instanceof Error) {
-      const response: RecordResponse = {
-        status: "NG",
-        message: error.message,
-      };
-      return NextResponse.json(response, { status: 400 });
+    if(error instanceof Error) {
+      return NextResponse.json(
+        { message: error.message },
+        { status: 400 },
+      );
     }
   }
-};
 
+}
+
+export type UpdateRecordRequestBody = {
+  date: string
+  weight: number
+  steps: number
+  memo: string
+}
+
+export const PUT = async (
+  request: NextRequest,
+  { params }: {params: Promise<{ id: string }>},
+) => {
+  const user = await getAuthenticatedUser(request);
+  if (!user){
+    return NextResponse.json(
+      { status: "NG", message: "プロフィールが見つかりません"},
+      { status: 404 },
+    );
+  }
+  const profile = await getProfileByUserId(user.id);
+  if(!profile) {
+    return NextResponse.json(
+      { status: "NG", message: "プロフィールが見つかりません"},
+      { status: 404 },
+    );
+  }
+
+  const { id } = await params
+  const { date, weight, steps, memo }: UpdateRecordRequestBody = await request.json();
+  const updateData = Prisma.RecordUpdateInput();
+
+  try {
+    const record = await prisma.record.findFirst({
+      where: {
+        id: Number(id),
+        profileId: profile.id,
+      },
+      data: {
+        date: new Date(date),
+        weight,
+        steps,
+        memo,
+      },
+      });
+
+      const recordData = formatRecord(record);
+      return NextResponse.json<RecordResponse>({
+        status: "OK",
+        message: "取得しました",
+        record: recordData,
+      });
+  } catch (error) {
+    if (error instanceof Error) 
+      return NextResponse.json({ message: error.message }, { status: 400 })
+  }
+}
+/*
 export const PUT = async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -187,3 +268,4 @@ export const DELETE = async (
       );
   }
 };
+*/
