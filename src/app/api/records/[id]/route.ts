@@ -89,7 +89,7 @@ export type UpdateRecordRequestBody = {
 
 export const PUT = async (
   request: NextRequest,
-  { params }: {params: Promise<{ id: string }>},
+  { params }: { params: Promise<{ id: string }>},
 ) => {
   const user = await getAuthenticatedUser(request);
   if (!user){
@@ -193,36 +193,53 @@ export const PUT = async (
       return NextResponse.json({ message: error.message }, { status: 400 })
   }
 }
-/*
 
 export const DELETE = async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: string }>},
 ) => {
-  const { id } = await params;
   const user = await getAuthenticatedUser(request);
-  if (!user)
+  if (!user) {
     return NextResponse.json(
-      { status: "NG", message: "認証されていません" },
-      { status: 401 },
+      { status: "NG", message: "プロフィールが見つかりません"},
+      { status: 404 },
     );
+  }
   const profile = await getProfileByUserId(user.id);
+  if (!profile) {
+    return NextResponse.json(
+      { status: "NG", message: "プロフィールが見つかりません"},
+      { status: 404 },
+    );
+  }
+
+  const { id } = await params;
 
   try {
-    await prisma.record.deleteMany({
+    const record = await prisma.record.findFirst({
       where: {
         id: Number(id),
         profileId: profile.id,
       },
     });
 
-    return NextResponse.json({ status: "OK" }, { status: 200 });
+    if (!record) {
+      return NextResponse.json(
+        { status: "NG", message: "記録が見つかりません" },
+        { status: 404 }
+      );
+    }
+
+    //idを指定してrecordを削除
+    await prisma.record.delete({
+      where: {
+        id: record.id,
+      },
+    });
+
+    return NextResponse.json({ message: "OK"}, { status: 200 })
   } catch (error) {
     if (error instanceof Error)
-      return NextResponse.json(
-        { status: "NG", message: "この日付には記録がありません" },
-        { status: 404 },
-      );
+      return NextResponse.json({ message: error.message }, { status: 400 })
   }
-};
-*/
+}
