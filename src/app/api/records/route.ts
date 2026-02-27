@@ -61,6 +61,8 @@ export const POST = async (request: NextRequest) => {
     const { date, weight, steps, memo } = body;
 
     const inputDate = new Date(date);
+    inputDate.setHours(0,0,0,0)
+
     const today = new Date();
     today.setHours(0,0,0,0)
 
