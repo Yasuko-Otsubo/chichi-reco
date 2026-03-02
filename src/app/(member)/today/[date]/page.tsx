@@ -1,15 +1,17 @@
 'use client'
 
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import { RecordResponse } from "@/app/api/records/[id]/route";
+import { RecordData, RecordResponse } from "@/app/api/records/[date]/route";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-  // ===== params / auth ===== 
-  const { id } = useParams<{id: string}>();
+  // ===== auth ===== 
   const router = useRouter();
   const { token } = useSupabaseSession();
+
+  // ===== URLパラメータから日付を取得 =====
+const { date: paramDate } = useParams<{ date: string }>();
 
   // ===== 表示系・フォーム用 state =====
   const [date, setDate] = useState("");
@@ -25,20 +27,54 @@ export default function Page() {
 
   // ******* GET *******
   useEffect(() => {
-    if (!token) return
+    if (!token) return;
 
     const fetcher = async () => {
-      const res = await fetch(`/api/records/${id}`, {
+      try{
+      const res = await fetch(`/api/records/${paramDate}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: token,
         },
-      })
-      const { record }: RecordResponse = await res.json();
-      setRecord(record);
+      });
+      if (res.status === 404) {
+        //今日のデータがない場合は空
+        const emptyRecord: RecordData = {
+        id: 0,
+        date: paramDate,
+        weight: null,
+        steps: null,
+        memo: null, 
+      };
+      setRecord(emptyRecord);
+      setDate(emptyRecord.date);
+      setWeight("");
+      setSteps("");
+      setMemo("");
+      return;
     }
 
-    fetcher()
-  }, [token, id])
+    const { record }: RecordResponse = await res.json();
+    console.log("API record:", record);
+    setRecord(record);
+    setDate(record.date.slice(0, 10));
+    setWeight(record.weight?.toString() ?? "");
+    setSteps(record.steps?.toString() ?? "");
+    setMemo(record.memo ?? "");
+  } catch (error) {
+    console.error(error);
+  }
+};
 
+    fetcher();
+  }, [token, paramDate]); 
+
+  return (
+    <div>
+      <p>date={date}</p>
+      <p>weight={weight}</p>
+      <p>steps={steps}</p>
+      <p>memo={memo}</p>
+    </div>
+  );
 }
