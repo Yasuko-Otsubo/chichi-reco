@@ -2,7 +2,7 @@
 
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { RecordData, RecordResponse } from "@/app/api/records/[date]/route";
-import { CreateRecordRequestBody } from "@/app/api/records/route";
+//import { CreateRecordRequestBody } from "@/app/api/records/route";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -70,29 +70,44 @@ export default function Page() {
     fetcher();
   }, [token, paramDate]);
 
-  // ******* POST *******
+  // ******* POST or PUT *******
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!token) return;
 
     try {
       setIsSubmitting(true);
 
-      const body: CreateRecordRequestBody = {
+      const body = {
         date: date,
         weight: weight ? Number(weight) : null,
         steps: steps ? Number(steps) : null,
         memo: memo || null }
 
-      const res = await fetch('/api/records', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token
-        },
-        body: JSON.stringify(body),
-      });
+        let res : Response;
+
+        if (!record || record.id === 0) {
+        // ******* POST *******
+          res = await fetch('/api/records', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+          body: JSON.stringify(body),
+          });
+        } else {
+        // ******* PUT *******
+          res = await fetch(`/api/records/${paramDate}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+            body: JSON.stringify(body),
+          });
+        }
 
       if (!res.ok) {
         const errorData = await res.json();
@@ -105,7 +120,7 @@ export default function Page() {
       alert('記録しました')
     } catch (error) {
       console.error('記録に失敗しました:', error)
-      alert('き六に失敗しました')
+      alert('記録に失敗しました')
     } finally {
       setIsSubmitting(false);
     }
@@ -142,7 +157,7 @@ export default function Page() {
         />
       </div>
       <button type="submit" disabled={isSubmitting}>
-        記録する
+        {(!record || record.id === 0) ? '記録する' : '更新する'}  
       </button>
 
 
