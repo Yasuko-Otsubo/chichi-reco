@@ -131,13 +131,36 @@ export default function Page() {
         throw new Error(errorData.message || "POSTに失敗しました");
       }
 
-      await res.json();
-
       router.push("/today/calendar");
       alert("記録しました");
     } catch (error) {
       console.error("記録に失敗しました:", error);
       alert("記録に失敗しました");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  const handleDelete = async () => {
+    if (!token) return;
+
+    if (!confirm("記録を削除しますか？")) return;
+
+    try {
+      setIsSubmitting(true);
+      await fetch(`/api/records/${paramDate}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+
+      alert("記録を削除しました");
+
+      router.push(`/today/calendar`);
+    } catch (error) {
+      console.error("記録の削除に失敗しました:", error);
+      alert("記録の削除に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -176,6 +199,11 @@ export default function Page() {
       <button type="submit" disabled={isSubmitting}>
         {!record || record.id === 0 ? "記録する" : "更新する"}
       </button>
+      {record && record.id !== 0 && (
+        <button type="button" onClick={handleDelete} disabled={isSubmitting}>
+          削除
+        </button>
+      )}
     </form>
   );
 }
