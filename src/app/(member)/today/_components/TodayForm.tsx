@@ -1,83 +1,71 @@
-'use client'
 
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input"
-import React, { useState } from "react"
-import { RecordData } from "@/types/records";
+interface Props {
+  mode: 'new'| 'edit'
+  date: string
 
-export type TodayFormData = {
-  date: string;
-  weight: string | null;
-  steps: string | null;
-  memo: string | null;
+  weight: string
+  setWeight: (v: string) => void
+
+  steps: string
+  setSteps: (v: string) => void
+
+  memo: string
+  setMemo: (v: string) => void
+
+  onSubmit: (e: React.FormEvent) => void
+  onDelete?: () => void
+  disabled: boolean
 }
 
-type TodayFormProps = {
-  defaultValues?: TodayFormData;
-  isEdit: boolean;
-  recordId: string | null;
-  prevRecord: RecordData | null;
-}
-
-export default function TodayForm(props: TodayFormProps ) {
-
-  const { defaultValues, isEdit } = props;
-
-  const [date, setDate] = useState("");
-  const [weight, setWeight] = useState("");;
-  const [steps, setSteps] = useState("");;
-  const [memo, setMemo] = useState("");;
-
-  React.useEffect(() => {
-    if(defaultValues) {
-      setDate(defaultValues.date);
-      setWeight(defaultValues.weight ?? "");
-      setSteps(defaultValues.steps ?? "");
-      setMemo(defaultValues.memo ?? "");
-    }
-  }, [defaultValues]);
-
-  if(!defaultValues) {
-    return <div>Loading...</div>
-  }
-  
-  const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  }
-
-  return (
-    <>
-    <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full max-w-[500px] bg-[#a2dae7]  mx-auto ">
-      <form onSubmit={handleSubmit} className="bg-white rounded-[50px] p-10 space-y-4 w-full max-w-[400px]">
-        <Input
-          label="日付"
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
-        <Input
-          label="体重"
-          type="number"
+export const TodayForm: React.FC<Props> = ({
+  mode,
+  date,
+  weight,
+  setWeight,
+  steps,
+  setSteps,
+  memo,
+  setMemo,
+  onSubmit,
+  onDelete,
+  disabled
+}) => (
+    <form onSubmit={onSubmit}>
+      <div>
+        <label>日付</label>
+        <input className="border-2" type="text" value={date} readOnly />
+      </div>
+      <div>
+        <label>体重</label>
+        <input
+          className="border-2"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
         />
-        <Input
-          label="歩数"
-          type="number"
+      </div>
+      <div>
+        <label>歩数</label>
+        <input
+          className="border-2"
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
-          />
-        <Input
-          label="一言メモ"
-          type="text"
+        />
+      </div>
+      <div>
+        <label>一言メモ</label>
+        <input
+          className="border-2"
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
-          />
-          <Button type="submit">
-            {isEdit ? "更新する": "記録する"}
-          </Button>
-      </form>
-    </div>
-    </>
-  )
-} 
+        />
+      </div>
+      <button type="submit" disabled={disabled}>
+        {mode === "new" ? "記録する" : "更新する"}
+      </button>
+      {mode === "edit" && onDelete && (
+        <button type="button" onClick={onDelete} disabled={disabled}>
+          削除
+        </button>
+      )}
+    </form>
+)

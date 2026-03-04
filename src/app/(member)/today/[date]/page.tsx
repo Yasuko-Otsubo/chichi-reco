@@ -5,6 +5,7 @@ import { RecordData, RecordResponse } from "@/app/api/records/[date]/route";
 //import { CreateRecordRequestBody } from "@/app/api/records/route";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { TodayForm } from "../_components/TodayForm";
 
 export default function Page() {
   // ===== auth =====
@@ -167,43 +168,18 @@ export default function Page() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>日付</label>
-        <input className="border-2" type="text" value={date} readOnly />
-      </div>
-      <div>
-        <label>体重</label>
-        <input
-          className="border-2"
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>歩数</label>
-        <input
-          className="border-2"
-          value={steps}
-          onChange={(e) => setSteps(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>一言メモ</label>
-        <input
-          className="border-2"
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
-        />
-      </div>
-      <button type="submit" disabled={isSubmitting}>
-        {!record || record.id === 0 ? "記録する" : "更新する"}
-      </button>
-      {record && record.id !== 0 && (
-        <button type="button" onClick={handleDelete} disabled={isSubmitting}>
-          削除
-        </button>
-      )}
-    </form>
+    <TodayForm
+      mode={!record || record.id === 0 ? "new" : "edit"}
+      date={date}
+      weight={weight}
+      setWeight={setWeight}
+      steps={steps}
+      setSteps={setSteps}
+      memo={memo}
+      setMemo={setMemo}
+      onSubmit={handleSubmit}
+      onDelete={handleDelete}
+      disabled={isSubmitting}
+    />
   );
 }
