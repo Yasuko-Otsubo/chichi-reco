@@ -55,13 +55,16 @@ export default function Page() {
           return;
         }
 
-        const { record }: RecordResponse = await res.json();
-        console.log("API record:", record);
-        setRecord(record);
-        setDate(record.date.slice(0, 10));
-        setWeight(record.weight?.toString() ?? "");
-        setSteps(record.steps?.toString() ?? "");
-        setMemo(record.memo ?? "");
+        const data = await res.json();
+        console.log("API data:", data);
+
+        if (!data.record) return;
+
+        setRecord(data.record);
+        setDate(data.record.date.slice(0, 10));
+        setWeight(data.record.weight?.toString() ?? "");
+        setSteps(data.record.steps?.toString() ?? "");
+        setMemo(data.record.memo ?? "");
       } catch (error) {
         console.error(error);
       }
@@ -73,7 +76,7 @@ export default function Page() {
   // ******* POST or PUT *******
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!token) return;
 
     try {
@@ -83,48 +86,62 @@ export default function Page() {
         date: date,
         weight: weight ? Number(weight) : null,
         steps: steps ? Number(steps) : null,
-        memo: memo || null }
+        memo: memo || null,
+      };
 
-        let res : Response;
+      let res: Response;
 
-        if (!record || record.id === 0) {
+      if (!record || record.id === 0) {
         // ******* POST *******
-          res = await fetch('/api/records', {
-          method: 'POST',
+        res = await fetch("/api/records", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: token,
           },
           body: JSON.stringify(body),
-          });
-        } else {
+        });
+      } else {
         // ******* PUT *******
-          res = await fetch(`/api/records/${paramDate}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: token,
-            },
-            body: JSON.stringify(body),
-          });
+        //差分チェック
+        const isSame =
+          record.weight === (weight ? Number(weight) : null) &&
+          record.steps === (steps ? Number(steps) : null) &&
+          record.memo === (memo || null) &&
+          record.date.slice(0, 10) === date;
+
+        if (isSame) {
+          alert("変更がないため更新しませんでした");
+          router.push(`/today/${paramDate}`);
+          return;
         }
+        //変更があるときだけPUT
+        res = await fetch(`/api/records/${paramDate}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify(body),
+        });
+      }
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || 'POSTに失敗しました');
+        throw new Error(errorData.message || "POSTに失敗しました");
       }
 
       await res.json();
 
-      router.push('/today/calendar')
-      alert('記録しました')
+      router.push("/today/calendar");
+      alert("記録しました");
     } catch (error) {
-      console.error('記録に失敗しました:', error)
-      alert('記録に失敗しました')
+      console.error("記録に失敗しました:", error);
+      alert("記録に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -135,7 +152,7 @@ export default function Page() {
       <div>
         <label>体重</label>
         <input
-          className="border-2" 
+          className="border-2"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
         />
@@ -143,7 +160,7 @@ export default function Page() {
       <div>
         <label>歩数</label>
         <input
-          className="border-2"  
+          className="border-2"
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
         />
@@ -151,16 +168,14 @@ export default function Page() {
       <div>
         <label>一言メモ</label>
         <input
-          className="border-2" 
+          className="border-2"
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
         />
       </div>
       <button type="submit" disabled={isSubmitting}>
-        {(!record || record.id === 0) ? '記録する' : '更新する'}  
+        {!record || record.id === 0 ? "記録する" : "更新する"}
       </button>
-
-
     </form>
   );
 }

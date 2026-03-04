@@ -161,15 +161,18 @@ export const PUT = async (
 
       //差分チェック
       const isSame = 
-        (weight === undefined || weight === record.weight) &&
-        (steps === undefined || steps === record.steps) &&
+        (numWeight === undefined || numWeight === record.weight) &&
+        (numSteps === undefined || numSteps === record.steps) &&
         (memo === undefined || memo === record.memo) &&
-        (date === undefined ||
-          new Date(date).getTime() === record.date.getTime());
+        (newDate === undefined ||
+          new Date(newDate).getTime() === record.date.getTime());
 
         if (isSame) {
-          return NextResponse.json(
-            { status: "OK", message: "更新の必要はありません" },
+          return NextResponse.json({
+            status: "OK",
+            message: "更新の必要はありません",
+            record: formatRecord(record),
+          },
             { status: 200 },
           );
         }
