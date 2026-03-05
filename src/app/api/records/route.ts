@@ -141,7 +141,7 @@ export const GET = async (request: NextRequest) => {
 
     if (month) {
       const year = Number(month.slice(0, 4));
-      const m = Number(month.slice(4, 6));
+      const m = Number(month.slice(5, 7));
 
       const from = new Date(year, m - 1, 1);
       const to = new Date(year, m, 1);
