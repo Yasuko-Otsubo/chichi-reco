@@ -26,6 +26,7 @@ export default function Page() {
 
   // ===== UI制御 =====
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState();//setCurrentMonthは前月、次月のときに使用
 
   // ******* GET *******
   useEffect(() => {
@@ -132,7 +133,7 @@ export default function Page() {
         throw new Error(errorData.message || "POSTに失敗しました");
       }
 
-      router.push("/today/calendar");
+      router.push(`/calendar?month=${currentMonth}`);
       alert("記録しました");
     } catch (error) {
       console.error("記録に失敗しました:", error);
@@ -158,7 +159,7 @@ export default function Page() {
 
       alert("記録を削除しました");
 
-      router.push(`/today/calendar`);
+      router.push(`/calendar?month=${currentMonth}`);
     } catch (error) {
       console.error("記録の削除に失敗しました:", error);
       alert("記録の削除に失敗しました");
