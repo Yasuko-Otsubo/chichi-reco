@@ -34,6 +34,16 @@ export default function Page() {
       }
       fetcher();
   }, [currentMonth, token])
+
+  // ===== ここからカレンダー計算 =====
+  // ===== 年と月 =====
+  const [year, month] = currentMonth.split("-").map(Number);
+
+  // ===== 月の日数 =====
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  // ===== 月初の曜日 =====
+  const firstDay = new Date(year, month -1, 1).getDay();
   return (
     <pre>{JSON.stringify(records, null, 2)}</pre>
   )
