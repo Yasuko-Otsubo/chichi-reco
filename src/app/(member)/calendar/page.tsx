@@ -13,7 +13,7 @@ export default function Page() {
   // ===== 取得データ =====
   const [records, setRecords] = useState<RecordData[]>([]);
 
-  // ===== 今月のカレンダーを日本時間で取得 =====
+  // ===== カレンダーで表示する今月 =====
   const today = new Date();
   const initialMonth = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2, "0")}`;
   const [currentMonth, setCurrentMonth] = useState(initialMonth);
@@ -44,6 +44,19 @@ export default function Page() {
 
   // ===== 月初の曜日 =====
   const firstDay = new Date(year, month -1, 1).getDay();
+
+  // ===== 最初の空白 =====
+  const blanks  = Array(firstDay).fill(null);
+
+  // ===== 最初の日付 =====
+  const days = Array.from({ length: daysInMonth },(_, i) => i +1);
+
+  // ===== カレンダーセル =====
+  const cells = [...blanks, ...days];
+
+  while (cells.length % 7 ! == 0 ){
+    cells.push(null);
+  }
   return (
     <pre>{JSON.stringify(records, null, 2)}</pre>
   )
