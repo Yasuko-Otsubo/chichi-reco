@@ -109,6 +109,9 @@ export const PUT = async (
   const { date } = await params;
   const { date: newDate, weight, steps, memo }: UpdateRecordRequestBody = await request.json();
 
+  console.log("weight:", weight);
+console.log("steps:", steps);
+
   try {
     //record取得
     const record = await prisma.record.findFirst({
@@ -142,15 +145,24 @@ export const PUT = async (
 
 
       //数値変更とNaNチェック
-      const numWeight = weight !== undefined ? Number(weight): undefined;
-      const numSteps = steps !== undefined ? Number(steps): undefined;
+      const numWeight = 
+        weight === null || weight === undefined ? null : Number(weight);
+      const numSteps =
+        steps === null || steps === undefined ? null: Number(steps);
 
       if (newDate !== undefined) updateData.date = new Date(newDate);
-      if (numWeight !== undefined && !isNaN(numWeight))
+      if (numWeight === null) {
+        updateData.weight = null;
+      } else if (!Number.isNaN(numWeight)) {
         updateData.weight = numWeight;
-      if (numSteps !== undefined && !isNaN(numSteps)) updateData.steps = numSteps;
-      if (memo !== undefined) updateData.memo = memo;
+      }
 
+      if (numSteps === null) {
+        updateData.steps = null;
+      } else if (!Number.isNaN(numSteps)) {
+        updateData.steps = numSteps;
+      }
+     
       //更新項目がない場合は返す
       if (Object.keys(updateData).length === 0) {
         return NextResponse.json(
