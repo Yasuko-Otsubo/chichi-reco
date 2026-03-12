@@ -1,20 +1,20 @@
-import styles from "@/app/_styles/Calendar.module.css"
-import { RecordData } from "@/app/api/records/[date]/route"
+import styles from "@/app/_styles/Calendar.module.css";
+import { RecordData } from "@/app/api/records/[date]/route";
 
 type CalendarData = {
-  day: number | null
-  record: RecordData | null
-  diff: number | null
-}
+  day: number | null;
+  record: RecordData | null;
+  diff: number | null;
+};
 
 interface Props {
-  calendarData: CalendarData[]
-  year: number
-  month: number
-  changeMonth: (diff: number) => void
-  todayYear: number
-  todayMonth: number
-  todayDate: number
+  calendarData: CalendarData[];
+  year: number;
+  month: number;
+  changeMonth: (diff: number) => void;
+  todayYear: number;
+  todayMonth: number;
+  todayDate: number;
 }
 
 export const Calendar: React.FC<Props> = ({
@@ -24,11 +24,11 @@ export const Calendar: React.FC<Props> = ({
   changeMonth,
   todayYear,
   todayMonth,
-  todayDate
+  todayDate,
 }) => {
-    const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
+  const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 
-  return(
+  return (
     <div className={styles.container}>
       <button onClick={() => changeMonth(-1)}>⇐</button>
       <span>
@@ -70,5 +70,5 @@ export const Calendar: React.FC<Props> = ({
         })}
       </div>
     </div>
-  )
-}
+  );
+};
