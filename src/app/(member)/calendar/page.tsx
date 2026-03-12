@@ -4,7 +4,8 @@ import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { RecordData } from "@/app/api/records/[date]/route";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import styles from "@/app/_styles/Calendar.module.css";
+//import styles from "@/app/_styles/Calendar.module.css";
+import { Calendar } from "./_components/Calendar";
 
 export default function CalendarPage() {
   // ===== auth =====
@@ -102,7 +103,6 @@ export default function CalendarPage() {
   while (cells.length % 7 !== 0) {
     cells.push(null);
   }
-  const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 
   // ===== 体重差分計算 =====
   const recordIndexMap = new Map(sortedRecords.map((r, i) => [r.id, i]));
@@ -117,7 +117,7 @@ export default function CalendarPage() {
     const dateString = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
     // 日付→record取得
-    const record = recordMap.get(dateString);
+    const record = recordMap.get(dateString) ?? null;
 
     // ===== 差分計算 =====
     // 差分初期値
@@ -141,46 +141,14 @@ export default function CalendarPage() {
     return { day, record, diff };
   });
   return (
-    <div className={styles.container}>
-      <button onClick={() => changeMonth(-1)}>⇐</button>
-      <span>
-        {year}年 {month}月
-      </span>
-      <button onClick={() => changeMonth(1)}>⇒</button>
-      <div className={styles.calendar}>
-        {weekDays.map((day) => (
-          <div key={day} className={styles.header}>
-            {day}
-          </div>
-        ))}
-
-        {calendarData.map(({ day, record, diff }, i) => {
-          const isToday =
-            year === todayYear && month === todayMonth && day === todayDate;
-
-          return (
-            <div
-              key={i}
-              className={`${styles.cell} ${isToday ? styles.today : ""}`}
-            >
-              {/* 空白マスか確認 */}
-              {day && <div>{day}</div>}
-
-              {/* 記録があるか確認 */}
-              {record && <div>{record.weight}</div>}
-
-              {/* 前回との差 */}
-              {diff !== null && (
-                <div>
-                  {/* 差分計算 */}
-                  {diff > 0 ? "+" : ""}
-                  {diff.toFixed(1)}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    <Calendar
+      calendarData={calendarData}
+      year={year}
+      month={month}
+      changeMonth={changeMonth}
+      todayYear={todayYear}
+      todayMonth={todayMonth}
+      todayDate={todayDate}
+    />
   );
 }
