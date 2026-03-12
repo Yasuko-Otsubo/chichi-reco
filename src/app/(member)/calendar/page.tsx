@@ -14,18 +14,31 @@ export default function CalendarPage() {
   // ===== 取得データ =====
   const [records, setRecords] = useState<RecordData[]>([]);
 
-  // ===== カレンダーで表示する今月 =====
-  const today = new Date();
+  // ===== 表示中の月 =====
+  const [today] = useState(() => new Date());
   const initialMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
   const [currentMonth, setCurrentMonth] = useState(initialMonth);
+  // ===== 年月計算 =====
+  const [year, month] = currentMonth.split("-").map(Number);
+  const currentDate = new Date(year, month - 1, 1);
 
+  // 関数化
+  const formatMonth = (data: Date) => {
+    return (
+      `${data.getFullYear()}-` +
+      `${String(data.getMonth() + 1).padStart(2, "0")}`
+    );
+  };
+  // ===== 前月計算 =====
+  const prevDate = new Date(currentDate);
+  prevDate.setMonth(prevDate.getMonth() - 1);
+
+  const prevMonth = formatMonth(prevDate);
+  // ===== 月変更処理 =====
   const changeMonth = (diff: number) => {
     const date = new Date(year, month - 1 + diff, 1);
 
-    const newMonth =
-      `${date.getFullYear()}-` +
-      `${String(date.getMonth() + 1).padStart(2, "0")}`;
-
+    const newMonth = formatMonth(date);
     setCurrentMonth(newMonth);
   };
 
@@ -38,42 +51,95 @@ export default function CalendarPage() {
     if (!token) return;
 
     const fetcher = async () => {
-      const res = await fetch(`/api/records?month=${currentMonth}`, {
-        headers: {
-          Authorization: token,
-        },
+      const res1 = await fetch(`/api/records?month=${prevMonth}`, {
+        headers: { Authorization: token },
       });
 
-      const { records } = await res.json();
-      setRecords(records);
+      const res2 = await fetch(`/api/records?month=${currentMonth}`, {
+        headers: { Authorization: token },
+      });
+
+      //JSON変換
+      const data1 = await res1.json();
+      const data2 = await res2.json();
+      //配列結合
+      const merged = [...data1.records, ...data2.records];
+      //重複削除
+      const unique = Array.from(
+        new Map(merged.map((r) => [r.date.slice(0, 10), r])).values(),
+      );
+      setRecords(unique);
     };
     fetcher();
   }, [currentMonth, token]);
 
-  // ===== ここからカレンダー計算 =====
-  // ===== 年と月 =====
-  const [year, month] = currentMonth.split("-").map(Number);
+  // ===== カレンダー用データ準備 =====
+  // ===== レコードを日付順に並べる =====
+  const sortedRecords = [...records].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
 
-  // ===== 月の日数 =====
+  // ===== 日付→recordを引けるmap =====
+  const recordMap = new Map(sortedRecords.map((r) => [r.date.slice(0, 10), r]));
+
+  // ===== カレンダー日付セルの作成 =====
+  // 月の日数
   const daysInMonth = new Date(year, month, 0).getDate();
 
-  // ===== 月初の曜日 =====
+  // 月初の曜日
   const firstDay = new Date(year, month - 1, 1).getDay();
 
-  // ===== 最初の空白 =====
+  // 月初の空白セル
   const blanks = Array(firstDay).fill(null);
 
-  // ===== 最初の日付 =====
+  // 月の日付
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  // ===== カレンダーセル =====
+  // カレンダーセル
   const cells = [...blanks, ...days];
 
-  const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
-
+  // 月末の空白セル
   while (cells.length % 7 !== 0) {
     cells.push(null);
   }
+  const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
+
+  // ===== 体重差分計算 =====
+  const recordIndexMap = new Map(sortedRecords.map((r, i) => [r.id, i]));
+
+  // カレンダー1セルごとの表示データを作る
+  const calendarData = cells.map((day) => {
+    // 空白セル
+    if (day === null) {
+      return { day: null, record: null, diff: null };
+    }
+
+    const dateString = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    // 日付→record取得
+    const record = recordMap.get(dateString);
+
+    // ===== 差分計算 =====
+    // 差分初期値
+    let diff: number | null = null;
+
+    // 前回体重との差分を計算
+    if (record && record.weight !== null) {
+      const index = recordIndexMap.get(record.id);
+
+      if (index !== undefined) {
+        for (let i = index - 1; i >= 0; i--) {
+          const prev = sortedRecords[i];
+
+          if (prev.weight !== null) {
+            diff = record.weight - prev.weight;
+            break;
+          }
+        }
+      }
+    }
+    return { day, record, diff };
+  });
   return (
     <div className={styles.container}>
       <button onClick={() => changeMonth(-1)}>⇐</button>
@@ -88,7 +154,7 @@ export default function CalendarPage() {
           </div>
         ))}
 
-        {cells.map((day, i) => {
+        {calendarData.map(({ day, record, diff }, i) => {
           const isToday =
             year === todayYear && month === todayMonth && day === todayDate;
 
@@ -97,7 +163,20 @@ export default function CalendarPage() {
               key={i}
               className={`${styles.cell} ${isToday ? styles.today : ""}`}
             >
-              {day ?? ""}
+              {/* 空白マスか確認 */}
+              {day && <div>{day}</div>}
+
+              {/* 記録があるか確認 */}
+              {record && <div>{record.weight}</div>}
+
+              {/* 前回との差 */}
+              {diff !== null && (
+                <div>
+                  {/* 差分計算 */}
+                  {diff > 0 ? "+" : ""}
+                  {diff.toFixed(1)}
+                </div>
+              )}
             </div>
           );
         })}
