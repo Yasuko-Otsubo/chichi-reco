@@ -1,5 +1,6 @@
 import styles from "@/app/_styles/Calendar.module.css";
 import { RecordData } from "@/app/api/records/[date]/route";
+import { CalendarCell } from "./CalendarCell";
 
 type CalendarData = {
   day: number | null;
@@ -42,32 +43,23 @@ export const Calendar: React.FC<Props> = ({
           </div>
         ))}
 
-        {calendarData.map(({ day, record, diff }, i) => {
-          const isToday =
-            year === todayYear && month === todayMonth && day === todayDate;
-
+        {calendarData.map(({ day, record, diff}, i) => {
+          const isToday = 
+          year  === todayYear &&
+          month === todayMonth &&
+          day === todayDate;
           return (
-            <div
+            <CalendarCell
               key={i}
-              className={`${styles.cell} ${isToday ? styles.today : ""}`}
-            >
-              {/* 空白マスか確認 */}
-              {day && <div>{day}</div>}
-
-              {/* 記録があるか確認 */}
-              {record && <div>{record.weight}</div>}
-
-              {/* 前回との差 */}
-              {diff !== null && (
-                <div>
-                  {/* 差分計算 */}
-                  {diff > 0 ? "+" : ""}
-                  {diff.toFixed(1)}
-                </div>
-              )}
-            </div>
+              day={day}
+              record={record}
+              diff={diff}
+              isToday={isToday}
+              />
           );
         })}
+
+
       </div>
     </div>
   );
