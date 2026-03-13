@@ -2,14 +2,12 @@
 
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { RecordData } from "@/app/api/records/[date]/route";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 //import styles from "@/app/_styles/Calendar.module.css";
 import { Calendar } from "./_components/Calendar";
 
 export default function CalendarPage() {
   // ===== auth =====
-  const router = useRouter();
   const { token } = useSupabaseSession();
 
   // ===== 取得データ =====
@@ -72,7 +70,7 @@ export default function CalendarPage() {
       setRecords(unique);
     };
     fetcher();
-  }, [currentMonth, token]);
+  }, [prevMonth, currentMonth, token]);
 
   // ===== カレンダー用データ準備 =====
   // ===== レコードを日付順に並べる =====
