@@ -50,23 +50,33 @@ export default function CalendarPage() {
     if (!token) return;
 
     const fetcher = async () => {
-      const res1 = await fetch(`/api/records?month=${prevMonth}`, {
-        headers: { Authorization: token },
-      });
+      const fetchWithAuth = async (url: string): Promise<Response> => {
+        const res = await fetch(url, {
+          headers: { Authorization: token },
+        });
 
-      const res2 = await fetch(`/api/records?month=${currentMonth}`, {
-        headers: { Authorization: token },
-      });
+        if (!res.ok) {
+          throw new Error("API error");
+        }
 
-      //JSON変換
-      const data1 = await res1.json();
-      const data2 = await res2.json();
+        return res;
+      };
+
+      const [res1, res2] = await Promise.all([
+        fetchWithAuth(`/api/records?month=${prevMonth}`),
+        fetchWithAuth(`/api/records?month=${currentMonth}`),
+      ]);
+
+      const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+
       //配列結合
       const merged = [...data1.records, ...data2.records];
+
       //重複削除
       const unique = Array.from(
         new Map(merged.map((r) => [r.date.slice(0, 10), r])).values(),
       );
+
       setRecords(unique);
     };
     fetcher();
