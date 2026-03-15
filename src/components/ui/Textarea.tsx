@@ -1,4 +1,4 @@
-import { cn } from "@/utils/utils";
+import { cn } from "@/_utils/utils";
 import { Label } from "./Label";
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -8,7 +8,7 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   required?: boolean;
 }
 
-export const Textarea  = ({
+export const Textarea = ({
   label,
   error,
   description,
@@ -26,18 +26,14 @@ export const Textarea  = ({
           "w-full rounded-lg border px-3 py-2 text-sm shadow-sm",
           error ? "border-red-500" : "border-gray-300",
           "focus:ring-blue-500 focus:border-blue-500",
-          className
+          className,
         )}
         {...props}
       />
 
-      {description && (
-        <p className="text-xs text-gray-500">{description}</p>
-      )}
+      {description && <p className="text-xs text-gray-500">{description}</p>}
 
-      {error && (
-        <p className="text-xs text-red-500">{error}</p>
-      )}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { prisma } from "../prisma"
+import { prisma } from "../app/_libs/prisma";
 
 export const getProfileByUserId = async (userId: string) => {
   const profile = await prisma.profile.findFirst({
@@ -7,4 +7,4 @@ export const getProfileByUserId = async (userId: string) => {
 
   if (!profile) throw new Error("Profile not found");
   return profile;
-}
+};
