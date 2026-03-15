@@ -4,7 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = async (request: NextRequest) => {
   try {
-    await getAuthenticatedUser(request);
+    const user = await getAuthenticatedUser(request);
+    if (!user) {
+      return NextResponse.json(
+        { status: "NG", message: "認証されていません" },
+        { status: 401 },
+      )
+    }
+
 
     const body = await request.json();
     const { password } = body;
