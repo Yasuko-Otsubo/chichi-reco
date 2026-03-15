@@ -1,6 +1,6 @@
 import styles from "@/app/_styles/Calendar.module.css";
-import { RecordData } from "@/app/api/records/[date]/route";
 import { CalendarCell } from "./CalendarCell";
+import { RecordData } from "@/types/record";
 
 type CalendarData = {
   day: number | null;

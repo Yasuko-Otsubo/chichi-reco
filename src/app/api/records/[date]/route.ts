@@ -3,14 +3,8 @@ import { getProfileByUserId } from "@/app/_libs/prisma/profile"
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth"
 import { NextRequest, NextResponse } from "next/server"
 import type { Record, Prisma } from "@prisma/client";
+import { RecordData } from "@/types/record";
 
-export type RecordData = {
-  id: number
-  date: string
-  weight: number | null
-  steps: number | null
-  memo: string | null
-}
 export type RecordResponse = {
   status: "OK" | "NG"
   message: string

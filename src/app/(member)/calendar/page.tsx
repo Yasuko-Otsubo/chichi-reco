@@ -1,10 +1,10 @@
 "use client";
 
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import { RecordData } from "@/app/api/records/[date]/route";
 import { useEffect, useState } from "react";
 //import styles from "@/app/_styles/Calendar.module.css";
 import { Calendar } from "./_components/Calendar";
+import { RecordData } from "@/types/record";
 
 export default function CalendarPage() {
   // ===== auth =====

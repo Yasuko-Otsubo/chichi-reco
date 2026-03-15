@@ -1,5 +1,5 @@
-import { RecordData } from "@/app/api/records/[date]/route";
 import styles from "@/app/_styles/Calendar.module.css"
+import { RecordData } from "@/types/record"
 
 interface Props {
   day: number | null

@@ -1,11 +1,12 @@
 "use client";
 
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import { RecordData, RecordResponse } from "@/app/api/records/[date]/route";
+import { RecordResponse } from "@/app/api/records/[date]/route";
 //import { CreateRecordRequestBody } from "@/app/api/records/route";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { TodayForm } from "../_components/TodayForm";
+import { RecordData } from "@/types/record";
 
 export default function Page() {
   // ===== auth =====
