@@ -2,11 +2,12 @@
 
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { RecordResponse } from "@/app/api/records/[date]/route";
-//import { CreateRecordRequestBody } from "@/app/api/records/route";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { TodayForm } from "../_components/TodayForm";
 import { RecordData } from "@/types/record";
+import { useForm } from "react-hook-form";
+import { TodayFormValues } from "@/types/form";
 
 export default function Page() {
   // ===== auth =====
@@ -16,18 +17,26 @@ export default function Page() {
   // ===== URLパラメータから日付を取得 =====
   const { date: paramDate } = useParams<{ date: string }>();
 
-  // ===== 表示系・フォーム用 state =====
-  const [date, setDate] = useState("");
-  const [weight, setWeight] = useState("");
-  const [steps, setSteps] = useState("");
-  const [memo, setMemo] = useState("");
+  // ===== 規定値を準備 =====
+  const today = new Date().toISOString().slice(0, 10);
+
+  const defaultValues = {
+    date: paramDate ?? today,
+    weight: "",
+    steps: "",
+    memo: "",
+  };
+
+  const { register, handleSubmit, reset } = useForm<TodayFormValues>({
+    defaultValues,
+  });
 
   // ===== 取得データ =====
   const [record, setRecord] = useState<RecordResponse["record"] | null>(null);
 
   // ===== UI制御 =====
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState();//setCurrentMonthは前月、次月のときに使用
+  const [currentMonth, setCurrentMonth] = useState<string>(); //setCurrentMonthは前月、次月のときに使用
 
   // ******* GET *******
   useEffect(() => {
@@ -51,10 +60,12 @@ export default function Page() {
             memo: null,
           };
           setRecord(emptyRecord);
-          setDate(emptyRecord.date);
-          setWeight("");
-          setSteps("");
-          setMemo("");
+          reset({
+            date: paramDate,
+            weight: "",
+            steps: "",
+            memo: "",
+          });
           return;
         }
 
@@ -64,32 +75,36 @@ export default function Page() {
         if (!data.record) return;
 
         setRecord(data.record);
-        setDate(data.record.date.slice(0, 10));
-        setWeight(data.record.weight?.toString() ?? "");
-        setSteps(data.record.steps?.toString() ?? "");
-        setMemo(data.record.memo ?? "");
+        reset({
+          date: data.record.date.slice(0, 10),
+          weight: data.record.weight?.toString() ?? "",
+          steps: data.record.steps?.toString() ?? "",
+          memo: data.record.memo ?? "",
+        });
       } catch (error) {
         console.error(error);
       }
     };
 
     fetcher();
-  }, [token, paramDate]);
+  }, [token, paramDate, reset]);
 
   // ******* POST or PUT *******
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (values: TodayFormValues) => {
     if (!token) return;
+
+    if (!values.weight && !values.steps && !values.memo) {
+      alert("いづれかの項目を入力してください");
+    }
 
     try {
       setIsSubmitting(true);
 
       const body = {
-        date: date,
-        weight: weight ? Number(weight) : null,
-        steps: steps ? Number(steps) : null,
-        memo: memo || null,
+        date: values.date,
+        weight: values.weight ? Number(values.weight) : null,
+        steps: values.steps ? Number(values.steps) : null,
+        memo: values.memo || null,
       };
 
       let res: Response;
@@ -108,10 +123,10 @@ export default function Page() {
         // ******* PUT *******
         //差分チェック
         const isSame =
-          record.weight === (weight ? Number(weight) : null) &&
-          record.steps === (steps ? Number(steps) : null) &&
-          record.memo === (memo || null) &&
-          record.date.slice(0, 10) === date;
+          record.weight === (values.weight ? Number(values.weight) : null) &&
+          record.steps === (values.steps ? Number(values.steps) : null) &&
+          record.memo === (values.memo || null) &&
+          record.date.slice(0, 10) === values.date;
 
         if (isSame) {
           alert("変更がないため更新しませんでした");
@@ -172,14 +187,8 @@ export default function Page() {
   return (
     <TodayForm
       mode={!record || record.id === 0 ? "new" : "edit"}
-      date={date}
-      weight={weight}
-      setWeight={setWeight}
-      steps={steps}
-      setSteps={setSteps}
-      memo={memo}
-      setMemo={setMemo}
-      onSubmit={handleSubmit}
+      register={register}
+      onSubmit={handleSubmit(onSubmit)}
       onDelete={handleDelete}
       disabled={isSubmitting}
     />

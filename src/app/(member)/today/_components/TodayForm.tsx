@@ -1,71 +1,47 @@
+import { TodayFormValues } from "@/types/form";
+import { UseFormRegister } from "react-hook-form";
 
 interface Props {
-  mode: 'new'| 'edit'
-  date: string
+  mode: "new" | "edit";
 
-  weight: string
-  setWeight: (v: string) => void
+  register: UseFormRegister<TodayFormValues>;
 
-  steps: string
-  setSteps: (v: string) => void
-
-  memo: string
-  setMemo: (v: string) => void
-
-  onSubmit: (e: React.FormEvent) => void
-  onDelete?: () => void
-  disabled: boolean
+  onSubmit: (e?: React.BaseSyntheticEvent) => void;
+  onDelete?: () => void;
+  disabled: boolean;
 }
 
 export const TodayForm: React.FC<Props> = ({
   mode,
-  date,
-  weight,
-  setWeight,
-  steps,
-  setSteps,
-  memo,
-  setMemo,
+  register,
   onSubmit,
   onDelete,
-  disabled
+  disabled,
 }) => (
-    <form onSubmit={onSubmit}>
-      <div>
-        <label>日付</label>
-        <input className="border-2" type="text" value={date} readOnly />
-      </div>
-      <div>
-        <label>体重</label>
-        <input
-          className="border-2"
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>歩数</label>
-        <input
-          className="border-2"
-          value={steps}
-          onChange={(e) => setSteps(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>一言メモ</label>
-        <input
-          className="border-2"
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
-        />
-      </div>
-      <button type="submit" disabled={disabled}>
-        {mode === "new" ? "記録する" : "更新する"}
+  <form onSubmit={onSubmit}>
+    <div>
+      <label>日付</label>
+      <input className="border-2" type="text" {...register("date")} />
+    </div>
+    <div>
+      <label>体重</label>
+      <input className="border-2" {...register("weight")} />
+    </div>
+    <div>
+      <label>歩数</label>
+      <input className="border-2" {...register("steps")} />
+    </div>
+    <div>
+      <label>一言メモ</label>
+      <input className="border-2" {...register("memo")} />
+    </div>
+    <button type="submit" disabled={disabled}>
+      {mode === "new" ? "記録する" : "更新する"}
+    </button>
+    {mode === "edit" && onDelete && (
+      <button type="button" onClick={onDelete} disabled={disabled}>
+        削除
       </button>
-      {mode === "edit" && onDelete && (
-        <button type="button" onClick={onDelete} disabled={disabled}>
-          削除
-        </button>
-      )}
-    </form>
-)
+    )}
+  </form>
+);
