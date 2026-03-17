@@ -135,8 +135,8 @@ export const GET = async (request: NextRequest) => {
       const year = Number(month.slice(0, 4));
       const m = Number(month.slice(5, 7));
 
-      const from = new Date(year, m - 1, 1);
-      const to = new Date(year, m, 1);
+      const from = new Date(Date.UTC(year, m - 1, 1));
+      const to = new Date(Date.UTC(year, m, 1));
 
       const records = await prisma.record.findMany({
         where: {
