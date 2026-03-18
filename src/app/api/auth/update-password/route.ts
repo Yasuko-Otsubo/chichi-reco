@@ -1,5 +1,6 @@
 import { supabase } from "@/app/_libs/supabase";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
+import { UpdateAuthResponse, UpdatePasswordRequest } from "@/types/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = async (request: NextRequest) => {
@@ -13,7 +14,7 @@ export const PUT = async (request: NextRequest) => {
     }
 
 
-    const body = await request.json();
+    const body:UpdatePasswordRequest = await request.json();
     const { password } = body;
 
     if (!password) {
@@ -34,7 +35,7 @@ export const PUT = async (request: NextRequest) => {
       throw new Error(error.message);
     }
 
-    const response = {
+    const response: UpdateAuthResponse = {
       status: "OK",
       message: "記録しました"
     };
