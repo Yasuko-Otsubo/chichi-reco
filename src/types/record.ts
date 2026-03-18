@@ -5,3 +5,16 @@ export type RecordData = {
   steps: number | null
   memo: string | null
 }
+
+export type RecordResponse = {
+  status: "OK" | "NG";
+  message: string;
+  record: RecordData;
+};
+
+export type UpdateRecordRequestBody = {
+  date?: string;
+  weight?: number | null;
+  steps?: number | null;
+  memo?: string | null;
+};

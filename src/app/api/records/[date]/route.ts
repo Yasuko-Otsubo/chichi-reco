@@ -3,13 +3,12 @@ import { getProfileByUserId } from "@/_utils/profile";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 import { NextRequest, NextResponse } from "next/server";
 import type { Record, Prisma } from "@prisma/client";
-import { RecordData } from "@/types/record";
-
-export type RecordResponse = {
-  status: "OK" | "NG";
-  message: string;
-  record: RecordData;
-};
+import {
+  RecordData,
+  RecordResponse,
+  UpdateRecordRequestBody,
+} from "@/types/record";
+import { ApiResponse } from "@/types/api";
 
 const formatRecord = (record: Record): RecordData => {
   return {
@@ -27,14 +26,14 @@ export const GET = async (
 ) => {
   const user = await getAuthenticatedUser(request);
   if (!user) {
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "NG", message: "認証されていません" },
       { status: 401 },
     );
   }
   const profile = await getProfileByUserId(user.id);
   if (!profile) {
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "NG", message: "プロフィールが見つかりません" },
       { status: 404 },
     );
@@ -51,7 +50,7 @@ export const GET = async (
     });
 
     if (!record) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { status: "NG", message: "記録はありません" },
         { status: 404 },
       );
@@ -65,16 +64,15 @@ export const GET = async (
     });
   } catch (error) {
     if (error instanceof Error) {
-      return NextResponse.json({ message: error.message }, { status: 400 });
+      return NextResponse.json<ApiResponse>(
+        {
+          status: "NG",
+          message: error.message,
+        },
+        { status: 400 },
+      );
     }
   }
-};
-
-export type UpdateRecordRequestBody = {
-  date?: string;
-  weight?: number | null;
-  steps?: number | null;
-  memo?: string | null;
 };
 
 export const PUT = async (
@@ -83,14 +81,14 @@ export const PUT = async (
 ) => {
   const user = await getAuthenticatedUser(request);
   if (!user) {
-    return NextResponse.json(
-      { status: "NG", message: "プロフィールが見つかりません" },
-      { status: 404 },
+    return NextResponse.json<ApiResponse>(
+      { status: "NG", message: "認証されていません" },
+      { status: 401 },
     );
   }
   const profile = await getProfileByUserId(user.id);
   if (!profile) {
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "NG", message: "プロフィールが見つかりません" },
       { status: 404 },
     );
@@ -117,7 +115,7 @@ export const PUT = async (
     });
 
     if (!record) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { status: "NG", message: "記録が見つかりません" },
         { status: 404 },
       );
@@ -127,7 +125,7 @@ export const PUT = async (
     const hasOtherFields =
       weight !== undefined || steps !== undefined || memo !== undefined;
     if (!hasOtherFields) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { status: "NG", message: "いずれかの項目を変更してください" },
         { status: 400 },
       );
@@ -157,7 +155,7 @@ export const PUT = async (
 
     //更新項目がない場合は返す
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { status: "NG", message: "更新する項目がありません" },
         { status: 400 },
       );
@@ -172,7 +170,7 @@ export const PUT = async (
         new Date(newDate).getTime() === record.date.getTime());
 
     if (isSame) {
-      return NextResponse.json(
+      return NextResponse.json<RecordResponse>(
         {
           status: "OK",
           message: "更新の必要はありません",
@@ -198,7 +196,10 @@ export const PUT = async (
     });
   } catch (error) {
     if (error instanceof Error)
-      return NextResponse.json({ message: error.message }, { status: 400 });
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: error.message },
+        { status: 400 },
+      );
   }
 };
 
@@ -208,14 +209,14 @@ export const DELETE = async (
 ) => {
   const user = await getAuthenticatedUser(request);
   if (!user) {
-    return NextResponse.json(
-      { status: "NG", message: "プロフィールが見つかりません" },
-      { status: 404 },
+    return NextResponse.json<ApiResponse>(
+      { status: "NG", message: "認証されていません" },
+      { status: 40 },
     );
   }
   const profile = await getProfileByUserId(user.id);
   if (!profile) {
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "NG", message: "プロフィールが見つかりません" },
       { status: 404 },
     );
@@ -237,18 +238,21 @@ export const DELETE = async (
     });
 
     if (result.count === 0) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { status: "NG", message: "記録が見つかりません" },
         { status: 404 },
       );
     }
 
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "OK", message: "削除しました" },
       { status: 200 },
     );
   } catch (error) {
     if (error instanceof Error)
-      return NextResponse.json({ message: error.message }, { status: 400 });
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: error.message },
+        { status: 400 },
+      );
   }
 };
