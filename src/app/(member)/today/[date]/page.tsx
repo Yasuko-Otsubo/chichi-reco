@@ -1,11 +1,10 @@
 "use client";
 
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import { RecordResponse } from "@/app/api/records/[date]/route";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { TodayForm } from "../_components/TodayForm";
-import { RecordData } from "@/types/record";
+import { RecordData, RecordResponse } from "@/types/record";
 import { useForm } from "react-hook-form";
 import { TodayFormValues } from "@/types/form";
 
@@ -69,7 +68,7 @@ export default function Page() {
           return;
         }
 
-        const data = await res.json();
+        const data: RecordResponse = await res.json();
         console.log("API data:", data);
 
         if (!data.record) return;

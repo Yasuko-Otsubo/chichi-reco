@@ -9,7 +9,7 @@ export type RecordData = {
 export type RecordResponse = {
   status: "OK" | "NG";
   message: string;
-  record: RecordData;
+  record?: RecordData;
 };
 
 export type UpdateRecordRequestBody = {

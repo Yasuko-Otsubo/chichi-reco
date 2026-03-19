@@ -64,7 +64,7 @@ export const GET = async (
     });
   } catch (error) {
     if (error instanceof Error) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<RecordResponse>(
         {
           status: "NG",
           message: error.message,
@@ -196,7 +196,7 @@ export const PUT = async (
     });
   } catch (error) {
     if (error instanceof Error)
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<RecordResponse>(
         { status: "NG", message: error.message },
         { status: 400 },
       );
