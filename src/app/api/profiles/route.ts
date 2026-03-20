@@ -76,7 +76,7 @@ export const PUT = async (request: NextRequest) => {
   (targetWeight === undefined || targetWeight === profile.targetWeight);
 
 if (isSame) {
-  return NextResponse.json(
+  return NextResponse.json<UpdateProfileResponse>(
     {
       status: "OK",
       message: "更新の必要はありません",
