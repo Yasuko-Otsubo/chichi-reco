@@ -4,7 +4,11 @@ import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { TodayForm } from "../_components/TodayForm";
-import { RecordData, RecordResponse } from "@/types/record";
+import {
+  CreateRecordRequestBody,
+  RecordData,
+  RecordResponse,
+} from "@/types/record";
 import { useForm } from "react-hook-form";
 import { TodayFormValues } from "@/types/form";
 
@@ -99,7 +103,7 @@ export default function Page() {
     try {
       setIsSubmitting(true);
 
-      const body = {
+      const body: CreateRecordRequestBody = {
         date: values.date,
         weight: values.weight ? Number(values.weight) : null,
         steps: values.steps ? Number(values.steps) : null,
