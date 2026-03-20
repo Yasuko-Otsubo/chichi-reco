@@ -11,6 +11,7 @@ import {
 } from "@/types/record";
 import { useForm } from "react-hook-form";
 import { TodayFormValues } from "@/types/form";
+import { ApiResponse } from "@/types/api";
 
 export default function Page() {
   // ===== auth =====
@@ -148,7 +149,7 @@ export default function Page() {
       }
 
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData = (await res.json() as ApiResponse);
         throw new Error(errorData.message || "POSTに失敗しました");
       }
 
