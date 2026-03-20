@@ -4,7 +4,7 @@ import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { useEffect, useState } from "react";
 //import styles from "@/app/_styles/Calendar.module.css";
 import { Calendar } from "./_components/Calendar";
-import { RecordData } from "@/types/record";
+import { RecordData, RecordsResponse } from "@/types/record";
 
 export default function CalendarPage() {
   // ===== auth =====
@@ -67,7 +67,10 @@ export default function CalendarPage() {
         fetchWithAuth(`/api/records?month=${currentMonth}`),
       ]);
 
-      const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+      const [data1, data2] = await Promise.all([
+        res1.json().then((d) => d as RecordsResponse),
+        res2.json().then((d) => d as RecordsResponse),
+      ]);
 
       //配列結合
       const merged = [...data1.records, ...data2.records];
