@@ -1,26 +1,10 @@
 import { prisma } from "@/app/_libs/prisma";
 import { getProfileByUserId } from "@/_utils/profile";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
-import { RecordData } from "@/types/record";
+import { CreateRecordRequestBody, RecordData, RecordsResponse } from "@/types/record";
 import type { Record } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-export type CreateRecordRequestBody = {
-  date: string;
-  weight: number | null;
-  steps: number | null;
-  memo: string | null;
-};
-
-export type CreateRecordResponse = {
-  id: number;
-};
-
-export type RecordsResponse = {
-  status: "OK" | "NG";
-  message: string;
-  records: RecordData[];
-};
+import { ApiResponse } from "@/types/api";
 
 const formatRecords = (records: Record[]): RecordData[] => {
   return records.map((record) => ({
@@ -60,7 +44,7 @@ export const POST = async (request: NextRequest) => {
     today.setHours(0, 0, 0, 0);
 
     if (inputDate > today) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { status: "NG", message: "未来の日付は登録できません" },
         { status: 400 },
       );
@@ -75,7 +59,7 @@ export const POST = async (request: NextRequest) => {
         memo,
       },
     });
-    return NextResponse.json<CreateRecordResponse>({
+    return NextResponse.json({
       id: data.id,
     });
   } catch (error) {
