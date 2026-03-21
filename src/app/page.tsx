@@ -25,7 +25,7 @@ export default function IntroPage() {
           はじめてみる
         </a>
         <a
-          href="/user/login"
+          href="/login"
           className="border border-gray-400 hover:border-gray-600 text-gray-800 dark:text-gray-200 font-semibold py-3 px-6 rounded-lg transition"
         >
           ログイン

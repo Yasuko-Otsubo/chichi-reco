@@ -4,7 +4,7 @@ import { supabase } from "@/utils/supabase"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
-export default function Paget() {
+export default function Page() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
