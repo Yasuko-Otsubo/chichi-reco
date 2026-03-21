@@ -1,0 +1,25 @@
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cell {
+  border: 1px solid #ddd;
+  min-height: 80px;
+}
+
+.header {
+  font-weight: bold;
+  text-align: center;
+}
+
+.today {
+  background-color: #ffe082;
+  font-weight: bold;
+}

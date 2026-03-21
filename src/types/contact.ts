@@ -1,11 +1,11 @@
-export type ContactFields = { 
+export type ContactCreateRequest = { 
   name: string;
   email: string;
   content: string;
 }
 
-export type ContactResponse = {
-  status: string;
+export type ContactCreateResponse = {
+  status: "OK" | "NG";
   message: string;
   id?: number;
 }

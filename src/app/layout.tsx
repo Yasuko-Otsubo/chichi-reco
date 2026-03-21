@@ -38,7 +38,6 @@ export default function RootLayout({
         </main>
 
         <footer className="fixed bottom-4 w-full flex justify-center">
-          <div className="text-gray-500">📱 👨‍👩‍👧‍👦 🩺</div>
         </footer>
 
       

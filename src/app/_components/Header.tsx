@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import React from 'react'
-import { useSupabaseSession } from '../_hooks/useSupabaseSession'
-import { supabase } from '@/utils/supabase'
+import Link from "next/link";
+import React from "react";
+import { useSupabaseSession } from "../_hooks/useSupabaseSession";
+import { supabase } from "../_libs/supabase";
 
 export const Header: React.FC = () => {
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    window.location.href = '/'
-  }
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
 
-  const { session, isLoding } = useSupabaseSession()
+  const { session, isLoding } = useSupabaseSession();
 
   return (
     <header className="bg-gray-800 text-white p-6 font-bold flex justify-between items-center">
@@ -40,5 +40,5 @@ export const Header: React.FC = () => {
         </div>
       )}
     </header>
-  )
-}
+  );
+};

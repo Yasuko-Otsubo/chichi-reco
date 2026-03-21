@@ -10,6 +10,7 @@ export default function IntroPage() {
         height={120}
         className="mb-6"
       />
+      <header>ここにHeader</header>
       <h1 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
         家族の健康を、やさしく記録。
       </h1>
@@ -19,7 +20,7 @@ export default function IntroPage() {
       </p>
       <div className="flex flex-col sm:flex-row gap-4">
         <a
-          href="/user/signup"
+          href="/signup"
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"
         >
           はじめてみる

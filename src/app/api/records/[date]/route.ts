@@ -1,169 +1,258 @@
+import { prisma } from "@/app/_libs/prisma";
+import { getProfileByUserId } from "@/_utils/profile";
+import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import { toRecordFields } from "@/utils/records";
-import { requireUser } from "@/utils/auth";
-import { RecordResponse, RecordUpdateRequest } from "@/types/records";
-import { supabase } from "@/utils/supabase";
+import type { Record, Prisma } from "@prisma/client";
+import {
+  RecordData,
+  RecordResponse,
+  UpdateRecordRequestBody,
+} from "@/types/record";
+import { ApiResponse } from "@/types/api";
 
-const prisma = new PrismaClient();
-
+const formatRecord = (record: Record): RecordData => {
+  return {
+    id: record.id,
+    date: record.date.toISOString(),
+    weight: record.weight,
+    steps: record.steps,
+    memo: record.memo,
+  };
+};
 
 export const GET = async (
   request: NextRequest,
-  { params } : { params: { date: string }}
+  { params }: { params: Promise<{ date: string }> },
 ) => {
-  try {
-    const user = await requireUser(request);
+  const user = await getAuthenticatedUser(request);
+  if (!user) {
+    return NextResponse.json<ApiResponse>(
+      { status: "NG", message: "認証されていません" },
+      { status: 401 },
+    );
+  }
+  const profile = await getProfileByUserId(user.id);
+  if (!profile) {
+    return NextResponse.json<ApiResponse>(
+      { status: "NG", message: "プロフィールが見つかりません" },
+      { status: 404 },
+    );
+  }
 
-    const record = await prisma.records.findUnique({
+  const { date } = await params;
+
+  try {
+    const record = await prisma.record.findFirst({
       where: {
-        profileId_date: {
-          profileId: Number(user.id),
-          date: new Date(params.date),
-        },
-       },
+        date: new Date(date),
+        profileId: profile.id,
+      },
     });
 
-    const response: RecordResponse = {
+    if (!record) {
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: "記録はありません" },
+        { status: 404 },
+      );
+    }
+
+    //const recordData = formatRecord(record);
+    return NextResponse.json<RecordResponse>({
       status: "OK",
       message: "取得しました",
-      records: record ? [toRecordFields(record)] : []
-    };
-
-    return NextResponse.json(response, { status: 200 });
+      record: formatRecord(record),
+    });
   } catch (error) {
-    if(error instanceof Error) {
-      const response: RecordResponse = {
-        status: "NG",
-        message: error.message,
-      };
-      return NextResponse.json(response, { status: 400 });
+    if (error instanceof Error) {
+      return NextResponse.json<RecordResponse>(
+        {
+          status: "NG",
+          message: error.message,
+        },
+        { status: 400 },
+      );
     }
   }
 };
 
 export const PUT = async (
   request: NextRequest,
-  { params } : { params: { id: string }}
+  { params }: { params: Promise<{ date: string }> },
 ) => {
-  const { id } = params;
-  const token = request.headers.get('Authorization') ?? ''
-  const { data, error } = await supabase.auth.getUser(token);
-
-  if(error){
-    return NextResponse.json(
-      { status: "NG" , message: error.message } , 
-      { status: 401})
+  const user = await getAuthenticatedUser(request);
+  if (!user) {
+    return NextResponse.json<ApiResponse>(
+      { status: "NG", message: "認証されていません" },
+      { status: 401 },
+    );
+  }
+  const profile = await getProfileByUserId(user.id);
+  if (!profile) {
+    return NextResponse.json<ApiResponse>(
+      { status: "NG", message: "プロフィールが見つかりません" },
+      { status: 404 },
+    );
   }
 
-    const user = data.user;
+  const { date } = await params;
+  const {
+    date: newDate,
+    weight,
+    steps,
+    memo,
+  }: UpdateRecordRequestBody = await request.json();
 
-    try {
-      const body: RecordUpdateRequest = await request.json();
-      const { date, weight, steps, memo } = body;
+  console.log("weight:", weight);
+  console.log("steps:", steps);
 
-    const updateData: Partial<RecordUpdateRequest> = {};
-    if (date !== undefined) updateData.date = date;
-    if (weight !== undefined) updateData.weight = weight;
-    if (steps !== undefined) updateData.steps = steps;
-    if (memo !== undefined) updateData.memo = memo;
-
-    const profile = await prisma.profiles.findUnique({
-      where: { supabase_user_id: user.id }, // ← UUIDで検索
+  try {
+    //record取得
+    const record = await prisma.record.findFirst({
+      where: {
+        date: new Date(date),
+        profileId: profile.id,
+      },
     });
 
-
-    if (!profile) {
-      return NextResponse.json(
-        { status: "NG", message: "プロフィールが見つかりません" },
-        { status: 404 }
+    if (!record) {
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: "記録が見つかりません" },
+        { status: 404 },
       );
     }
 
+    //dateのみ送られてきた場合を省く
+    const hasOtherFields =
+      weight !== undefined || steps !== undefined || memo !== undefined;
+    if (!hasOtherFields) {
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: "いずれかの項目を変更してください" },
+        { status: 400 },
+      );
+    }
 
-    const record = await prisma.records.update({
-      where: { id: Number(id), profileId: profile.id },
+    //updateData作成
+    const updateData: Prisma.RecordUpdateInput = {};
+
+    //数値変更とNaNチェック
+    const numWeight =
+      weight === null || weight === undefined ? null : Number(weight);
+    const numSteps =
+      steps === null || steps === undefined ? null : Number(steps);
+
+    if (newDate !== undefined) updateData.date = new Date(newDate);
+    if (numWeight === null) {
+      updateData.weight = null;
+    } else if (!Number.isNaN(numWeight)) {
+      updateData.weight = numWeight;
+    }
+
+    if (numSteps === null) {
+      updateData.steps = null;
+    } else if (!Number.isNaN(numSteps)) {
+      updateData.steps = numSteps;
+    }
+
+    //更新項目がない場合は返す
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: "更新する項目がありません" },
+        { status: 400 },
+      );
+    }
+
+    //差分チェック
+    const isSame =
+      (numWeight === undefined || numWeight === record.weight) &&
+      (numSteps === undefined || numSteps === record.steps) &&
+      (memo === undefined || memo === record.memo) &&
+      (newDate === undefined ||
+        new Date(newDate).getTime() === record.date.getTime());
+
+    if (isSame) {
+      return NextResponse.json<RecordResponse>(
+        {
+          status: "OK",
+          message: "更新の必要はありません",
+          record: formatRecord(record),
+        },
+        { status: 200 },
+      );
+    }
+
+    //update
+    const updatedRecord = await prisma.record.update({
+      where: {
+        id: record.id,
+      },
       data: updateData,
     });
 
-    const response: RecordResponse = {
+    const recordData = formatRecord(updatedRecord);
+    return NextResponse.json<RecordResponse>({
       status: "OK",
-      message: "記録を更新しました",
- records: [
-        {
-          id: record.id,
-          date: record.date.toISOString(), // Date → string に変換
-          weight: record.weight,
-          steps: record.steps,
-          memo: record.memo,
-          profileId: String(record.profileId), // number → string に変換
-        },
-      ],
-    };
-
-    return NextResponse.json(response, { status: 200});
+      message: "更新しました",
+      record: recordData,
+    });
   } catch (error) {
-    if (error instanceof Error) {
-      const response: RecordResponse = {
-        status: "NG",
-        message: error.message,
-      };
-      return NextResponse.json(response, { status: 400 });
-    }
+    if (error instanceof Error)
+      return NextResponse.json<RecordResponse>(
+        { status: "NG", message: error.message },
+        { status: 400 },
+      );
   }
 };
 
-
-export const DELETE = async ( request: NextRequest ) => {
-  const token = request.headers.get('Authorization') ?? ''
-  const { data, error } = await supabase.auth.getUser(token);
-
-
-    if(error){
-    return NextResponse.json(
-      { status: "NG" , message: error.message } , 
-      { status: 401})
+export const DELETE = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ date: string }> },
+) => {
+  const user = await getAuthenticatedUser(request);
+  if (!user) {
+    return NextResponse.json<ApiResponse>(
+      { status: "NG", message: "認証されていません" },
+      { status: 40 },
+    );
+  }
+  const profile = await getProfileByUserId(user.id);
+  if (!profile) {
+    return NextResponse.json<ApiResponse>(
+      { status: "NG", message: "プロフィールが見つかりません" },
+      { status: 404 },
+    );
   }
 
-    const user = data.user;
+  const { date } = await params;
 
   try {
-    const body = await request.json();
-    const { date } = body; // リクエストから日付を受け取る
-    
-    if(!date) {
-      return NextResponse.json(
-        { status: "NG", message: "日付が指定されていません" },
-        { status: 400 }
-      );
-    }
-    
-    const profile = await prisma.profiles.findUnique({
-      where: { supabase_user_id: user.id },
+    const targetDate = new Date(`${date}T00:00:00Z`);
+    const nextDate = new Date(`${date}T23:59:59Z`);
+    const result = await prisma.record.deleteMany({
+      where: {
+        profileId: profile.id,
+        date: {
+          gte: targetDate,
+          lte: nextDate,
+        },
+      },
     });
 
-    if (!profile) {
-      return NextResponse.json(
-        { status: "NG", message: "プロフィールが見つかりません" },
-        { status: 404 }
+    if (result.count === 0) {
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: "記録が見つかりません" },
+        { status: 404 },
       );
     }
 
-    
-    await prisma.records.delete({
-      where: {
-        profileId_date: {
-          profileId: profile.id,
-          date: new Date(date)
-        }
-      },
-    }) ;
-
-    return NextResponse.json({ status: "OK"}, { status : 200 })
-  } catch(error) {
-    if(error instanceof Error) 
-      return NextResponse.json ({ status: "NG", message: "この日付には記録がありません"}, { status: 404 })
-
+    return NextResponse.json<ApiResponse>(
+      { status: "OK", message: "削除しました" },
+      { status: 200 },
+    );
+  } catch (error) {
+    if (error instanceof Error)
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: error.message },
+        { status: 400 },
+      );
   }
 };
-
