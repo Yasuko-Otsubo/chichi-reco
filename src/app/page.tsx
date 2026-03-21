@@ -1,63 +1,37 @@
 import Image from "next/image";
 
-export default function Home() {
+export default function IntroPage() {
   return (
-    <>
-    <header className="">ここにHeader</header>
-    <div className="w-[500px] mx-auto min-h-screen">
-      <main className="bg-blue-500 flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <div className="bg-[#eafaff] w-full">ここにトップ画像</div>
-        ここがトップページです
-        <button className="bg-[#a2dae7] py-[15px] px-[70px] rounded-[10px]">今すぐ始める</button>
-      </main>
-      <footer className="fixed bottom-0 row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+    <main className="min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <Image
+        src="/logo.svg"
+        alt="父レコのロゴ"
+        width={120}
+        height={120}
+        className="mb-6"
+      />
+      <header>ここにHeader</header>
+      <h1 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
+        家族の健康を、やさしく記録。
+      </h1>
+      <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 max-w-xl mb-8">
+        父レコは、家族の健康記録を安心して続けられるアプリです。<br />
+        シンプルで美しいUI、記録しやすいUX、そして守られるプライバシー。
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4">
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/signup"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+          はじめてみる
         </a>
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/user/login"
+          className="border border-gray-400 hover:border-gray-600 text-gray-800 dark:text-gray-200 font-semibold py-3 px-6 rounded-lg transition"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
+          ログイン
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>    
-    </>
+      </div>
+    </main>
   );
 }

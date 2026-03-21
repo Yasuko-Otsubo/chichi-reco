@@ -11,6 +11,7 @@ export default function Page() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log("こっちが正解")
 
     const { error } = await supabase.auth.signUp({
       email,
