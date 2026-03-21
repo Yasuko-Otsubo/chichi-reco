@@ -67,10 +67,8 @@ export default function CalendarPage() {
         fetchWithAuth(`/api/records?month=${currentMonth}`),
       ]);
 
-      const [data1, data2] = await Promise.all([
-        res1.json().then((d) => d as RecordsResponse),
-        res2.json().then((d) => d as RecordsResponse),
-      ]);
+      const data1: RecordsResponse = await res1.json();
+      const data2: RecordsResponse = await res2.json();
 
       //配列結合
       const merged = [...data1.records, ...data2.records];
@@ -102,7 +100,7 @@ export default function CalendarPage() {
   const firstDay = new Date(year, month - 1, 1).getDay();
 
   // 月初の空白セル
-  const blanks = Array(firstDay).fill(null);
+  const blanks: (number | null)[] = Array(firstDay).fill(null);
 
   // 月の日付
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
