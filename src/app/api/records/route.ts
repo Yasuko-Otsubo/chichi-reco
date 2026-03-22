@@ -151,16 +151,19 @@ export const GET = async (request: NextRequest) => {
           from.setDate(today.getDate() - 6);
           break;
         case "1month":
-          from.setMonth(today.getMonth() - 1);
+          from.setDate(1);
           break;
         case "6month":
           from.setMonth(today.getMonth() - 6);
+          from.setDate(1);
           break;
         case "1year":
           from.setFullYear(today.getFullYear() - 1);
+          from.setDate(1);
           break;
         case "3year":
           from.setFullYear(today.getFullYear() - 3);
+          from.setDate(1);
           break;
         default:
           return NextResponse.json(
