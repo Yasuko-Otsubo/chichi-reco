@@ -19,7 +19,7 @@ const formatRecords = (records: Record[]): RecordData[] => {
 export const POST = async (request: NextRequest) => {
   const user = await getAuthenticatedUser(request);
   if (!user) {
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "NG", message: "認証されていません" },
       { status: 401 },
     );
@@ -27,7 +27,7 @@ export const POST = async (request: NextRequest) => {
 
   const profile = await getProfileByUserId(user.id);
   if (!profile) {
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "NG", message: "プロフィールが見つかりません" },
       { status: 404 },
     );
@@ -72,7 +72,7 @@ export const POST = async (request: NextRequest) => {
 export const GET = async (request: NextRequest) => {
   const user = await getAuthenticatedUser(request);
   if (!user) {
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "NG", message: "認証されていません" },
       { status: 401 },
     );
@@ -80,7 +80,7 @@ export const GET = async (request: NextRequest) => {
 
   const profile = await getProfileByUserId(user.id);
   if (!profile) {
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { status: "NG", message: "プロフィールが見つかりません" },
       { status: 404 },
     );
@@ -151,16 +151,19 @@ export const GET = async (request: NextRequest) => {
           from.setDate(today.getDate() - 6);
           break;
         case "1month":
-          from.setMonth(today.getMonth() - 1);
+          from.setDate(1);
           break;
         case "6month":
           from.setMonth(today.getMonth() - 6);
+          from.setDate(1);
           break;
         case "1year":
           from.setFullYear(today.getFullYear() - 1);
+          from.setDate(1);
           break;
         case "3year":
           from.setFullYear(today.getFullYear() - 3);
+          from.setDate(1);
           break;
         default:
           return NextResponse.json(
