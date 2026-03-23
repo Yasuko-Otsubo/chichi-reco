@@ -79,7 +79,7 @@ export default function GraphPage() {
           <XAxis dataKey="date" stroke="var(--color-text-3)" />
           <YAxis yAxisId="left" domain={[50, 70]} />
           <YAxis yAxisId="right" orientation="right" domain={[0, 10000]} />
-          <Line yAxisId="left" dataKey="weight"></Line>
+          <Line yAxisId="left" dataKey="weight" connectNulls></Line>
           <Bar yAxisId="right" dataKey="steps" fill="pink"></Bar>
           <></>
         </ComposedChart>
