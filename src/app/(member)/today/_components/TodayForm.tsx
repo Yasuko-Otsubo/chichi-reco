@@ -1,4 +1,5 @@
 import { TodayFormValues } from "@/types/form";
+import { RecordData } from "@/types/record";
 import { UseFormRegister } from "react-hook-form";
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
   onSubmit: (e?: React.BaseSyntheticEvent) => void;
   onDelete?: () => void;
   disabled: boolean;
+  prevRecord: RecordData | null;
 }
 
 export const TodayForm: React.FC<Props> = ({
@@ -17,8 +19,17 @@ export const TodayForm: React.FC<Props> = ({
   onSubmit,
   onDelete,
   disabled,
+  prevRecord,
 }) => (
-  <form onSubmit={onSubmit}>
+  <>
+  {prevRecord && (
+    <div className="flex justify-center">
+        <p className="border-2 m-3 p-2">体重: {prevRecord.weight}kg</p>
+        <p className="border-2 m-3 p-2">歩数: {prevRecord.steps}歩</p>
+        {/*ここにアコーディオン*/}
+    </div>
+  )}
+    <form onSubmit={onSubmit}>
     <div>
       <label>日付</label>
       <input className="border-2" type="text" {...register("date")} />
@@ -44,4 +55,6 @@ export const TodayForm: React.FC<Props> = ({
       </button>
     )}
   </form>
+
+  </>
 );

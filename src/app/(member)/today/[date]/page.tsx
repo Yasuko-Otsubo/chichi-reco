@@ -37,6 +37,7 @@ export default function Page() {
 
   // ===== 取得データ =====
   const [record, setRecord] = useState<RecordResponse["record"] | null>(null);
+  const [prevRecord, setPrevRecord] = useState<RecordData | null>(null);
 
   // ===== UI制御 =====
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,6 +46,21 @@ export default function Page() {
   // ******* GET *******
   useEffect(() => {
     if (!token) return;
+
+    const fetchPrevRecord = async () => {
+      const res = await fetch(`/api/records?before=${paramDate}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      if (res.status === 404) {
+        setPrevRecord(null);
+        return;
+      }
+      const data: RecordResponse = await res.json();
+      setPrevRecord(data.record ?? null);
+    };
 
     const fetcher = async () => {
       try {
@@ -91,6 +107,7 @@ export default function Page() {
     };
 
     fetcher();
+    fetchPrevRecord();
   }, [token, paramDate, reset]);
 
   // ******* POST or PUT *******
@@ -99,6 +116,7 @@ export default function Page() {
 
     if (!values.weight && !values.steps && !values.memo) {
       alert("いづれかの項目を入力してください");
+      return;
     }
 
     try {
@@ -149,7 +167,7 @@ export default function Page() {
       }
 
       if (!res.ok) {
-        const errorData = (await res.json() as ApiResponse);
+        const errorData = (await res.json()) as ApiResponse;
         throw new Error(errorData.message || "POSTに失敗しました");
       }
 
@@ -195,6 +213,7 @@ export default function Page() {
       onSubmit={handleSubmit(onSubmit)}
       onDelete={handleDelete}
       disabled={isSubmitting}
+      prevRecord={prevRecord}
     />
   );
 }
