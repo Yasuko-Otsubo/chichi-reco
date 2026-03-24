@@ -27,10 +27,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="text-center py-6">
-          <h1 className="text-3xl font-bold text-gray-800">父レコ</h1>
-        </header>
-
         <main className="flex justify-center">
           <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-xl">
             {children}
