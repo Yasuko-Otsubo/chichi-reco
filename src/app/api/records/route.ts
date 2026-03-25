@@ -68,9 +68,15 @@ export const POST = async (request: NextRequest) => {
       id: data.id,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ message: error.message }, { status: 400 });
-    }
+    const message =
+      error instanceof Error ? error.message : "エラーが発生しました";
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message: message,
+      },
+      { status: 400 },
+    );
   }
 };
 
@@ -227,7 +233,16 @@ export const GET = async (request: NextRequest) => {
       records: formattedRecords,
     });
   } catch (error) {
-    if (error instanceof Error)
-      return NextResponse.json({ message: error.message }, { status: 400 });
+    const message =
+      error instanceof Error ? error.message : "エラーが発生しました";
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message: message,
+      },
+      {
+        status: 400,
+      },
+    );
   }
 };
