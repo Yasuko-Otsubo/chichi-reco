@@ -94,7 +94,10 @@ export const PUT = async (
     );
   }
 
-  const { date } = await params;
+
+  try {
+
+      const { date } = await params;
   const {
     date: newDate,
     weight,
@@ -105,7 +108,6 @@ export const PUT = async (
   console.log("weight:", weight);
   console.log("steps:", steps);
 
-  try {
     //record取得
     const record = await prisma.record.findFirst({
       where: {
