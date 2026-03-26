@@ -1,60 +1,68 @@
 "use client";
 
-import { useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "../_libs/supabase";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+
+type SignupInput = {
+  email: string;
+  password: string;
+};
 
 export default function Page() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupInput>();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("こっちが正解")
-
+  const onSubmit = async (data: SignupInput) => {
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options : {
+      email: data.email,
+      password: data.password,
+      options: {
         emailRedirectTo: `http://localhost:3000/login`,
       },
     });
-    if(error) {
-      alert ("登録失敗");
+
+    if (error) {
+      alert("登録に失敗しました");
+      return;
     } else {
-      setEmail('');
-      setPassword('');
-      alert('確認メールを送りました');
+      alert("確認メールを送りました");
+      router.replace("/");
     }
   };
   return (
     <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full max-w-[500px] bg-[#a2dae7]  mx-auto ">
-      <form onSubmit={handleSubmit} className="bg-white rounded-[50px] p-10 space-y-4 w-full max-w-[400px]">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white rounded-[50px] p-10 space-y-4 w-full max-w-[400px]"
+      >
         <Input
           label="メールアドレス"
           type="email"
           placeholder="name@company.com"
-          required
-          className='bg-white'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          className="bg-white"
+          error={errors.email?.message}
+          {...register("email", { required: "メールアドレスは必須です" })}
         />
 
         <Input
           label="パスワード"
           type="password"
           placeholder="••••••••"
-          required
-          className='bg-white'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          className="bg-white"
+          error={errors.password?.message}
+          {...register("password", { required: "パスワードは必須です" })}
         />
 
-        <Button type="submit" fullWidth>
+        <Button type="submit" fullWidth disabled={isSubmitting}>
           登録
         </Button>
-        
       </form>
     </div>
   );
