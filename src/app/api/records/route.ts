@@ -1,7 +1,12 @@
 import { prisma } from "@/app/_libs/prisma";
 import { getProfileByUserId } from "@/_utils/profile";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
-import { CreateRecordRequestBody, RecordData, RecordsResponse } from "@/types/record";
+import {
+  CreateRecordRequestBody,
+  RecordData,
+  RecordResponse,
+  RecordsResponse,
+} from "@/types/record";
 import type { Record } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiResponse } from "@/types/api";
@@ -63,9 +68,15 @@ export const POST = async (request: NextRequest) => {
       id: data.id,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ message: error.message }, { status: 400 });
-    }
+    const message =
+      error instanceof Error ? error.message : "エラーが発生しました";
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message: message,
+      },
+      { status: 400 },
+    );
   }
 };
 
@@ -87,8 +98,24 @@ export const GET = async (request: NextRequest) => {
   }
 
   try {
-    //month
     const { searchParams } = new URL(request.url);
+    // 表示した記録の前日のデータを取得する
+    const before = searchParams.get("before");
+    if (before) {
+      const record = await prisma.record.findFirst({
+        where: {
+          profileId: profile.id,
+          date: { lt: new Date(before) },
+        },
+        orderBy: { date: "desc" },
+      });
+      return NextResponse.json<RecordResponse>({
+        status: "OK",
+        message: record ? "取得しました" : "記録はありません",
+        record: record ? formatRecords([record])[0] : null,
+      });
+    }
+    //month
     const date = searchParams.get("date");
     if (date) {
       const from = new Date(date);
@@ -206,7 +233,16 @@ export const GET = async (request: NextRequest) => {
       records: formattedRecords,
     });
   } catch (error) {
-    if (error instanceof Error)
-      return NextResponse.json({ message: error.message }, { status: 400 });
+    const message =
+      error instanceof Error ? error.message : "エラーが発生しました";
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message: message,
+      },
+      {
+        status: 400,
+      },
+    );
   }
 };

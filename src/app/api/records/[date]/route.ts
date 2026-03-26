@@ -63,15 +63,15 @@ export const GET = async (
       record: formatRecord(record),
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json<RecordResponse>(
-        {
-          status: "NG",
-          message: error.message,
-        },
-        { status: 400 },
-      );
-    }
+    const message =
+      error instanceof Error ? error.message : "エラーが発生しました";
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message: message,
+      },
+      { status: 400 },
+    );
   }
 };
 
@@ -94,18 +94,18 @@ export const PUT = async (
     );
   }
 
-  const { date } = await params;
-  const {
-    date: newDate,
-    weight,
-    steps,
-    memo,
-  }: UpdateRecordRequestBody = await request.json();
-
-  console.log("weight:", weight);
-  console.log("steps:", steps);
-
   try {
+    const { date } = await params;
+    const {
+      date: newDate,
+      weight,
+      steps,
+      memo,
+    }: UpdateRecordRequestBody = await request.json();
+
+    console.log("weight:", weight);
+    console.log("steps:", steps);
+
     //record取得
     const record = await prisma.record.findFirst({
       where: {
@@ -195,11 +195,15 @@ export const PUT = async (
       record: recordData,
     });
   } catch (error) {
-    if (error instanceof Error)
-      return NextResponse.json<RecordResponse>(
-        { status: "NG", message: error.message },
-        { status: 400 },
-      );
+    const message =
+      error instanceof Error ? error.message : "エラーが発生しました";
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message: message,
+      },
+      { status: 400 },
+    );
   }
 };
 
@@ -249,10 +253,14 @@ export const DELETE = async (
       { status: 200 },
     );
   } catch (error) {
-    if (error instanceof Error)
-      return NextResponse.json<ApiResponse>(
-        { status: "NG", message: error.message },
-        { status: 400 },
-      );
+    const message =
+      error instanceof Error ? error.message : "エラーが発生しました";
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message: message,
+      },
+      { status: 400 },
+    );
   }
 };
