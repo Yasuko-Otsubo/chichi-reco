@@ -94,19 +94,17 @@ export const PUT = async (
     );
   }
 
-
   try {
+    const { date } = await params;
+    const {
+      date: newDate,
+      weight,
+      steps,
+      memo,
+    }: UpdateRecordRequestBody = await request.json();
 
-      const { date } = await params;
-  const {
-    date: newDate,
-    weight,
-    steps,
-    memo,
-  }: UpdateRecordRequestBody = await request.json();
-
-  console.log("weight:", weight);
-  console.log("steps:", steps);
+    console.log("weight:", weight);
+    console.log("steps:", steps);
 
     //record取得
     const record = await prisma.record.findFirst({
