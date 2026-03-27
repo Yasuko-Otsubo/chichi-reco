@@ -2,8 +2,15 @@
 
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { RecordData, RecordsResponse } from "@/types/record";
-import { useEffect, useState } from "react";
-import { Bar, ComposedChart, Line, XAxis, YAxis } from "recharts";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Bar,
+  ComposedChart,
+  Line,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export default function GraphPage() {
   const { token } = useSupabaseSession();
@@ -36,9 +43,15 @@ export default function GraphPage() {
     fetcher();
   }, [token, range]);
 
+  const chartData = useMemo(() => {
+    if (range === "7days" || range === "1month") {
+      return records;
+    }
+
+
   return (
     <>
-      <div className="h-100%">
+      <div className="h-full%">
         <div className="flex justify-center">
           <button
             className="border-2 p-px mx-[3px]"
@@ -74,15 +87,23 @@ export default function GraphPage() {
           </button>
           {/*UXの時に<br>→<span>で処理 */}
         </div>
-
-        <ComposedChart width={500} height={300} data={records}>
-          <XAxis dataKey="date" stroke="var(--color-text-3)" />
-          <YAxis yAxisId="left" domain={[50, 70]} />
-          <YAxis yAxisId="right" orientation="right" domain={[0, 10000]} />
-          <Line yAxisId="left" dataKey="weight"></Line>
-          <Bar yAxisId="right" dataKey="steps" fill="pink"></Bar>
-          <></>
-        </ComposedChart>
+        <ResponsiveContainer width="100%" height={300}>
+          <ComposedChart data={records}>
+            <XAxis
+              dataKey="date"
+              tickFormatter={(v) => v.slice(0, 10)}
+              stroke="var(--color-text-3)"
+            />
+            <YAxis yAxisId="left" domain={[50, 70]} />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              domain={["auto", "auto"]}
+            />
+            <Line yAxisId="left" dataKey="weight"></Line>
+            <Bar yAxisId="right" dataKey="steps" fill="pink"></Bar>
+          </ComposedChart>
+        </ResponsiveContainer>
       </div>
     </>
   );
