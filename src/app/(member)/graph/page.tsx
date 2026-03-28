@@ -47,6 +47,8 @@ export default function GraphPage() {
     if (range === "7days" || range === "1month") {
       return records;
     }
+    let getKey: (date: Date) => string;
+    
 
 
   return (
