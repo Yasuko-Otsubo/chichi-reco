@@ -47,8 +47,25 @@ export default function GraphPage() {
     if (range === "7days" || range === "1month") {
       return records;
     }
-    let getKey: (date: Date) => string;
     
+    // 先に定義を決める
+    let getKey: (date: Date) => string;
+    if (range === "6month") {
+      getKey = (date) => {
+        const today = new Date();
+        const diff = Math.floor(
+          // dateはgroupedから渡される
+          (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        // 何週前かを出す
+        const weekIndex = Math.floor(diff / 7);
+        return String(weekIndex);
+      };
+    } else if (range === "1month") {
+      getKey = (date) => date.toISOString().slice(0, 7);
+    } else {
+      getKey = (date) => String(date.getFullYear());
+    }
 
 
   return (
