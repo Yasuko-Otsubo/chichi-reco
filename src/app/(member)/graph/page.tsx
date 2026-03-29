@@ -47,7 +47,7 @@ export default function GraphPage() {
     if (range === "7days" || range === "1month") {
       return records;
     }
-    
+
     // 先に定義を決める
     let getKey: (date: Date) => string;
     if (range === "6month") {
@@ -55,7 +55,7 @@ export default function GraphPage() {
         const today = new Date();
         const diff = Math.floor(
           // dateはgroupedから渡される
-          (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+          (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
         );
         // 何週前かを出す
         const weekIndex = Math.floor(diff / 7);
@@ -67,7 +67,7 @@ export default function GraphPage() {
       getKey = (date) => {
         const today = new Date();
         const diff = Math.floor(
-          (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+          (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
         );
         const quarterIndex = Math.floor(diff / 91);
         return String(quarterIndex);
@@ -77,12 +77,18 @@ export default function GraphPage() {
     const grouped = records.reduce<Record<string, RecordData[]>>((acc, r) => {
       const key = getKey(new Date(r.date));
       if (!acc[key]) {
-        acc[key] = [];}
-        acc[key].push(r);
-        return acc;
-    },  {} )
-    
-
+        acc[key] = [];
+      }
+      acc[key].push(r);
+      return acc;
+    }, {});
+    //
+    return Object.entries(grouped).map(([_, items]) => ({
+      date: items[items.length - 1].date,
+      weight: items.reduce((s, r) => s + (r.weight ?? 0), 0) / items.length,
+      steps: items.reduce((s, r) => s + (r.steps ?? 0), 0) / items.length,
+    }));
+  }, [records, range]);
 
   return (
     <>
