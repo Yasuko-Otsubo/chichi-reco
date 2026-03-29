@@ -61,11 +61,19 @@ export default function GraphPage() {
         const weekIndex = Math.floor(diff / 7);
         return String(weekIndex);
       };
-    } else if (range === "1month") {
+    } else if (range === "1year") {
       getKey = (date) => date.toISOString().slice(0, 7);
     } else {
-      getKey = (date) => String(date.getFullYear());
+      getKey = (date) => {
+        const today = new Date();
+        const diff = Math.floor(
+          (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        const quarterIndex = Math.floor(diff / 91);
+        return String(quarterIndex);
+      };
     }
+    
 
 
   return (
