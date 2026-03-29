@@ -73,6 +73,14 @@ export default function GraphPage() {
         return String(quarterIndex);
       };
     }
+    // データを週・月・年ごとにまとめる中間処理
+    const grouped = records.reduce<Record<string, RecordData[]>>((acc, r) => {
+      const key = getKey(new Date(r.date));
+      if (!acc[key]) {
+        acc[key] = [];}
+        acc[key].push(r);
+        return acc;
+    },  {} )
     
 
 
