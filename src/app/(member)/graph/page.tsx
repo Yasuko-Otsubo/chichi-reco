@@ -84,9 +84,11 @@ export default function GraphPage() {
     }, {});
     //
     return Object.entries(grouped).map(([_, items]) => ({
+      id: 0,
       date: items[items.length - 1].date,
       weight: items.reduce((s, r) => s + (r.weight ?? 0), 0) / items.length,
       steps: items.reduce((s, r) => s + (r.steps ?? 0), 0) / items.length,
+      memo: null,
     }));
   }, [records, range]);
 
@@ -129,7 +131,7 @@ export default function GraphPage() {
           {/*UXの時に<br>→<span>で処理 */}
         </div>
         <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart data={records}>
+          <ComposedChart data={chartData}>
             <XAxis
               dataKey="date"
               tickFormatter={(v) => v.slice(0, 10)}
