@@ -176,6 +176,7 @@ export const GET = async (request: NextRequest) => {
       switch (range) {
         case "7days":
           from.setDate(today.getDate() - 6);
+          from.setHours(0, 0, 0, 0);
           break;
         case "1month":
           from.setDate(1);
