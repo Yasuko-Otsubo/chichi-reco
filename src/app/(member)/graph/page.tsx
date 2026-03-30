@@ -35,6 +35,7 @@ export default function GraphPage() {
           throw new Error("API error");
         }
         const data: RecordsResponse = await res.json();
+        console.log(data.records);
         setRecords(data.records);
       } catch (error) {
         console.error(error);
@@ -44,12 +45,33 @@ export default function GraphPage() {
   }, [token, range]);
 
   const chartData = useMemo(() => {
-    if (range === "7days" || range === "1month") {
-      return records;
-    }
+    //  if (range === "7days" || range === "1month") {
+    //    return records;
+    //  }
 
     // 先に定義を決める
     let getKey: (date: Date) => string;
+    if (range === "7days") {
+      const days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        d.setHours(0, 0, 0, 0);
+        return d.toISOString();
+      });
+      return days.map((day) => {
+        const record = records.find(
+          (r) => r.date.slice(0, 10) === day.slice(0, 10),
+        );
+        return {
+          id: 0,
+          date: day,
+          weight: record?.weight ?? null,
+          steps: record?.steps ?? null,
+          memo: null,
+        };
+      });
+    }
+
     if (range === "6month") {
       getKey = (date) => {
         const today = new Date();
@@ -91,6 +113,23 @@ export default function GraphPage() {
       memo: null,
     }));
   }, [records, range]);
+
+  const formatTick = (v: string) => {
+    const date = new Date(v);
+    if (range === "7days") {
+      return ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
+    }
+    if (range === "1month") {
+      return `${date.getDate()}日`;
+    }
+    if (range === "6month") {
+      return `${date.getMonth() + 1}月`;
+    }
+    if (range === "1year") {
+      return `${date.getMonth() + 1}月`;
+    }
+    return `${date.getFullYear()}年`;
+  };
 
   return (
     <>
@@ -134,7 +173,7 @@ export default function GraphPage() {
           <ComposedChart data={chartData}>
             <XAxis
               dataKey="date"
-              tickFormatter={(v) => v.slice(0, 10)}
+              tickFormatter={formatTick}
               stroke="var(--color-text-3)"
             />
             <YAxis yAxisId="left" domain={[50, 70]} />
