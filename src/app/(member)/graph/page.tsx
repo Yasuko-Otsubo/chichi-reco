@@ -159,7 +159,7 @@ export default function GraphPage() {
     }
     if (range === "1month") {
       const day = date.getDate();
-      if (day === 1 || day === 8 || day === 15 || day === 22　|| day === 29) {
+      if (day === 1 || day === 8 || day === 15 || day === 22 || day === 29) {
         return `${day}日`;
       }
       return "";
