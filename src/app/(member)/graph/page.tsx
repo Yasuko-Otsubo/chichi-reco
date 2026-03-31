@@ -56,12 +56,48 @@ export default function GraphPage() {
         const d = new Date();
         d.setDate(d.getDate() - (6 - i));
         d.setHours(0, 0, 0, 0);
-        return d.toISOString();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
       });
       return days.map((day) => {
         const record = records.find(
           (r) => r.date.slice(0, 10) === day.slice(0, 10),
         );
+        return {
+          id: 0,
+          date: day,
+          weight: record?.weight ?? null,
+          steps: record?.steps ?? null,
+          memo: null,
+        };
+      });
+    }
+    if (range === "1month") {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const monthFrame = new Date(year, month + 1, 0).getDate();
+
+      const days = Array.from({ length: monthFrame }, (_, i) => {
+        const d = new Date();
+        d.setFullYear(year, month, i + 1);
+        d.setHours(0, 0, 0, 0);
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(i + 1).padStart(2, "0")}`;
+        return dateStr;
+      });
+      console.log("days", days);
+      console.log("record date sample", records[0]?.date);
+
+      console.log("records", records);
+
+      return days.map((day) => {
+        const record = records.find(
+          (r) => r.date.slice(0, 10) === day.slice(0, 10),
+        );
+        console.log(
+          "find result",
+          days.map((day) => records.find((r) => r.date.slice(0, 10) === day)),
+        );
+
         return {
           id: 0,
           date: day,
@@ -115,12 +151,18 @@ export default function GraphPage() {
   }, [records, range]);
 
   const formatTick = (v: string) => {
+    console.log("tick", v, new Date(v).getDate());
+
     const date = new Date(v);
     if (range === "7days") {
       return ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
     }
     if (range === "1month") {
-      return `${date.getDate()}日`;
+      const day = date.getDate();
+      if (day === 1 || day === 8 || day === 15 || day === 22　|| day === 29) {
+        return `${day}日`;
+      }
+      return "";
     }
     if (range === "6month") {
       return `${date.getMonth() + 1}月`;
@@ -175,6 +217,7 @@ export default function GraphPage() {
               dataKey="date"
               tickFormatter={formatTick}
               stroke="var(--color-text-3)"
+              interval={0}
             />
             <YAxis yAxisId="left" domain={[50, 70]} />
             <YAxis
