@@ -45,10 +45,6 @@ export default function GraphPage() {
   }, [token, range]);
 
   const chartData = useMemo(() => {
-    //  if (range === "7days" || range === "1month") {
-    //    return records;
-    //  }
-
     // 先に定義を決める
     let getKey: (date: Date) => string;
     if (range === "7days") {
@@ -109,8 +105,52 @@ export default function GraphPage() {
     }
 
     if (range === "6month") {
-      getKey = (date) => {
-        const today = new Date();
+      const today = new Date();
+      const from = new Date(
+        today.getFullYear(),
+        today.getMonth() - 6,
+        today.getDate(),
+      );
+      const weekCount = Math.ceil(
+        (today.getTime() - from.getTime()) / (1000 * 60 * 60 * 24 * 7),
+      );
+      const days = Array.from({ length: weekCount }, (_, i) => {
+        const d = new Date(from);
+        d.setDate(d.getDate() + i * 7);
+        d.setHours(0, 0, 0, 0);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      });
+      return days.map((day) => {
+        const matched = records.filter((r) => {
+          const weekEnd = new Date(day);
+          weekEnd.setDate(weekEnd.getDate() + 6);
+          const d = new Date(r.date);
+          return d >= new Date(day) && d <= weekEnd;
+        });
+        const totalWeight = matched.reduce(
+          (acc, cur) => acc + (cur.weight ?? 0),
+          0,
+        );
+        const weightCount = matched.filter((r) => r.weight !== null).length;
+        const aveWeight = weightCount === 0 ? null : totalWeight / weightCount;
+
+        const totalSteps = matched.reduce(
+          (acc, cur) => acc + (cur.steps ?? 0),
+          0,
+        );
+        const stepsCount = matched.filter((r) => r.steps !== null).length;
+        const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
+        return {
+          id: 0,
+          date: day,
+          weight: aveWeight,
+          steps: aveSteps,
+          memo: null,
+        };
+      });
+    }
+  }, [records, range]);
+  /*
         const diff = Math.floor(
           // dateはgroupedから渡される
           (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
@@ -149,6 +189,7 @@ export default function GraphPage() {
       memo: null,
     }));
   }, [records, range]);
+  */
 
   const formatTick = (v: string) => {
     console.log("tick", v, new Date(v).getDate());
@@ -165,7 +206,10 @@ export default function GraphPage() {
       return "";
     }
     if (range === "6month") {
-      return `${date.getMonth() + 1}月`;
+      if (date.getDate() <= 7) {
+        return `${date.getMonth() + 1}月`;
+      }
+      return "";
     }
     if (range === "1year") {
       return `${date.getMonth() + 1}月`;
