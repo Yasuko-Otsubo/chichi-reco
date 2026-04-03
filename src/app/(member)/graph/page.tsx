@@ -47,6 +47,8 @@ export default function GraphPage() {
   const chartData = useMemo(() => {
     // 先に定義を決める
     let getKey: (date: Date) => string;
+
+    // ========== 7days ==========
     if (range === "7days") {
       const days = Array.from({ length: 7 }, (_, i) => {
         const d = new Date();
@@ -67,6 +69,8 @@ export default function GraphPage() {
         };
       });
     }
+
+    // ========== 1month ==========
     if (range === "1month") {
       const today = new Date();
       const year = today.getFullYear();
@@ -104,6 +108,7 @@ export default function GraphPage() {
       });
     }
 
+    // ========== 6month ==========
     if (range === "6month") {
       const today = new Date();
       const from = new Date(
@@ -149,18 +154,53 @@ export default function GraphPage() {
         };
       });
     }
-  }, [records, range]);
-  /*
-        const diff = Math.floor(
-          // dateはgroupedから渡される
-          (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
+
+    // ========== 1year ==========
+    if (range === "1year") {
+      const months = new Date();
+      const from = new Date(
+        months.getFullYear(),
+        months.getMonth() - 11,
+        months.getDate(),
+      );
+      const monthCount = 12;
+
+      const monthIndex = Array.from({ length: monthCount }, (_, i) => {
+        const m = new Date(from);
+        m.setMonth(m.getMonth() + i);
+        return `${m.getFullYear()}-${String(m.getMonth() + 1).padStart(2, "0")}-01`;
+      });
+      console.log("ここにmonthIndex", monthIndex);
+
+      return monthIndex.map((month) => {
+        const matched = records.filter((r) => {
+          return r.date.slice(0, 7) === month.slice(0, 7); // >= new Date(month) && m <= monthEnd;
+        });
+        console.log("matched", month, matched);
+
+        const totalWeight = matched.reduce(
+          (acc, cur) => acc + (cur.weight ?? 0),
+          0,
         );
-        // 何週前かを出す
-        const weekIndex = Math.floor(diff / 7);
-        return String(weekIndex);
-      };
-    } else if (range === "1year") {
-      getKey = (date) => date.toISOString().slice(0, 7);
+        const weightCount = matched.filter((r) => r.weight !== null).length;
+        const aveWeight = weightCount === 0 ? null : totalWeight / weightCount;
+
+        const totalSteps = matched.reduce(
+          (acc, cur) => acc + (cur.steps ?? 0),
+          0,
+        );
+        console.log("ここにtotalStesps", totalSteps);
+        const stepsCount = matched.filter((r) => r.steps !== null).length;
+        const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
+        console.log(aveSteps);
+        return {
+          id: 0,
+          date: month,
+          weight: aveWeight,
+          steps: aveSteps,
+          memo: null,
+        };
+      });
     } else {
       getKey = (date) => {
         const today = new Date();
@@ -189,7 +229,7 @@ export default function GraphPage() {
       memo: null,
     }));
   }, [records, range]);
-  */
+  console.log("chartData", chartData);
 
   const formatTick = (v: string) => {
     console.log("tick", v, new Date(v).getDate());
