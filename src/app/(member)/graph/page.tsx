@@ -46,7 +46,6 @@ export default function GraphPage() {
 
   const chartData = useMemo(() => {
     // 先に定義を決める
-    let getKey: (date: Date) => string;
 
     // ========== 7days ==========
     if (range === "7days") {
@@ -201,33 +200,51 @@ export default function GraphPage() {
           memo: null,
         };
       });
-    } else {
-      getKey = (date) => {
-        const today = new Date();
-        const diff = Math.floor(
-          (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
-        );
-        const quarterIndex = Math.floor(diff / 91);
-        return String(quarterIndex);
-      };
     }
-    // データを週・月・年ごとにまとめる中間処理
-    const grouped = records.reduce<Record<string, RecordData[]>>((acc, r) => {
-      const key = getKey(new Date(r.date));
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(r);
-      return acc;
-    }, {});
-    //
-    return Object.entries(grouped).map(([_, items]) => ({
-      id: 0,
-      date: items[items.length - 1].date,
-      weight: items.reduce((s, r) => s + (r.weight ?? 0), 0) / items.length,
-      steps: items.reduce((s, r) => s + (r.steps ?? 0), 0) / items.length,
-      memo: null,
-    }));
+
+    // ========== 3year ==========
+    if (range === "3year") {
+      const years = new Date();
+      const from = new Date(
+        years.getFullYear() -2,
+        years.getMonth(),
+        years.getDate(),
+      );
+      const yearsCount = 3;
+
+      const yearIndex = Array.from({ length: yearsCount }, (_, i) => {
+        const y = new Date(from);
+        y.setFullYear(y.getFullYear() + i);
+        return `${y.getFullYear()}`;
+      });
+
+      return yearIndex.map((year) => {
+        const matched = records.filter((r) => {
+          return r.date.slice(0, 4) === year.slice(0, 4);
+        });
+
+        const totalWeight = matched.reduce(
+          (acc, cur) => acc + (cur.weight ?? 0),
+          0,
+        );
+        const weightCount = matched.filter((r) => r.weight !== null).length;
+        const aveWeight = weightCount === 0 ? null : totalWeight / weightCount;
+
+        const totalSteps = matched.reduce(
+          (acc, cur) => acc + (cur.steps ?? 0),
+          0,
+        );
+        const stepsCount = matched.filter((r) => r.steps !== null).length;
+        const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
+        return {
+          id: 0,
+          date: year,
+          weight: aveWeight,
+          steps: aveSteps,
+          memo: null,
+        };
+      });
+    }
   }, [records, range]);
   console.log("chartData", chartData);
 
