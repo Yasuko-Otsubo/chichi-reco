@@ -35,7 +35,6 @@ export default function GraphPage() {
           throw new Error("API error");
         }
         const data: RecordsResponse = await res.json();
-        console.log(data.records);
         setRecords(data.records);
       } catch (error) {
         console.error(error);
@@ -83,18 +82,10 @@ export default function GraphPage() {
         const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(i + 1).padStart(2, "0")}`;
         return dateStr;
       });
-      console.log("days", days);
-      console.log("record date sample", records[0]?.date);
-
-      console.log("records", records);
 
       return days.map((day) => {
         const record = records.find(
           (r) => r.date.slice(0, 10) === day.slice(0, 10),
-        );
-        console.log(
-          "find result",
-          days.map((day) => records.find((r) => r.date.slice(0, 10) === day)),
         );
 
         return {
@@ -169,13 +160,11 @@ export default function GraphPage() {
         m.setMonth(m.getMonth() + i);
         return `${m.getFullYear()}-${String(m.getMonth() + 1).padStart(2, "0")}-01`;
       });
-      console.log("ここにmonthIndex", monthIndex);
 
       return monthIndex.map((month) => {
         const matched = records.filter((r) => {
           return r.date.slice(0, 7) === month.slice(0, 7); // >= new Date(month) && m <= monthEnd;
         });
-        console.log("matched", month, matched);
 
         const totalWeight = matched.reduce(
           (acc, cur) => acc + (cur.weight ?? 0),
@@ -188,10 +177,8 @@ export default function GraphPage() {
           (acc, cur) => acc + (cur.steps ?? 0),
           0,
         );
-        console.log("ここにtotalStesps", totalSteps);
         const stepsCount = matched.filter((r) => r.steps !== null).length;
         const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
-        console.log(aveSteps);
         return {
           id: 0,
           date: month,
@@ -246,10 +233,8 @@ export default function GraphPage() {
       });
     }
   }, [records, range]);
-  console.log("chartData", chartData);
 
   const formatTick = (v: string) => {
-    console.log("tick", v, new Date(v).getDate());
 
     const date = new Date(v);
     if (range === "7days") {
