@@ -31,7 +31,7 @@ export const useGraphData = () => {
     };
     fetcher();
   }, [token, range]);
-  
+
   const chartData = useMemo(() => {
     // ========== 7days ==========
     if (range === "7days") {
@@ -50,7 +50,6 @@ export const useGraphData = () => {
           date: day,
           weight: record?.weight ?? null,
           steps: record?.steps ?? null,
-          memo: null,
         };
       });
     }
@@ -80,7 +79,6 @@ export const useGraphData = () => {
           date: day,
           weight: record?.weight ?? null,
           steps: record?.steps ?? null,
-          memo: null,
         };
       });
     }
@@ -127,7 +125,6 @@ export const useGraphData = () => {
           date: day,
           weight: aveWeight,
           steps: aveSteps,
-          memo: null,
         };
       });
     }
@@ -171,7 +168,6 @@ export const useGraphData = () => {
           date: month,
           weight: aveWeight,
           steps: aveSteps,
-          memo: null,
         };
       });
     }
@@ -215,7 +211,6 @@ export const useGraphData = () => {
           date: year,
           weight: aveWeight,
           steps: aveSteps,
-          memo: null,
         };
       });
     }
