@@ -1,10 +1,11 @@
 "use client";
 
 import { useGraphData } from "./_hooks/useGraphData";
+import { GraphChart } from "./_components/GraphChart";
 
 export default function GraphPage() {
   // ===== 取得データ =====
-  const { setRange } = useGraphData();
+  const { chartData, range, setRange } = useGraphData();
 
   return (
     <>
@@ -45,6 +46,7 @@ export default function GraphPage() {
           {/*UXの時に<br>→<span>で処理 */}
         </div>
       </div>
+      <GraphChart chartData={chartData ?? []} range={range} />
     </>
   );
 }

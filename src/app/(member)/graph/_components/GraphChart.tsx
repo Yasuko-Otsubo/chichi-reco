@@ -1,6 +1,6 @@
 "use client";
 
-import { RecordData } from "@/types/record";
+import { RecordGraphData } from "@/types/record";
 import {
   Bar,
   ComposedChart,
@@ -11,7 +11,7 @@ import {
 } from "recharts";
 
 interface Props {
-  chartData: RecordData[];
+  chartData: RecordGraphData[];
   range: string;
 }
 

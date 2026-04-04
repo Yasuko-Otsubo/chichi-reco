@@ -7,6 +7,13 @@ export type RecordData = {
   memo: string | null
 }
 
+export type RecordGraphData = {
+  id: number
+  date: string
+  weight? : number | null
+  steps? : number | null
+}
+
 export type RecordResponse = {
   status: "OK" | "NG";
   message: string;
