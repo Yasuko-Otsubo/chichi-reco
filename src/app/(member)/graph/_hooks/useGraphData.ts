@@ -107,6 +107,8 @@ export const useGraphData = () => {
           const d = new Date(r.date);
           return d >= new Date(day) && d <= weekEnd;
         });
+
+        // ここから
         const totalWeight = matched.reduce(
           (acc, cur) => acc + (cur.weight ?? 0),
           0,
@@ -120,6 +122,7 @@ export const useGraphData = () => {
         );
         const stepsCount = matched.filter((r) => r.steps !== null).length;
         const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
+        // ここまでの平均計算をレビュー後関数化
         return {
           id: 0,
           date: day,
@@ -150,6 +153,7 @@ export const useGraphData = () => {
           return r.date.slice(0, 7) === month.slice(0, 7);
         });
 
+        // ここから
         const totalWeight = matched.reduce(
           (acc, cur) => acc + (cur.weight ?? 0),
           0,
@@ -163,6 +167,7 @@ export const useGraphData = () => {
         );
         const stepsCount = matched.filter((r) => r.steps !== null).length;
         const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
+        // ここまでの平均計算をレビュー後関数化
         return {
           id: 0,
           date: month,
@@ -193,6 +198,7 @@ export const useGraphData = () => {
           return r.date.slice(0, 4) === year.slice(0, 4);
         });
 
+        // ここから
         const totalWeight = matched.reduce(
           (acc, cur) => acc + (cur.weight ?? 0),
           0,
@@ -206,6 +212,7 @@ export const useGraphData = () => {
         );
         const stepsCount = matched.filter((r) => r.steps !== null).length;
         const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
+        // ここまでの平均計算をレビュー後関数化
         return {
           id: 0,
           date: year,
