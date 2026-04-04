@@ -44,8 +44,6 @@ export default function GraphPage() {
   }, [token, range]);
 
   const chartData = useMemo(() => {
-    // 先に定義を決める
-
     // ========== 7days ==========
     if (range === "7days") {
       const days = Array.from({ length: 7 }, (_, i) => {
@@ -163,7 +161,7 @@ export default function GraphPage() {
 
       return monthIndex.map((month) => {
         const matched = records.filter((r) => {
-          return r.date.slice(0, 7) === month.slice(0, 7); // >= new Date(month) && m <= monthEnd;
+          return r.date.slice(0, 7) === month.slice(0, 7);
         });
 
         const totalWeight = matched.reduce(
@@ -193,7 +191,7 @@ export default function GraphPage() {
     if (range === "3year") {
       const years = new Date();
       const from = new Date(
-        years.getFullYear() -2,
+        years.getFullYear() - 2,
         years.getMonth(),
         years.getDate(),
       );
@@ -235,7 +233,6 @@ export default function GraphPage() {
   }, [records, range]);
 
   const formatTick = (v: string) => {
-
     const date = new Date(v);
     if (range === "7days") {
       return ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
