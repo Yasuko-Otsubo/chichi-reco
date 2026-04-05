@@ -32,6 +32,21 @@ export const useGraphData = () => {
     fetcher();
   }, [token, range]);
 
+  // 6month, 1year, 3yearの平均関数
+  const calcAverage = (matched: RecordData[]) => {
+    const totalWeight = matched.reduce(
+      (acc, cur) => acc + (cur.weight ?? 0),
+      0,
+    );
+    const weightCount = matched.filter((r) => r.weight !== null).length;
+    const aveWeight = weightCount === 0 ? null : totalWeight / weightCount;
+
+    const totalSteps = matched.reduce((acc, cur) => acc + (cur.steps ?? 0), 0);
+    const stepsCount = matched.filter((r) => r.steps !== null).length;
+    const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
+    return { aveWeight, aveSteps };
+  };
+
   const chartData = useMemo(() => {
     // ========== 7days ==========
     if (range === "7days") {
@@ -108,21 +123,7 @@ export const useGraphData = () => {
           return d >= new Date(day) && d <= weekEnd;
         });
 
-        // ここから
-        const totalWeight = matched.reduce(
-          (acc, cur) => acc + (cur.weight ?? 0),
-          0,
-        );
-        const weightCount = matched.filter((r) => r.weight !== null).length;
-        const aveWeight = weightCount === 0 ? null : totalWeight / weightCount;
-
-        const totalSteps = matched.reduce(
-          (acc, cur) => acc + (cur.steps ?? 0),
-          0,
-        );
-        const stepsCount = matched.filter((r) => r.steps !== null).length;
-        const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
-        // ここまでの平均計算をレビュー後関数化
+        const { aveWeight, aveSteps } = calcAverage(matched);
         return {
           id: 0,
           date: day,
@@ -153,21 +154,7 @@ export const useGraphData = () => {
           return r.date.slice(0, 7) === month.slice(0, 7);
         });
 
-        // ここから
-        const totalWeight = matched.reduce(
-          (acc, cur) => acc + (cur.weight ?? 0),
-          0,
-        );
-        const weightCount = matched.filter((r) => r.weight !== null).length;
-        const aveWeight = weightCount === 0 ? null : totalWeight / weightCount;
-
-        const totalSteps = matched.reduce(
-          (acc, cur) => acc + (cur.steps ?? 0),
-          0,
-        );
-        const stepsCount = matched.filter((r) => r.steps !== null).length;
-        const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
-        // ここまでの平均計算をレビュー後関数化
+        const { aveWeight, aveSteps } = calcAverage(matched);
         return {
           id: 0,
           date: month,
@@ -198,21 +185,7 @@ export const useGraphData = () => {
           return r.date.slice(0, 4) === year.slice(0, 4);
         });
 
-        // ここから
-        const totalWeight = matched.reduce(
-          (acc, cur) => acc + (cur.weight ?? 0),
-          0,
-        );
-        const weightCount = matched.filter((r) => r.weight !== null).length;
-        const aveWeight = weightCount === 0 ? null : totalWeight / weightCount;
-
-        const totalSteps = matched.reduce(
-          (acc, cur) => acc + (cur.steps ?? 0),
-          0,
-        );
-        const stepsCount = matched.filter((r) => r.steps !== null).length;
-        const aveSteps = stepsCount === 0 ? null : totalSteps / stepsCount;
-        // ここまでの平均計算をレビュー後関数化
+        const { aveWeight, aveSteps } = calcAverage(matched);
         return {
           id: 0,
           date: year,
