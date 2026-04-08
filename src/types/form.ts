@@ -4,3 +4,11 @@ export type TodayFormValues = {
   steps?: string;
   memo?: string;
 };
+
+
+export type MyPageFormValues = {
+  name?: string;
+  supabaseUserId: string;
+  height?: string;
+  targetWeight?: string;  
+}
