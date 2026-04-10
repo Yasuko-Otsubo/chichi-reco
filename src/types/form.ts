@@ -11,4 +11,6 @@ export type MyPageFormValues = {
   supabaseUserId: string;
   height?: string;
   targetWeight?: string;  
+  email?: string;
+  password?: string;
 }
