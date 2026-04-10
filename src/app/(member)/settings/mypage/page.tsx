@@ -86,6 +86,7 @@ export default function Page() {
       onSubmit={handleSubmit(onSubmit)}
       disabled={isSubmitting}
       session={session}
+      profile={profile}
     />
   );
 }
