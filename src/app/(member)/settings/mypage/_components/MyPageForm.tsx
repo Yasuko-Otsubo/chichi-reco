@@ -23,10 +23,10 @@ export const MyPageForm: React.FC<Props> = ({
   profile,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-    const handleFormSubmit = async(e?: React.BaseSyntheticEvent) => {
-      await handleSubmit(onSubmit)(e);
-      setIsEditing(false);
-    };
+  const handleFormSubmit = async (e?: React.BaseSyntheticEvent) => {
+    await handleSubmit(onSubmit)(e);
+    setIsEditing(false);
+  };
 
   return (
     <>
@@ -76,15 +76,27 @@ export const MyPageForm: React.FC<Props> = ({
           )}
         </div>
         {isEditing ? (
-          <>        
-          <button className="border-2 p-2 m-2" type="submit" disabled={disabled}>          更新する
-        </button>
-        <button type="button" onClick={() => setIsEditing(false)}>キャンセル</button>
-
+          <>
+            <button
+              className="border-2 p-2 m-2"
+              type="submit"
+              disabled={disabled}
+            >
+              {" "}
+              更新する
+            </button>
+            <button type="button" onClick={() => setIsEditing(false)}>
+              キャンセル
+            </button>
           </>
-
         ) : (
-          <button className="border-2 p-2 m-2" type="button" onClick={() => setIsEditing(true)}>変更する</button>
+          <button
+            className="border-2 p-2 m-2"
+            type="button"
+            onClick={() => setIsEditing(true)}
+          >
+            変更する
+          </button>
         )}
       </form>
     </>
