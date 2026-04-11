@@ -8,7 +8,7 @@ import {
 } from "@/types/profiles";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormHandleSubmit } from "react-hook-form";
 import { MyPageForm } from "./_components/MyPageForm";
 import { MyPageFormValues } from "@/types/form";
 
@@ -23,15 +23,14 @@ export default function Page() {
   };
 
   const [profile, setProfile] = useState<ProfileFields | null>(null);
-  const { register, handleSubmit } = useForm<MyPageFormValues>({
+  const { register, handleSubmit, reset } = useForm<MyPageFormValues>({
     defaultValues,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  useEffect(() => {
-    if (!token) return;
 
     const fetchProfile = async () => {
+      if (!token) return;
       const res = await fetch(`/api/profiles`, {
         headers: {
           "Content-Type": "application/json",
@@ -41,8 +40,22 @@ export default function Page() {
       const data: ProfileResponse = await res.json();
       if (data.profiles) setProfile(data.profiles[0]);
     };
-    fetchProfile();
-  }, [token]);
+
+    useEffect(() => {
+      if (!token) return;
+      fetchProfile();
+    }, [token]);
+
+    useEffect(() => {
+      if (profile) {
+        reset({
+          name: profile.name ?? "",
+          height: profile.height?.toString() ?? "",
+          targetWeight: profile.targetWeight?.toString() ?? "",
+          email: session?.user.email ?? "",
+        });
+      }
+    }, [profile, session]);
 
   // ===== PUT =====
   const onSubmit = async (values: MyPageFormValues) => {
@@ -71,11 +84,16 @@ export default function Page() {
         body: JSON.stringify(body),
       });
 
-      if (res.ok) {
-        alert("更新しました");
-      } else {
-        alert("更新に失敗しました");
-      }
+    if (res.ok) {
+      const data = await res.json();
+      alert(data.message);
+      await fetchProfile();
+      return true;
+    } else {
+      alert("更新に失敗しました");
+      return false;
+    }
+
     } finally {
       setIsSubmitting(false);
     }
@@ -83,7 +101,8 @@ export default function Page() {
   return (
     <MyPageForm
       register={register}
-      onSubmit={handleSubmit(onSubmit)}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
       disabled={isSubmitting}
       session={session}
       profile={profile}

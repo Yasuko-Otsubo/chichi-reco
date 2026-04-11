@@ -3,11 +3,12 @@ import { MyPageFormValues } from "@/types/form";
 import { ProfileFields } from "@/types/profiles";
 import { Session } from "@supabase/supabase-js";
 import { useState } from "react";
-import { UseFormRegister } from "react-hook-form";
+import { UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
 
 interface Props {
   register: UseFormRegister<MyPageFormValues>;
-  onSubmit: (e?: React.BaseSyntheticEvent) => void;
+  handleSubmit: UseFormHandleSubmit<MyPageFormValues>;
+  onSubmit: (values: MyPageFormValues) => Promise<boolean | undefined>;
   disabled: boolean;
   session: Session | null | undefined;
   profile: ProfileFields | null;
@@ -15,20 +16,25 @@ interface Props {
 
 export const MyPageForm: React.FC<Props> = ({
   register,
+  handleSubmit,
   onSubmit,
   disabled,
   session,
   profile,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+    const handleFormSubmit = async(e?: React.BaseSyntheticEvent) => {
+      await handleSubmit(onSubmit)(e);
+      setIsEditing(false);
+    };
 
   return (
     <>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleFormSubmit}>
         <div>
           <label>名前</label>
           {isEditing ? (
-            <input className="border-2" type="text" placeholder={profile?.name ?? ""}{...register("name")} />
+            <input className="border-2" type="text" {...register("name")} />
           ) : (
             <span>{profile?.name}</span>
           )}
@@ -52,7 +58,7 @@ export const MyPageForm: React.FC<Props> = ({
         <div>
           <label>身長</label>
           {isEditing ? (
-            <input className="border-2" type="text" placeholder={profile?.height?.toString() ?? ""}{...register("height")} />
+            <input className="border-2" type="text" {...register("height")} />
           ) : (
             <span>{profile?.height}</span>
           )}
@@ -63,7 +69,6 @@ export const MyPageForm: React.FC<Props> = ({
             <input
               className="border-2"
               type="text"
-              placeholder={profile?.targetWeight?.toString() ?? ""}
               {...register("targetWeight")}
             />
           ) : (
