@@ -6,7 +6,6 @@ import {
   ProfileResponse,
   UpdateProfileRequest,
 } from "@/types/profiles";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MyPageForm } from "./_components/MyPageForm";
@@ -14,7 +13,6 @@ import { MyPageFormValues } from "@/types/form";
 import { supabase } from "@/app/_libs/supabase";
 
 export default function Page() {
-  const router = useRouter();
   const { session, token } = useSupabaseSession();
 
   const defaultValues = {
