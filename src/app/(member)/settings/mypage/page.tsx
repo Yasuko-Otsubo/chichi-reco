@@ -8,7 +8,7 @@ import {
 } from "@/types/profiles";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm, UseFormHandleSubmit } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { MyPageForm } from "./_components/MyPageForm";
 import { MyPageFormValues } from "@/types/form";
 import { supabase } from "@/app/_libs/supabase";
@@ -24,11 +24,9 @@ export default function Page() {
   };
 
   const [profile, setProfile] = useState<ProfileFields | null>(null);
-  const { register, handleSubmit, reset } = useForm<MyPageFormValues>({
+  const { register, handleSubmit, reset, formState: { isSubmitting} } = useForm<MyPageFormValues>({
     defaultValues,
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchProfile = async () => {
     if (!token) return;
@@ -56,7 +54,7 @@ export default function Page() {
         email: session?.user.email ?? "",
       });
     }
-  }, [profile, session]);
+  }, [profile, session, reset]);
 
   // ===== PUT =====
   const onSubmit = async (values: MyPageFormValues) => {
@@ -78,7 +76,6 @@ export default function Page() {
     }
 
     try {
-      setIsSubmitting(true);
 
       const body: UpdateProfileRequest = {
         name: values.name || null,
@@ -104,10 +101,11 @@ export default function Page() {
         alert("変更はありませんでした");
         return false;
       }
-    } finally {
-      setIsSubmitting(false);
+    } catch {
+      alert("更新に失敗しました");
     }
   };
+
   return (
     <MyPageForm
       register={register}
