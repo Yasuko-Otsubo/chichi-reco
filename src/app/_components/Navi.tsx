@@ -15,7 +15,7 @@ export const Navi: React.FC = () => {
       <Link href="/graph" className="border-2 p-4">
         グラフ
       </Link>
-      <Link href="/setting" className="border-2 p-4">
+      <Link href="/settings" className="border-2 p-4">
         設定
       </Link>
     </div>
