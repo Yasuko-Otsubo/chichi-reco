@@ -4,31 +4,31 @@ import Link from "next/link";
 export default function IntroPage() {
   return (
     <main className="flex flex-col items-center justify-center  text-center bg-gradient-to-b">
-      <header className="flex justify-between w-full px-2 items-center">
+      <header className="flex justify-between w-full px-6 py-1 items-center">
         <h1 className="text-2xl">父レコ</h1>
         <div className="flex">
           <Link
             href="/signup"
-            className="pl-4 py-2  flex justify-center items-center flex-col"
+            className="pl-4 py-2  flex justify-center items-center flex-col text-sm"
           >
             <Image
               src="/signup.png"
               alt="新規登録アイコン"
-              width={30}
-              height={30}
+              width={26}
+              height={26}
               className="w-6 h-6 sm:w-8 sm:h-8"
             />
             新規登録
           </Link>
           <Link
             href="/login"
-            className="pl-4 flex justify-center items-center mr-[2px] flex-col"
+            className="pl-4 flex justify-center items-center mr-[2px] flex-col text-sm"
           >
             <Image
               src="/login.png"
               alt="ログインアイコン"
-              width={30}
-              height={30}
+              width={26}
+              height={26}
               className="w-6 h-6 sm:w-8 sm:h-8"
             />
             ログイン
@@ -43,21 +43,91 @@ export default function IntroPage() {
           className="object-cover"
         />
       </div>
-      <h2 className="text-xl sm:text-5xl tracking-tight mb-4 text-gray-900 dark:text-white">
+      <h2 className="text-2xl tracking-tight mb-8 text-gray-900 dark:text-white ">
         毎日の健康を簡単記録
       </h2>
-      <p className="text-sm sm:text-xl text-gray-700 dark:text-gray-300 max-w-xl mb-8">
-        体重や歩数を記録するだけで、グラフで見える！<br />
-        今日から始める優しい健康習慣 <br />
-        シンプルで美しいUI、記録しやすいUX、そして守られるプライバシー。
+      <p className="text-sm  text-gray-700 dark:text-gray-300 max-w-xl mb-10">
+        体重や歩数を記録するだけで、グラフで見える！
+        今日から始める優しい健康習慣
       </p>
       <div className="flex flex-col sm:flex-row gap-4">
         <Link
           href="/signup"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-12 rounded-lg transition"
+          className="text-xl bg-choiceBtn text-bbb py-4 px-20 rounded-lg transition mb-16"
         >
           今すぐ始める
         </Link>
+      </div>
+      <div className="text-left w-[55%] mb-20">
+        <div className="text-2xl mb-2">✅ 簡単入力</div>
+        <p className="mb-6">体重、歩数を入力するだけ</p>
+        <div className="text-2xl mb-2">✅ カレンダーで比較が可能</div>
+        <p className="mb-6">前回との差を視覚的に表示</p>
+        <div className="text-2xl mb-2">✅ グラフで変化が見える</div>
+        <p className="mb-6">日々の進捗が一目でわかる</p>
+      </div>
+      <div className="bg-[#EAFAFF] w-full py-20 mb-10">
+        <div className="mb-20">
+          <h3 className="text-xl">こんなことありませんか？</h3>
+          <div>●体重の管理を簡単にしたい</div>
+          <div>●一か月の変化を一括で見たい</div>
+          <div>●ちょっとしたことをメモしたい</div>
+        </div>
+        <h3 className="text-xl mb-6">それ父レコで実現できます</h3>
+        <div>
+          毎日の入力で期間ごとの
+          <br />
+          グラフで自分の体重や運動量を 確認できます！
+          <br />
+          （登録することで今後オプションも使用できます）
+        </div>
+        <div>
+          <Image
+            src="/staff.png"
+            width={100}
+            height={500}
+            alt="スタッフ"
+          ></Image>
+        </div>
+      </div>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Link
+          href="/signup"
+          className="text-xl bg-choiceBtn text-bbb py-4 px-20 rounded-lg transition mb-16"
+        >
+          今すぐ始める
+        </Link>
+      </div>
+      <div className=" bg-[#EAFAFF] w-full">
+        <div className="flex justify-center gap-6">
+          <Link
+            href="/signup"
+            className="pl-4 py-2  flex justify-center items-center flex-col text-sm"
+          >
+            <Image
+              src="/signup.png"
+              alt="新規登録アイコン"
+              width={26}
+              height={26}
+              className="w-6 h-6 sm:w-8 sm:h-8"
+            />
+            新規登録
+          </Link>
+          <Link
+            href="/login"
+            className="pl-4 flex justify-center items-center mr-[2px] flex-col text-sm"
+          >
+            <Image
+              src="/login.png"
+              alt="ログインアイコン"
+              width={26}
+              height={26}
+              className="w-6 h-6 sm:w-8 sm:h-8"
+            />
+            ログイン
+          </Link>
+        </div>
+        <div>instagram</div>
       </div>
     </main>
   );
