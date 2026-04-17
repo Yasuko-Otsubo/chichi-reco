@@ -16,6 +16,8 @@
   --font-mono: var(--font-geist-mono);
   --color-choiceBtn: #A2DAE7; /*チョイスボタン*/
   --color-bbb: #333;
+  --color-bgColor: #A2DAE7;
+  --color-textColor: #1CA5B9;
 }
 
 @media (prefers-color-scheme: dark) {
