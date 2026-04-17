@@ -4,9 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export const Navi: React.FC = () => {
+export const Nav: React.FC = () => {
   return (
-    <div className="flex w-full">
+    <div className="flex w-[80%] bg-white rounded-[15px]">
       <Link href="/today" className="flex flex-col items-center justify-center p-4 text-textColor flex-1">
         <Image src="/pen.png" alt="入力ボタン" width={30} height={30} className="mb-2" />
         入力
