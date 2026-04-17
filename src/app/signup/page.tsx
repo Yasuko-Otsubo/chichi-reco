@@ -37,33 +37,36 @@ export default function Page() {
     }
   };
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full max-w-[500px] bg-[#a2dae7]  mx-auto ">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white rounded-[50px] p-10 space-y-4 w-full max-w-[400px]"
-      >
-        <Input
-          label="メールアドレス"
-          type="email"
-          placeholder="name@company.com"
-          className="bg-white"
-          error={errors.email?.message}
-          {...register("email", { required: "メールアドレスは必須です" })}
-        />
+    <>
+      <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full bg-bgColor ">
+        <h1 className="text-2xl">ログイン</h1>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white rounded-[15px] p-10 space-y-4 w-full max-w-[400px]"
+        >
+          <Input
+            label="メールアドレス"
+            type="email"
+            placeholder="name@company.com"
+            className="bg-white"
+            error={errors.email?.message}
+            {...register("email", { required: "メールアドレスは必須です" })}
+          />
 
-        <Input
-          label="パスワード"
-          type="password"
-          placeholder="••••••••"
-          className="bg-white"
-          error={errors.password?.message}
-          {...register("password", { required: "パスワードは必須です" })}
-        />
+          <Input
+            label="パスワード"
+            type="password"
+            placeholder="••••••••"
+            className="bg-white"
+            error={errors.password?.message}
+            {...register("password", { required: "パスワードは必須です" })}
+          />
 
-        <Button type="submit" fullWidth disabled={isSubmitting}>
-          登録
-        </Button>
-      </form>
-    </div>
+          <Button type="submit" fullWidth disabled={isSubmitting}>
+            登録
+          </Button>
+        </form>
+      </div>
+    </>
   );
 }

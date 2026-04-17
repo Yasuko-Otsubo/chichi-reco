@@ -25,45 +25,48 @@ export const TodayForm: React.FC<Props> = ({
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      {prevRecord && (
-        <div className="flex justify-center">
-          <p className="border-2 m-3 p-2">体重: {prevRecord.weight}kg</p>
-          <p className="border-2 m-3 p-2">歩数: {prevRecord.steps}歩</p>
-          {/*ここにアコーディオン*/}
-          <button onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? "-": "メモ +"}
-          </button>
-          {isOpen && (
-            <p className="border-2 p-2">メモ: {prevRecord.memo}</p>
-          )}
-        </div>
-      )}
-      <form onSubmit={onSubmit}>
-        <div>
-          <label>日付</label>
-          <input className="border-2" type="text" {...register("date")} />
-        </div>
-        <div>
-          <label>体重</label>
-          <input className="border-2" {...register("weight")} />
-        </div>
-        <div>
-          <label>歩数</label>
-          <input className="border-2" {...register("steps")} />
-        </div>
-        <div>
-          <label>一言メモ</label>
-          <input className="border-2" {...register("memo")} />
-        </div>
-        <button type="submit" disabled={disabled}>
-          {mode === "new" ? "記録する" : "更新する"}
-        </button>
-        {mode === "edit" && onDelete && (
-          <button type="button" onClick={onDelete} disabled={disabled}>
-            削除
-          </button>
+    <h1 className="text-xl text-center py-6">今日の記録</h1>
+      <div className="flex justify-center bg-white rounded-[15px] w-[80%] mx-auto mb-10 p-2">
+        {prevRecord && (
+          <div className="flex justify-center">
+            <p className="border-2 m-3 p-2">体重: {prevRecord.weight}kg</p>
+            <p className="border-2 m-3 p-2">歩数: {prevRecord.steps}歩</p>
+            {/*ここにアコーディオン*/}
+            <button onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? "-" : "メモ +"}
+            </button>
+            {isOpen && <p className="border-2 p-2">メモ: {prevRecord.memo}</p>}
+          </div>
         )}
-      </form>
+      </div>
+      <div className="flex justify-center bg-white rounded-[15px] w-[80%] mx-auto mb-10 p-2">
+        <form onSubmit={onSubmit}>
+          <div>
+            <label>日付</label>
+            <input className="border-2" type="text" {...register("date")} />
+          </div>
+          <div>
+            <label>体重</label>
+            <input className="border-2" {...register("weight")} />
+          </div>
+          <div>
+            <label>歩数</label>
+            <input className="border-2" {...register("steps")} />
+          </div>
+          <div>
+            <label>一言メモ</label>
+            <input className="border-2" {...register("memo")} />
+          </div>
+          <button type="submit" disabled={disabled}>
+            {mode === "new" ? "記録する" : "更新する"}
+          </button>
+          {mode === "edit" && onDelete && (
+            <button type="button" onClick={onDelete} disabled={disabled}>
+              削除
+            </button>
+          )}
+        </form>
+      </div>
     </>
   );
 };
