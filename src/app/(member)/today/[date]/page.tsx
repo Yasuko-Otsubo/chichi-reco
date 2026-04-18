@@ -8,6 +8,7 @@ import {
   CreateRecordRequestBody,
   RecordData,
   RecordResponse,
+  RecordsResponse,
 } from "@/types/record";
 import { useForm } from "react-hook-form";
 import { TodayFormValues } from "@/types/form";
@@ -58,7 +59,11 @@ export default function Page() {
         setPrevRecord(null);
         return;
       }
-      const data: RecordResponse = await res.json();
+      
+      if (!res.ok) return;
+      const text = await res.text();
+      if (!text) return;
+      const data: RecordResponse = JSON.parse(text);
       setPrevRecord(data.record ?? null);
     };
 
