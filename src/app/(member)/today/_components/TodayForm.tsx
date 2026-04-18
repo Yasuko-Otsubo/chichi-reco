@@ -12,6 +12,9 @@ interface Props {
   onDelete?: () => void;
   disabled: boolean;
   prevRecord: RecordData | null;
+  setValue: (name: "date", value: string) => void;
+  selectedDate: string;
+  setSelectedDate: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const TodayForm: React.FC<Props> = ({
@@ -21,8 +24,13 @@ export const TodayForm: React.FC<Props> = ({
   onDelete,
   disabled,
   prevRecord,
+  setValue,
+  selectedDate,
+  setSelectedDate,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <>
       <h1 className="text-xl text-center py-6">今日の記録</h1>
@@ -37,18 +45,58 @@ export const TodayForm: React.FC<Props> = ({
           )}{" "}
           {/*ここにアコーディオン*/}
           <button onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ?<>一言メモ <span className="font-bold">{"－"}</span></> : <>一言メモ <span className="font-bold">+</span></>}
+            {isOpen ? (
+              <>
+                一言メモ <span className="font-bold">{"－"}</span>
+              </>
+            ) : (
+              <>
+                一言メモ <span className="font-bold">+</span>
+              </>
+            )}
           </button>
-          {isOpen && prevRecord && (
-            <p className="p-2"> {prevRecord.memo}</p>
-          )}
+          {isOpen && prevRecord && <p className="p-2"> {prevRecord.memo}</p>}
         </div>
       </div>
       <div className="flex justify-center bg-white rounded-[15px] w-[80%] mx-auto mb-10 p-2">
         <form onSubmit={onSubmit}>
           <div>
-            <label>日付</label>
-            <input className="border-2" type="text" {...register("date")} />
+            <button
+              type="button"
+              onClick={() => {
+                /*前日に移動*/
+                const d = new Date(selectedDate);
+                d.setDate(d.getDate() -1);
+                setSelectedDate(d.toISOString().split("T")[0]);
+                setValue("date", d.toISOString().split("T")[0]);
+              }}
+            >
+              ＜
+            </button>
+            <input
+              className=""
+              type="date"
+              max={today}
+              {...register("date")}
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                register("date").onChange(e);
+              }}
+            />{" "}
+            <button
+              type="button"
+              onClick={() => {
+                /*翌日に移動*/
+                const d = new Date(selectedDate);
+                d.setDate(d.getDate() +1);
+                setSelectedDate(d.toISOString().split("T")[0]);
+                setValue("date", d.toISOString().split("T")[0]);
+              }}
+              disabled={selectedDate >= today}
+              className={selectedDate >= today ? "text-gray-300" : ""}
+            >
+              ＞
+            </button>
           </div>
           <div>
             <label>体重</label>

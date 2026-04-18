@@ -8,7 +8,6 @@ import {
   CreateRecordRequestBody,
   RecordData,
   RecordResponse,
-  RecordsResponse,
 } from "@/types/record";
 import { useForm } from "react-hook-form";
 import { TodayFormValues } from "@/types/form";
@@ -21,7 +20,7 @@ export default function Page() {
 
   // ===== URLパラメータから日付を取得 =====
   const { date: paramDate } = useParams<{ date: string }>();
-
+  console.log(paramDate)
   // ===== 規定値を準備 =====
   const today = new Date().toISOString().slice(0, 10);
 
@@ -32,13 +31,14 @@ export default function Page() {
     memo: "",
   };
 
-  const { register, handleSubmit, reset } = useForm<TodayFormValues>({
+  const { register, handleSubmit, reset, setValue } = useForm<TodayFormValues>({
     defaultValues,
   });
 
   // ===== 取得データ =====
   const [record, setRecord] = useState<RecordResponse["record"] | null>(null);
   const [prevRecord, setPrevRecord] = useState<RecordData | null>(null);
+  const [selectedDate, setSelectedDate] = useState(paramDate ?? today);
 
   // ===== UI制御 =====
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,7 +49,7 @@ export default function Page() {
     if (!token) return;
 
     const fetchPrevRecord = async () => {
-      const res = await fetch(`/api/records?before=${paramDate}`, {
+      const res = await fetch(`/api/records?before=${selectedDate}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
@@ -59,7 +59,7 @@ export default function Page() {
         setPrevRecord(null);
         return;
       }
-      
+
       if (!res.ok) return;
       const text = await res.text();
       if (!text) return;
@@ -69,7 +69,7 @@ export default function Page() {
 
     const fetcher = async () => {
       try {
-        const res = await fetch(`/api/records/${paramDate}`, {
+        const res = await fetch(`/api/records/${selectedDate}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: token,
@@ -79,14 +79,14 @@ export default function Page() {
           //今日のデータがない場合は空
           const emptyRecord: RecordData = {
             id: 0,
-            date: paramDate,
+            date: selectedDate,
             weight: null,
             steps: null,
             memo: null,
           };
           setRecord(emptyRecord);
           reset({
-            date: paramDate,
+            date: selectedDate,
             weight: "",
             steps: "",
             memo: "",
@@ -113,7 +113,7 @@ export default function Page() {
 
     fetcher();
     fetchPrevRecord();
-  }, [token, paramDate, reset]);
+  }, [token, paramDate, reset, selectedDate]);
 
   // ******* POST or PUT *******
   const onSubmit = async (values: TodayFormValues) => {
@@ -172,8 +172,11 @@ export default function Page() {
       }
 
       if (!res.ok) {
-        const errorData = (await res.json()) as ApiResponse;
-        throw new Error(errorData.message || "POSTに失敗しました");
+        const text = await res.text();
+        if (!text) { alert("POSTに失敗しました")};
+        const errorData = JSON.parse(text) as ApiResponse;
+        alert(errorData.message);
+        return;
       }
 
       router.push(`/calendar?month=${currentMonth}`);
@@ -217,8 +220,11 @@ export default function Page() {
       register={register}
       onSubmit={handleSubmit(onSubmit)}
       onDelete={handleDelete}
-      disabled={isSubmitting}
+      disabled={isSubmitting || !token}
       prevRecord={prevRecord}
+      setValue={setValue}
+      selectedDate={selectedDate}
+      setSelectedDate={setSelectedDate}
     />
   );
 }
