@@ -25,19 +25,24 @@ export const TodayForm: React.FC<Props> = ({
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-    <h1 className="text-xl text-center py-6">今日の記録</h1>
-      <div className="flex justify-center bg-white rounded-[15px] w-[80%] mx-auto mb-10 p-2">
-        {prevRecord && (
-          <div className="flex justify-center">
-            <p className="border-2 m-3 p-2">体重: {prevRecord.weight}kg</p>
-            <p className="border-2 m-3 p-2">歩数: {prevRecord.steps}歩</p>
-            {/*ここにアコーディオン*/}
-            <button onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? "-" : "メモ +"}
-            </button>
-            {isOpen && <p className="border-2 p-2">メモ: {prevRecord.memo}</p>}
-          </div>
-        )}
+      <h1 className="text-xl text-center py-6">今日の記録</h1>
+      <div className=" bg-white rounded-[15px] w-[80%] mx-auto mb-10 p-2">
+        <div className="text-sm">前回の記録</div>
+        <div className="flex justify-center flex-col items-center">
+          {prevRecord && (
+            <div className="flex justify-center">
+              <p className="font-bold m-3 p-2">{prevRecord.weight}kg</p>
+              <p className="font-bold m-3 p-2">{prevRecord.steps}歩</p>
+            </div>
+          )}{" "}
+          {/*ここにアコーディオン*/}
+          <button onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ?<>一言メモ <span className="font-bold">{"－"}</span></> : <>一言メモ <span className="font-bold">+</span></>}
+          </button>
+          {isOpen && prevRecord && (
+            <p className="p-2"> {prevRecord.memo}</p>
+          )}
+        </div>
       </div>
       <div className="flex justify-center bg-white rounded-[15px] w-[80%] mx-auto mb-10 p-2">
         <form onSubmit={onSubmit}>
