@@ -60,13 +60,13 @@ export const TodayForm: React.FC<Props> = ({
       </div>
       <div className="flex justify-center bg-white rounded-[15px] w-[80%] mx-auto mb-10 p-2">
         <form onSubmit={onSubmit}>
-          <div>
+          <div className="text-center ">
             <button
               type="button"
               onClick={() => {
                 /*前日に移動*/
                 const d = new Date(selectedDate);
-                d.setDate(d.getDate() -1);
+                d.setDate(d.getDate() - 1);
                 setSelectedDate(d.toISOString().split("T")[0]);
                 setValue("date", d.toISOString().split("T")[0]);
               }}
@@ -74,7 +74,7 @@ export const TodayForm: React.FC<Props> = ({
               ＜
             </button>
             <input
-              className=""
+              className="border border-gray-500 py-2 px-6 rounded-[15px] m-6"
               type="date"
               max={today}
               {...register("date")}
@@ -88,7 +88,7 @@ export const TodayForm: React.FC<Props> = ({
               onClick={() => {
                 /*翌日に移動*/
                 const d = new Date(selectedDate);
-                d.setDate(d.getDate() +1);
+                d.setDate(d.getDate() + 1);
                 setSelectedDate(d.toISOString().split("T")[0]);
                 setValue("date", d.toISOString().split("T")[0]);
               }}
