@@ -34,7 +34,7 @@ export const TodayForm: React.FC<Props> = ({
   return (
     <>
       <h1 className="text-xl text-center py-6">今日の記録</h1>
-      <div className=" bg-white rounded-[15px] w-[80%] mx-auto mb-6 p-2">
+      <div className=" bg-white rounded-[15px] mb-6 p-2">
         <div className="text-sm">前回の記録</div>
         <div className="flex justify-center items-center flex-col">
           {prevRecord && (
@@ -58,7 +58,7 @@ export const TodayForm: React.FC<Props> = ({
           {isOpen && prevRecord && <p className="p-2 w-[80%] "> {prevRecord.memo}</p>}
         </div>
       </div>
-      <div className="flex justify-center bg-white rounded-[15px] w-[80%] mx-auto mb-6 p-2">
+      <div className="flex justify-center bg-white rounded-[15px]  mb-6 p-2">
         <form onSubmit={onSubmit} className="w-full text-center">
           <div className="w-[80%] mx-auto flex flex-col gap-3">
             <div className="flex items-center justify-between">

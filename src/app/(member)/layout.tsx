@@ -23,9 +23,10 @@ export default function IntroLayout({
       className={`${geistSans.variable} ${geistMono.variable} bg-bgColor text-gray-900 antialiased`}
     >
       {/* 共通ページ専用の構成 */}
-      {children}
-      <div className="flex justify-center pb-6"><Nav/></div>
-      
+      <div className="w-[80%] mx-auto">{children}</div>
+      <div className="flex justify-center pb-6">
+        <Nav />
+      </div>
     </div>
   );
 }
