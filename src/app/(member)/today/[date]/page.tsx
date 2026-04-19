@@ -94,7 +94,12 @@ export default function Page() {
           return;
         }
 
-        const data: RecordResponse = await res.json();
+        const text = await res.text();
+        if (!text) return;
+        const data: RecordResponse = JSON.parse(text);
+        if (!data) return;
+        if (!data.record) return;
+        
         console.log("API data:", data);
 
         if (!data.record) return;
@@ -174,6 +179,7 @@ export default function Page() {
       if (!res.ok) {
         const text = await res.text();
         if (!text) { alert("POSTに失敗しました")};
+        return;
         const errorData = JSON.parse(text) as ApiResponse;
         alert(errorData.message);
         return;
