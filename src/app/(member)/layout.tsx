@@ -24,9 +24,8 @@ export default function IntroLayout({
     >
       {/* 共通ページ専用の構成 */}
       {children}
-      <div className="flex justify-center"><Nav/></div>
+      <div className="flex justify-center pb-6"><Nav/></div>
       
-      <Footer />
     </div>
   );
 }
