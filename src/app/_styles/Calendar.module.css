@@ -1,22 +1,24 @@
 .container {
   max-width: 800px;
-  margin: 40px auto;
+  margin: 0px auto;
 }
 
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 0;
 }
 
 .cell {
   border: 1px solid #ddd;
+  background-color: white;
   min-height: 80px;
 }
 
 .header {
   font-weight: bold;
   text-align: center;
+  background-color: white;
 }
 
 .today {
