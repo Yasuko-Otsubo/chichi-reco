@@ -6,7 +6,7 @@ export default function IntroPage() {
     "text-xl bg-choiceBtn text-bbb py-4 px-20 rounded-lg transition mb-16";
 
   const iconLinkClass =
-    "pl-4 py-2  flex justify-center items-center flex-col text-sm";
+    "pl-4 py-2  flex justify-center items-center flex-col text-xs";
 
   const subtitles = [
     { title: "✅ 簡単入力", desc: "体重、歩数を入力するだけ" },
@@ -17,7 +17,7 @@ export default function IntroPage() {
   return (
     <main className="flex flex-col items-center justify-center  text-center bg-gradient-to-b">
       <header className="flex justify-between w-full px-6 py-1 items-center">
-        <h1 className="text-2xl">父レコ</h1>
+        <h1 className="text-xl sm:text-2xl">父レコ</h1>
         <div className="flex">
           <Link href="/signup" className={iconLinkClass}>
             <Image
@@ -25,7 +25,7 @@ export default function IntroPage() {
               alt="新規登録アイコン"
               width={26}
               height={26}
-              className="w-6 h-6 sm:w-8 sm:h-8"
+              className="w-5 h-5 sm:w-8 sm:h-8"
             />
             新規登録
           </Link>
@@ -35,7 +35,7 @@ export default function IntroPage() {
               alt="ログインアイコン"
               width={26}
               height={26}
-              className="w-6 h-6 sm:w-8 sm:h-8"
+              className="w-5 h-5 sm:w-8 sm:h-8"
             />
             ログイン
           </Link>
@@ -62,11 +62,11 @@ export default function IntroPage() {
           今すぐ始める
         </Link>
       </div>
-      <div className="text-left w-[55%] mb-20">
+      <div className="text-left w-[80%] xs:w-[55%] mb-20">
         {subtitles.map((t) => (
           <div key={t.title}>
-            <div className="text-2xl mb-2">{t.title}</div>
-            <p className="mb-6">{t.desc}</p>
+            <div className="text-xl sm:text-2xl mb-2">{t.title}</div>
+            <p className="text-sm sm:text-base mb-6">{t.desc}</p>
           </div>
         ))}
       </div>
