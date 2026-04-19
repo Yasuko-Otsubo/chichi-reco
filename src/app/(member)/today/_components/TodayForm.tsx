@@ -36,7 +36,7 @@ export const TodayForm: React.FC<Props> = ({
       <h1 className="text-xl text-center py-6">今日の記録</h1>
       <div className=" bg-white rounded-[15px] w-[80%] mx-auto mb-6 p-2">
         <div className="text-sm">前回の記録</div>
-        <div className="flex justify-center flex-col">
+        <div className="flex justify-center items-center flex-col">
           {prevRecord && (
             <div className="flex justify-center">
               <p className="font-bold m-1 py-0 px-4">{prevRecord.weight}kg</p>
@@ -55,7 +55,7 @@ export const TodayForm: React.FC<Props> = ({
               </>
             )}
           </button>
-          {isOpen && prevRecord && <p className="p-2"> {prevRecord.memo}</p>}
+          {isOpen && prevRecord && <p className="p-2 w-[80%] "> {prevRecord.memo}</p>}
         </div>
       </div>
       <div className="flex justify-center bg-white rounded-[15px] w-[80%] mx-auto mb-6 p-2">
