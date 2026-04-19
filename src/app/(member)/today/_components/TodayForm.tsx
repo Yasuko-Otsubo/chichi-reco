@@ -36,11 +36,11 @@ export const TodayForm: React.FC<Props> = ({
       <h1 className="text-xl text-center py-6">今日の記録</h1>
       <div className=" bg-white rounded-[15px] w-[80%] mx-auto mb-6 p-2">
         <div className="text-sm">前回の記録</div>
-        <div className="flex justify-center flex-col items-center">
+        <div className="flex justify-center flex-col">
           {prevRecord && (
             <div className="flex justify-center">
-              <p className="font-bold m-3 p-2">{prevRecord.weight}kg</p>
-              <p className="font-bold m-3 p-2">{prevRecord.steps}歩</p>
+              <p className="font-bold m-1 py-0 px-4">{prevRecord.weight}kg</p>
+              <p className="font-bold m-1 py-0 px-4">{prevRecord.steps}歩</p>
             </div>
           )}{" "}
           {/*ここにアコーディオン*/}
@@ -75,7 +75,7 @@ export const TodayForm: React.FC<Props> = ({
                 ＜
               </button>
               <input
-                className="border border-gray-500 py-2 px-6 rounded-[15px] m-6"
+                className="border border-gray-500  rounded-[15px] py-2 px-6 my-2 mx-6"
                 type="date"
                 max={today}
                 {...register("date")}
@@ -119,7 +119,7 @@ export const TodayForm: React.FC<Props> = ({
                 <span className="text-bbb ml-2 w-6">歩</span>
               </div>
             </div>
-            <div className="text-left flex flex-col pt-1 mb-8">
+            <div className="text-left flex flex-col pt-1 mb-2">
               <label className="mb-2">一言メモ</label>
               <textarea
                 className="border border-[var(--color-bgColor)] rounded-[10px] p-2"
