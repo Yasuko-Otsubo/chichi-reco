@@ -31,7 +31,7 @@ export const Calendar: React.FC<Props> = ({
 
   return (
     <>
-      <h1 className="text-xl text-center py-6">今日の記録</h1>
+      <h1 className="text-xl text-center py-6">カレンダー</h1>
       <div className="max-w-[800px] mx-auto mb-2">
         <div className="bg-white text-center py-2 mb-4 rounded-[10px]">
           <button onClick={() => changeMonth(-1)}>＜</button>
