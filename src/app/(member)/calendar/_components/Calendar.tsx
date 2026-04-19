@@ -32,12 +32,15 @@ export const Calendar: React.FC<Props> = ({
   return (
     <>
       <h1 className="text-xl text-center py-6">今日の記録</h1>
-      <div className={styles.container}>
-        <button onClick={() => changeMonth(-1)}>⇐</button>
-        <span>
-          {year}年 {month}月
-        </span>
-        <button onClick={() => changeMonth(1)}>⇒</button>
+      <div className="max-w-[800px] mx-auto mb-2">
+        <div className="bg-white text-center py-2 mb-4 rounded-[10px]">
+          <button onClick={() => changeMonth(-1)}>＜</button>
+          <span className="text-xl font-medium px-8">
+            {year}年 {month}月
+          </span>
+          <button onClick={() => changeMonth(1)} disabled={year === todayYear && month === todayMonth} className={year === todayYear && month === todayMonth ? "text-gray-300" : ""}>＞</button>
+        </div>
+
         <div className={styles.calendar}>
           {weekDays.map((day) => (
             <div key={day} className={styles.header}>
