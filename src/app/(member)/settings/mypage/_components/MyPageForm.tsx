@@ -28,6 +28,11 @@ export const MyPageForm: React.FC<Props> = ({
     setIsEditing(false);
   };
 
+  const inputClass =
+    "w-[70%] text-center m-auto border border-[var(--color-textColor)] rounded-[10px] py-1 px-2";
+  const btnClass =
+    "hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2";
+
   return (
     <>
       <h1 className="text-xl text-center py-6">マイページ</h1>
@@ -36,11 +41,7 @@ export const MyPageForm: React.FC<Props> = ({
           <div className="flex flex-col mb-4">
             <label>名前</label>
             {isEditing ? (
-              <input
-                className="w-[70%] text-center m-auto border border-[var(--color-textColor)] rounded-[10px] py-1 px-2"
-                type="text"
-                {...register("name")}
-              />
+              <input className={inputClass} type="text" {...register("name")} />
             ) : (
               <span>{profile?.name}</span>
             )}
@@ -49,9 +50,9 @@ export const MyPageForm: React.FC<Props> = ({
             <label>メールアドレス</label>
             {isEditing ? (
               <input
-                className="w-[70%] text-center m-auto border border-[var(--color-textColor)] rounded-[10px] py-1 px-2"
+                className={inputClass}
                 type="text"
-                {...register("name")}
+                {...register("email")}
               />
             ) : (
               <span>{session?.user.email}</span>
@@ -61,7 +62,7 @@ export const MyPageForm: React.FC<Props> = ({
             <label>パスワード</label>
             {isEditing ? (
               <input
-                className="w-[70%] text-center m-auto border border-[var(--color-textColor)] rounded-[10px] py-1 px-2"
+                className={inputClass}
                 type="text"
                 {...register("password")}
               />
@@ -102,17 +103,13 @@ export const MyPageForm: React.FC<Props> = ({
           </div>
           {isEditing ? (
             <div className="flex justify-center gap-4 w-[70%] m-auto mt-12">
-              <button
-                className="hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2"
-                type="submit"
-                disabled={disabled}
-              >
+              <button className={btnClass} type="submit" disabled={disabled}>
                 {" "}
                 更新する
               </button>
               <button
                 type="button"
-                className="hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2"
+                className={btnClass}
                 onClick={() => setIsEditing(false)}
               >
                 キャンセル
@@ -120,7 +117,7 @@ export const MyPageForm: React.FC<Props> = ({
             </div>
           ) : (
             <button
-              className="hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2"
+              className={btnClass}
               type="button"
               onClick={() => setIsEditing(true)}
             >
