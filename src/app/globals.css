@@ -14,6 +14,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-choiceBtn: #A2DAE7; /*チョイスボタン*/
+  --color-333: #333; /*文字色 黒*/
+  --color-bgColor: #A2DAE7; /*主に(member)のbgcolor*/
+  --color-textColor: #1CA5B9; /*水色文字色 主にアイコン名称など*/
+  --color-decisionBtn: #EAFAFF; /*決定ボタン*/
+  --color-boxColor: #0D99FF; /*決定ボタン囲み色 + hover*/
+  --color-tagChoice: #CCE1E9; /*グラフタグ選択*/
+}
+
+
+@theme {
+  --breakpoint-xs: 450px;
 }
 
 @media (prefers-color-scheme: dark) {

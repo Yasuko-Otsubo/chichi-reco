@@ -13,7 +13,7 @@ export default function HowtoPage() {
     register,
     handleSubmit,
     getValues,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<ContactFormValues>({
     defaultValues: {
       name: "",
@@ -22,17 +22,12 @@ export default function HowtoPage() {
     },
   });
 
-  const onConfirm = handleSubmit(() => {
+  const onConfirm = handleSubmit((values) => {
     setIsConfirming(true);
   });
 
   const onSubmit = async (values: ContactFormValues) => {
     if (!token) return;
-
-    if (!values.name || !values.email || !values.content) {
-      alert("すべての項目を入力してください");
-      return;
-    }
 
     try {
       const res = await fetch(`/api/contact`, {
@@ -54,57 +49,118 @@ export default function HowtoPage() {
     }
   };
 
+  const inputClass =
+    "border border-[var(--color-textColor)] p-2 rounded-[5px] ";
+  const btnClass =
+    "hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2";
+
   return (
     <>
-      <form onSubmit={onConfirm}>
-        <div>
-          <label>名前</label>
+      <h1 className="text-xl text-center py-6">お問い合わせ</h1>
+      <div className=" bg-white rounded-[15px] mb-6 p-2 py-6">
+        <form onSubmit={onConfirm}>
+          <div className="w-[80%] mx-auto flex flex-col text-center">
+            <label>名前</label>
+            {isConfirming ? (
+              <span>{getValues("name")}</span>
+            ) : (
+              <>
+                {" "}
+                <input
+                  className={inputClass}
+                  type="text"
+                  {...register("name", { required: "名前を入力してください" })}
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-sm">
+                    {errors.name.message}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+          <div className="w-[80%] mx-auto flex flex-col text-center">
+            <label>メールアドレス</label>
+            {isConfirming ? (
+              <span>{getValues("email")}</span>
+            ) : (
+              <>
+                <input
+                  className={inputClass}
+                  type="text"
+                  {...register("email", {
+                    required: "メールアドレスを入力してください",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "メールアドレスの形式が正しくありません",
+                    },
+                  })}
+                />
+
+                {errors.email && (
+                  <span className="text-red-500 text-sm">
+                    {errors.email.message}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+          <div className="w-[80%] mx-auto flex flex-col text-center">
+            <label>質問内容</label>
+            {isConfirming ? (
+              <span>{getValues("content")}</span>
+            ) : (
+              <>
+                {" "}
+                <input
+                  className={inputClass}
+                  type="text"
+                  {...register("content", {
+                    required: "質問内容を入力して下さい",
+                  })}
+                />
+                {errors.content && (
+                  <span className="text-red-500 text-sm">
+                    {errors.content.message}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+
           {isConfirming ? (
-            <span>{getValues("name")}</span>
+            <>
+              <div className="flex justify-center gap-4 w-[70%] m-auto mt-12">
+                <button
+                  type="button"
+                  className={btnClass}
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={isSubmitting}
+                >
+                  送信する
+                </button>
+                <button
+                  type="button"
+                  className={btnClass}
+                  onClick={() => setIsConfirming(false)}
+                >
+                  戻る
+                </button>
+              </div>
+            </>
           ) : (
-            <input className="border-2 " type="text" {...register("name")} />
+            <div className="flex justify-center mx-auto mt-12">
+              <button
+                type="submit"
+                className={btnClass}
+                disabled={isSubmitting}
+              >
+                確認する
+              </button>
+            </div>
           )}
-        </div>
-        <div>
-          <label>メールアドレス</label>
-          {isConfirming ? (
-            <span>{getValues("email")}</span>
-          ) : (
-            <input className="border-2 " type="text" {...register("email")} />
-          )}
-        </div>
-        <div>
-          <label>質問内容</label>
-          {isConfirming ? (
-            <span>{getValues("content")}</span>
-          ) : (
-            <input className="border-2 " type="text" {...register("content")} />
-          )}
-        </div>
-        {isConfirming ? (
-          <>
-            <button
-              type="button"
-              className="border-2"
-              onClick={handleSubmit(onSubmit)}
-              disabled={isSubmitting}
-            >
-              送信する
-            </button>
-            <button type="button" onClick={() => setIsConfirming(false)}>
-            戻る
-            </button>
-          </>
-        ) : (
-          <button
-            type="submit"
-            className="border-2"
-            disabled={isSubmitting}
-          >
-            確認する
-          </button>
-        )}
-      </form>
+        </form>
+      </div>
     </>
   );
 }

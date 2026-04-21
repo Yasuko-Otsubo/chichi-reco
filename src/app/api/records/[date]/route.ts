@@ -2,7 +2,7 @@ import { prisma } from "@/app/_libs/prisma";
 import { getProfileByUserId } from "@/_utils/profile";
 import { getAuthenticatedUser } from "@/app/_libs/supabase/auth";
 import { NextRequest, NextResponse } from "next/server";
-import type { Record, Prisma } from "@prisma/client";
+import type { Record, Prisma } from "@/app/generated/prisma/client";
 import {
   RecordData,
   RecordResponse,

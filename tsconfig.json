@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    //"baseUrl": ".",
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -20,9 +20,9 @@
       }
     ],
 "paths": { "@/*": ["./src/*"],
-   "@supabase/auth-helpers-nextjs": ["node_modules/@supabase/auth-helpers-nextjs"], 
-   "@prisma/client": ["node_modules/@prisma/client"], 
-   "@prisma/adapter-pg": ["node_modules/@prisma/adapter-pg"] }
+   "@supabase/auth-helpers-nextjs": ["./node_modules/@supabase/auth-helpers-nextjs"], 
+   "@prisma/client": ["./node_modules/@prisma/client"], 
+   "@prisma/adapter-pg": ["./node_modules/@prisma/adapter-pg"] }
     },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

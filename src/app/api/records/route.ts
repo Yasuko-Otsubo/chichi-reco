@@ -7,7 +7,7 @@ import {
   RecordResponse,
   RecordsResponse,
 } from "@/types/record";
-import type { Record } from "@prisma/client";
+import type { Record } from "@/app/generated/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiResponse } from "@/types/api";
 

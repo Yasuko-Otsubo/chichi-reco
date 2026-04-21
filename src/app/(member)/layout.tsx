@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import { Navi } from "../_components/Navi";
+import { Nav } from "../_components/Nav";
 import React from "react";
 import { Footer } from "../_components/Footer";
 
@@ -20,12 +20,13 @@ export default function IntroLayout({
 }) {
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} bg-white text-gray-900 antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} bg-bgColor text-gray-900 antialiased`}
     >
       {/* 共通ページ専用の構成 */}
-      {children}
-      <Navi />
-      <Footer />
+      <div className="w-[80%] mx-auto">{children}</div>
+      <div className="flex justify-center pb-6">
+        <Nav />
+      </div>
     </div>
   );
 }

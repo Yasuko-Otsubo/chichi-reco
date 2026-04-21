@@ -1,4 +1,4 @@
-import type { Profile as PrismaProfile } from "@prisma/client";
+import type { Profile as PrismaProfile } from "@/app/generated/prisma/client";
 
 export type UpdateProfileRequest = {
   name?: string | null;
