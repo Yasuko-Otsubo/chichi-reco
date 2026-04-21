@@ -10,13 +10,8 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  { ignores: ["src/app/generated/**"] },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  {
-    rules: {
-      "@typescript-eslint/no-this-alias": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
-    },
-  },
 ];
 
 export default eslintConfig;
