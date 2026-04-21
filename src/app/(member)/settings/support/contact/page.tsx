@@ -23,20 +23,11 @@ export default function HowtoPage() {
   });
 
   const onConfirm = handleSubmit((values) => {
-    if (!values.name || !values.email || !values.content) {
-      alert("すべての項目を入力してください");
-      return;
-    }
     setIsConfirming(true);
   });
 
   const onSubmit = async (values: ContactFormValues) => {
     if (!token) return;
-
-    if (!values.name || !values.email || !values.content) {
-      alert("すべての項目を入力してください");
-      return;
-    }
 
     try {
       const res = await fetch(`/api/contact`, {
@@ -73,7 +64,19 @@ export default function HowtoPage() {
             {isConfirming ? (
               <span>{getValues("name")}</span>
             ) : (
-              <input className={inputClass} type="text" {...register("name")} />
+              <>
+                {" "}
+                <input
+                  className={inputClass}
+                  type="text"
+                  {...register("name", { required: "名前を入力してください" })}
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-sm">
+                    {errors.name.message}
+                  </span>
+                )}
+              </>
             )}
           </div>
           <div className="w-[80%] mx-auto flex flex-col text-center">
@@ -86,6 +89,7 @@ export default function HowtoPage() {
                   className={inputClass}
                   type="text"
                   {...register("email", {
+                    required: "メールアドレスを入力してください",
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "メールアドレスの形式が正しくありません",
@@ -106,11 +110,21 @@ export default function HowtoPage() {
             {isConfirming ? (
               <span>{getValues("content")}</span>
             ) : (
-              <input
-                className={inputClass}
-                type="text"
-                {...register("content")}
-              />
+              <>
+                {" "}
+                <input
+                  className={inputClass}
+                  type="text"
+                  {...register("content", {
+                    required: "質問内容を入力して下さい",
+                  })}
+                />
+                {errors.content && (
+                  <span className="text-red-500 text-sm">
+                    {errors.content.message}
+                  </span>
+                )}
+              </>
             )}
           </div>
 
