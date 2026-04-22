@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "../_libs/supabase";
 
-type LoginInput  = {
+type LoginInput = {
   email: string;
   password: string;
 };
 
-export default function Page (){
+export default function Page() {
   const router = useRouter();
   const {
     register,
@@ -28,15 +28,16 @@ export default function Page (){
     if (error) {
       alert("ログインに失敗しました");
       return;
-    } 
-      router.replace("/today")
+    }
+    router.replace("/today");
   };
 
   return (
-    <div className="flex justify-center pt-[240px]">
+    <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full bg-bgColor ">
+      <h1 className="text-2xl mb-8">ログイン</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 w-full max-w-[400px]"
+        className="bg-white rounded-[15px] p-10 space-y-4 w-full max-w-[400px]"
       >
         <Input
           label="メールアドレス"
@@ -57,7 +58,6 @@ export default function Page (){
         <Button type="submit" fullWidth disabled={isSubmitting}>
           ログイン
         </Button>
-        
       </form>
     </div>
   );

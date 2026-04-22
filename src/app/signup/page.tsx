@@ -39,7 +39,7 @@ export default function Page() {
   return (
     <>
       <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full bg-bgColor ">
-        <h1 className="text-2xl">新規登録</h1>
+        <h1 className="text-2xl mb-8">新規登録</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="bg-white rounded-[15px] p-10 space-y-4 w-full max-w-[400px]"
