@@ -31,7 +31,7 @@ export default function Page() {
     const res = await fetch(`/api/profiles`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
     const data: ProfileResponse = await res.json();
@@ -85,7 +85,7 @@ export default function Page() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(body),
       });

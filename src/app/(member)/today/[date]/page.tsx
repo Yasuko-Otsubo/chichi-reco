@@ -20,7 +20,7 @@ export default function Page() {
 
   // ===== URLパラメータから日付を取得 =====
   const { date: paramDate } = useParams<{ date: string }>();
-  console.log(paramDate)
+  console.log(paramDate);
   // ===== 規定値を準備 =====
   const today = new Date().toISOString().slice(0, 10);
 
@@ -52,7 +52,7 @@ export default function Page() {
       const res = await fetch(`/api/records?before=${selectedDate}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
       if (res.status === 404) {
@@ -72,7 +72,7 @@ export default function Page() {
         const res = await fetch(`/api/records/${selectedDate}`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (res.status === 404) {
@@ -99,7 +99,7 @@ export default function Page() {
         const data: RecordResponse = JSON.parse(text);
         if (!data) return;
         if (!data.record) return;
-        
+
         console.log("API data:", data);
 
         if (!data.record) return;
@@ -147,7 +147,7 @@ export default function Page() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(body),
         });
@@ -170,7 +170,7 @@ export default function Page() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(body),
         });
@@ -178,7 +178,9 @@ export default function Page() {
 
       if (!res.ok) {
         const text = await res.text();
-        if (!text) { alert("POSTに失敗しました")};
+        if (!text) {
+          alert("POSTに失敗しました");
+        }
         return;
         const errorData = JSON.parse(text) as ApiResponse;
         alert(errorData.message);
@@ -205,7 +207,7 @@ export default function Page() {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
 
