@@ -2,6 +2,7 @@ import { TodayFormValues } from "@/types/form";
 import { RecordData } from "@/types/record";
 import { useState } from "react";
 import { UseFormRegister } from "react-hook-form";
+import { Button } from "@/components/ui/Button";
 
 interface Props {
   mode: "new" | "edit";
@@ -129,22 +130,22 @@ export const TodayForm: React.FC<Props> = ({
             <div
               className={`flex justify-center ${mode === "edit" && onDelete ? "gap-2" : ""}`}
             >
-              <button
+              <Button
                 type="submit"
                 disabled={disabled}
-                className="hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2"
+                variant="member"
               >
                 {mode === "new" ? "記録する" : "更新する"}
-              </button>
+              </Button>
               {mode === "edit" && onDelete && (
-                <button
+                <Button
                   type="button"
                   onClick={onDelete}
                   disabled={disabled}
-                  className="hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2"
+                variant="member"
                 >
                   削除
-                </button>
+                </Button>
               )}
             </div>
           </div>

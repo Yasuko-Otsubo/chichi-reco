@@ -51,11 +51,17 @@ export default function Page() {
           label="パスワード"
           type="password"
           placeholder="••••••••"
+          className="bg-white mb-6"
           error={errors.password?.message}
           {...register("password", { required: "パスワードは必須です" })}
         />
 
-        <Button type="submit" fullWidth disabled={isSubmitting}>
+        <Button
+          variant="member"
+          type="submit"
+          fullWidth
+          disabled={isSubmitting}
+        >
           ログイン
         </Button>
       </form>
