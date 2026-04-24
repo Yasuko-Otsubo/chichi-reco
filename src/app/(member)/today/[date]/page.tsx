@@ -180,8 +180,8 @@ export default function Page() {
         const text = await res.text();
         if (!text) {
           alert("POSTに失敗しました");
+          return;
         }
-        return;
         const errorData = JSON.parse(text) as ApiResponse;
         alert(errorData.message);
         return;
