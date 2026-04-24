@@ -1,20 +1,32 @@
 import styles from "@/app/_styles/Calendar.module.css"
 import { RecordData } from "@/types/record"
+import { useRouter } from "next/navigation"
 
 interface Props {
   day: number | null
   record: RecordData | null
   diff: number | null
   isToday: boolean
+  year: number
+  month: number
 }
 export const CalendarCell: React.FC<Props> = ({
   day,
   record,
   diff,
-  isToday
+  isToday,
+  year,
+  month
 }) => {
+  const router = useRouter();
+  const handleClick = () => {
+    if (!day) return;
+    const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+    router.push(`/today/${dateStr}`)
+  }
     return (
-      <div className={`${styles.cell} ${isToday ? styles.today : ""}`}>
+      <div className={`${styles.cell} ${isToday ? styles.today : ""} ${day ? "cursor-pointer" : ""}`}
+      onClick={handleClick}>
         {/* 空白マスか確認 */}
         {day && <div className="text-xs text-gray-500">{day}</div>}
 
