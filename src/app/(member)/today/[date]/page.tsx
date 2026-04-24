@@ -166,7 +166,7 @@ export default function Page() {
           return;
         }
         //変更があるときだけPUT
-        res = await fetch(`/api/records/${paramDate}`, {
+        res = await fetch(`/api/records/${selectedDate}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
