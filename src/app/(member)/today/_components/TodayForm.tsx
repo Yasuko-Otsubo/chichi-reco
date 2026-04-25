@@ -35,7 +35,7 @@ export const TodayForm: React.FC<Props> = ({
   return (
     <>
       <div className="h-full flex flex-col overflow-hidden">
-        <h1 className="text-xl text-center py-6">今日の記録</h1>
+        <h1 className="text-xl text-center py-4">今日の記録</h1>
         <div className=" bg-white rounded-[15px] mb-3 p-2">
           <div className="text-sm">前回の記録</div>
           <div className="flex justify-center items-center flex-col">
@@ -117,7 +117,7 @@ export const TodayForm: React.FC<Props> = ({
                 <label>歩数</label>
                 <div className="flex items-center">
                   <input
-                    className="w-[100px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
                     {...register("steps")}
                   />
                   <span className="text-bbb ml-2 w-6">歩</span>
