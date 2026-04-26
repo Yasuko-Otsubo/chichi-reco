@@ -1,6 +1,7 @@
 "use client";
 
 import { RecordGraphData } from "@/types/record";
+import { useEffect, useState } from "react";
 import {
   Bar,
   CartesianGrid,
@@ -16,7 +17,21 @@ interface Props {
   range: string;
 }
 
+const useWindowWidth = () => {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const update = () => setWidth(window.innerWidth);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return width;
+};
+
 export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
+
+  const width =  useWindowWidth();
+  
   const formatTick = (v: string) => {
     const date = new Date(v);
     if (range === "7days") {
@@ -36,7 +51,10 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
       return "";
     }
     if (range === "1year") {
-      return `${date.getMonth() + 1}月`;
+      const month = date.getMonth() + 1;
+      if (width >= 500) return `${month}月`;
+      if (width >= 400) return `${month}`;
+      return month % 2 === 1 ? `${month}` : "";
     }
     return `${date.getFullYear()}年`;
   };
@@ -44,7 +62,6 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
     { length: (100 - 40) / 10 + 1 },
     (_, i) => 40 + i * 10,
   );
-  const stepsTicks = Array.from({ length: 6 }, (_, i) => i * 2000);
 
   return (
     <>
