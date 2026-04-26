@@ -103,7 +103,7 @@ export const TodayForm: React.FC<Props> = ({
                   ＞
                 </button>
               </div>
-              <div className="flex justify-between items-center text-sm py-1">
+              <div className="flex justify-between items-center text-sm xs:text-base py-1">
                 <label>体重</label>
                 <div className="flex items-center">
                   <input
@@ -113,7 +113,7 @@ export const TodayForm: React.FC<Props> = ({
                   <span className="text-bbb ml-2 w-6">Kg</span>
                 </div> 
               </div>
-              <div className="flex justify-between items-center text-sm h-10 py-1">
+              <div className="flex justify-between items-center text-sm xs:text-base h-10 py-1">
                 <label>歩数</label>
                 <div className="flex items-center">
                   <input
