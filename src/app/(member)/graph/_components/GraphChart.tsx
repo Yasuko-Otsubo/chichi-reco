@@ -101,7 +101,7 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
               vertical={false}
             />
             <Line yAxisId="left" dataKey="weight" stroke="var(--color-textColor)" dot={{ fill: "var(--color-textColor)" }}></Line>
-            <Bar yAxisId="right" dataKey="steps" fill="pink"></Bar>
+            <Bar yAxisId="right" dataKey="steps" fill="#E1E1E1" stroke="#BABABA" strokeWidth={0.3}></Bar>
           </ComposedChart>
         </ResponsiveContainer>
       </div>
