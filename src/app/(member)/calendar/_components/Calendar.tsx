@@ -1,6 +1,7 @@
 import styles from "@/app/_styles/Calendar.module.css";
-import { CalendarCell } from "./CalendarCell";
 import { RecordData } from "@/types/record";
+import { CalendarCellItem } from "./CalendarCellItem";
+import { CalendarCell } from "@/types/calendar";
 
 type CalendarData = {
   day: number | null;
@@ -16,6 +17,7 @@ interface Props {
   todayYear: number;
   todayMonth: number;
   todayDate: number;
+  onDayClick: (cell: CalendarCell) => void;
 }
 
 export const Calendar: React.FC<Props> = ({
@@ -26,6 +28,7 @@ export const Calendar: React.FC<Props> = ({
   todayYear,
   todayMonth,
   todayDate,
+  onDayClick,
 }) => {
   const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -61,7 +64,7 @@ export const Calendar: React.FC<Props> = ({
             const isToday =
               year === todayYear && month === todayMonth && day === todayDate;
             return (
-              <CalendarCell
+              <CalendarCellItem
                 key={i}
                 day={day}
                 record={record}
@@ -69,6 +72,7 @@ export const Calendar: React.FC<Props> = ({
                 isToday={isToday}
                 year={year}
                 month={month}
+                onDayClick={onDayClick}
               />
             );
           })}

@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 //import styles from "@/app/_styles/Calendar.module.css";
 import { Calendar } from "./_components/Calendar";
 import { RecordData, RecordsResponse } from "@/types/record";
+import { CalendarCell } from "@/types/calendar";
+import { DetailModal } from "./_components/DetailModal";
 
 export default function CalendarPage() {
   // ===== auth =====
@@ -45,6 +47,9 @@ export default function CalendarPage() {
   const todayYear = today.getFullYear();
   const todayMonth = today.getMonth() + 1;
   const todayDate = today.getDate();
+
+  // ===== 日付選択 =====
+  const [selectedCell, setSelectedCell] = useState<CalendarCell | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -150,6 +155,7 @@ export default function CalendarPage() {
     return { day, record, diff };
   });
   return (
+    <>
     <Calendar
       calendarData={calendarData}
       year={year}
@@ -158,6 +164,16 @@ export default function CalendarPage() {
       todayYear={todayYear}
       todayMonth={todayMonth}
       todayDate={todayDate}
+      onDayClick={(cell) => setSelectedCell(cell)}
     />
+     {selectedCell && (
+      <DetailModal
+      cell={selectedCell}
+      year={year}
+      month={month}
+      onClose={() => setSelectedCell(null)}
+      />
+     )}
+     </>
   );
 }
