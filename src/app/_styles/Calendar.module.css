@@ -10,17 +10,20 @@
   border: 1px solid #ddd;
   background-color: white;
   min-height: 80px;
-  font-size: 10px;
-  padding: 4px ;
+  font-size: 8px;
+  padding: 2px ;
+  overflow: hidden;
+  word-break: break-all;
 }
 
 .header {
   border: 1px solid #ddd;
 
-  font-weight: bold;
+  font-weight: 500;
   text-align: center;
   background-color: white;
-  padding: 10px 0;
+  padding: 5px 0;
+
 }
 
 .today {

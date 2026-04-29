@@ -20,7 +20,7 @@ export default function Page() {
 
   // ===== URLパラメータから日付を取得 =====
   const { date: paramDate } = useParams<{ date: string }>();
-  console.log(paramDate)
+  console.log(paramDate);
   // ===== 規定値を準備 =====
   const today = new Date().toISOString().slice(0, 10);
 
@@ -42,7 +42,7 @@ export default function Page() {
 
   // ===== UI制御 =====
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState<string>(); //setCurrentMonthは前月、次月のときに使用
+  const currentMonth = selectedDate.slice(0, 7); // "2024-04" の形式
 
   // ******* GET *******
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function Page() {
       const res = await fetch(`/api/records?before=${selectedDate}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
       if (res.status === 404) {
@@ -72,7 +72,7 @@ export default function Page() {
         const res = await fetch(`/api/records/${selectedDate}`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (res.status === 404) {
@@ -99,7 +99,7 @@ export default function Page() {
         const data: RecordResponse = JSON.parse(text);
         if (!data) return;
         if (!data.record) return;
-        
+
         console.log("API data:", data);
 
         if (!data.record) return;
@@ -123,6 +123,7 @@ export default function Page() {
   // ******* POST or PUT *******
   const onSubmit = async (values: TodayFormValues) => {
     if (!token) return;
+    console.log("submit values:", values);
 
     if (!values.weight && !values.steps && !values.memo) {
       alert("いづれかの項目を入力してください");
@@ -138,6 +139,7 @@ export default function Page() {
         steps: values.steps ? Number(values.steps) : null,
         memo: values.memo || null,
       };
+      console.log("body:", body);
 
       let res: Response;
 
@@ -147,7 +149,7 @@ export default function Page() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(body),
         });
@@ -166,11 +168,11 @@ export default function Page() {
           return;
         }
         //変更があるときだけPUT
-        res = await fetch(`/api/records/${paramDate}`, {
+        res = await fetch(`/api/records/${selectedDate}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(body),
         });
@@ -178,8 +180,10 @@ export default function Page() {
 
       if (!res.ok) {
         const text = await res.text();
-        if (!text) { alert("POSTに失敗しました")};
-        return;
+        if (!text) {
+          alert("POSTに失敗しました");
+          return;
+        }
         const errorData = JSON.parse(text) as ApiResponse;
         alert(errorData.message);
         return;
@@ -205,7 +209,7 @@ export default function Page() {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
 
