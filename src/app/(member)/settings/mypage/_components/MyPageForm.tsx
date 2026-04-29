@@ -29,16 +29,16 @@ export const MyPageForm: React.FC<Props> = ({
   };
 
   const inputClass =
-    "w-[70%] text-center m-auto border border-[var(--color-textColor)] rounded-[10px] py-1 px-2";
+    "w-[95%] text-center m-auto border border-[var(--color-textColor)] rounded-[10px] py-1 px-2";
   const btnClass =
-    "hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2";
+    "w-full hover:bg-[var(--color-bgColor)] bg-decisionBtn border border-[var(--color-boxColor)]  rounded-[15px] w-[70%] p-2";
 
   return (
     <>
-      <h1 className="text-xl text-center py-6">マイページ</h1>
-      <div className="bg-white rounded-[15px] py-8 px-4 mb-4">
+      <h1 className="text-xl text-center py-4">マイページ</h1>
+      <div className="bg-white rounded-[15px] py-4 sm:py-8 px-4 mb-4 overflow-y-scroll max-h-[70vh]">
         <form onSubmit={handleFormSubmit} className="text-center">
-          <div className="flex flex-col mb-4">
+          <div className="flex flex-col mb-6">
             <label>名前</label>
             {isEditing ? (
               <input className={inputClass} type="text" {...register("name")} />
@@ -46,7 +46,7 @@ export const MyPageForm: React.FC<Props> = ({
               <span>{profile?.name}</span>
             )}
           </div>
-          <div className="flex flex-col mb-4">
+          <div className="flex flex-col mb-6">
             <label>メールアドレス</label>
             {isEditing ? (
               <input
@@ -58,7 +58,7 @@ export const MyPageForm: React.FC<Props> = ({
               <span>{session?.user.email}</span>
             )}
           </div>
-          <div className="flex flex-col mb-4">
+          <div className="flex flex-col mb-6">
             <label>パスワード</label>
             {isEditing ? (
               <input
@@ -67,31 +67,30 @@ export const MyPageForm: React.FC<Props> = ({
                 {...register("password")}
               />
             ) : (
-              <span>{"　＊＊＊＊＊＊　"}</span>
+              <span>{" ＊＊＊＊＊＊ "}</span>
             )}
           </div>
-          <div className="flex flex-col mb-4">
+          <div className="flex flex-col mb-6">
             <label>身長</label>
             {isEditing ? (
-              <div className="flex items-center w-[70%] mx-auto">
-                {" "}
+              <div className="flex items-center w-[90%] mx-auto">
                 <input
-                  className="flex-1 text-center border border-[var(--color-textColor)] rounded-[10px] py-1 px-2"
+                  className={`${inputClass} mr-2`}
                   type="text"
                   {...register("height")}
                 />
-                <span className="ml-2">cm</span>
+                <span className="ml-2">kg</span>
               </div>
             ) : (
               <span>{profile?.height}cm</span>
             )}
           </div>
-          <div className="flex flex-col mb-4">
+          <div className="flex flex-col mb-6">
             <label>目標体重</label>
             {isEditing ? (
-              <div className="flex items-center w-[70%] mx-auto">
+              <div className="flex items-center w-[90%] mx-auto">
                 <input
-                  className="flex-1 text-center border border-[var(--color-textColor)] rounded-[10px] py-1 px-2"
+                  className={`${inputClass} mr-2`}
                   type="text"
                   {...register("targetWeight")}
                 />
@@ -102,9 +101,8 @@ export const MyPageForm: React.FC<Props> = ({
             )}
           </div>
           {isEditing ? (
-            <div className="flex justify-center gap-4 w-[70%] m-auto mt-12">
+            <div className="flex flex-col xs:flex-row justify-center gap-4 w-[80%] sm:w-[70%] mx-auto mt-8 mb-6 sm:mt-8 ">
               <button className={btnClass} type="submit" disabled={disabled}>
-                {" "}
                 更新する
               </button>
               <button

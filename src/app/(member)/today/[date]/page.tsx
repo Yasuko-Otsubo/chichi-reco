@@ -42,7 +42,7 @@ export default function Page() {
 
   // ===== UI制御 =====
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState<string>(); //setCurrentMonthは前月、次月のときに使用
+  const currentMonth = selectedDate.slice(0, 7); // "2024-04" の形式
 
   // ******* GET *******
   useEffect(() => {
@@ -123,6 +123,7 @@ export default function Page() {
   // ******* POST or PUT *******
   const onSubmit = async (values: TodayFormValues) => {
     if (!token) return;
+    console.log("submit values:", values);
 
     if (!values.weight && !values.steps && !values.memo) {
       alert("いづれかの項目を入力してください");
@@ -138,6 +139,7 @@ export default function Page() {
         steps: values.steps ? Number(values.steps) : null,
         memo: values.memo || null,
       };
+      console.log("body:", body);
 
       let res: Response;
 
