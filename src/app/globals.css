@@ -15,7 +15,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-choiceBtn: #a2dae7; /*チョイスボタン*/
-  --color-boxColor: #65A1D4; /*決定ボタン囲み色 + hover*/
+  --color-boxColor: #65a1d4; /*決定ボタン囲み色 + hover*/
 
   --color-333: #333; /*文字色 黒*/
   --color-bgColor: #a2dae7; /*主に(member)のbgcolor*/
@@ -28,12 +28,6 @@
   --breakpoint-xs: 450px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
   background: var(--background);
