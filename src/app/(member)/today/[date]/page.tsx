@@ -42,6 +42,7 @@ export default function Page() {
 
   // ===== UI制御 =====
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const currentMonth = selectedDate.slice(0, 7); // "2024-04" の形式
 
   // ******* GET *******
@@ -113,6 +114,8 @@ export default function Page() {
         });
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -230,7 +233,7 @@ export default function Page() {
       register={register}
       onSubmit={handleSubmit(onSubmit)}
       onDelete={handleDelete}
-      disabled={isSubmitting || !token}
+      disabled={isSubmitting || !token || isLoading}
       prevRecord={prevRecord}
       setValue={setValue}
       selectedDate={selectedDate}
