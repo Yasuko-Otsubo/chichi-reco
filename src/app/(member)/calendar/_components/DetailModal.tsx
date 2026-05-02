@@ -13,21 +13,34 @@ export const DetailModal = ({ cell, year, month, onClose }: Props) => {
   const detailLabel = `${year}年${month}月${day}日`;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="bg-white rounded-xl p-6 w-[90%] xs:w-[70%] flex flex-col gap-4" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-xl p-6 w-[90%] xs:w-[70%] sm:w-[50%] md:w-[30%] flex flex-col gap-4"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 className="text-lg font-bold">{detailLabel}</h2>
 
         {record ? (
           <>
             <p>体重：{record.weight ?? ""}kg</p>
             <p>歩数：{record.steps ?? ""}歩</p>
-            <p>メモ：{record.memo ?? ""}</p>
+            <p className="break-words max-w-[25ch] md:max-w-[50ch]">
+              メモ：{record.memo ?? ""}
+            </p>
           </>
         ) : (
           <p>この日は記録がありません</p>
         )}
 
-        <button className="border  border-boxColor bg-decisionBtn  rounded-[5px]" onClick={onClose}>閉じる</button>
+        <button
+          className="border  border-boxColor bg-decisionBtn  rounded-[5px]"
+          onClick={onClose}
+        >
+          閉じる
+        </button>
       </div>
     </div>
   );

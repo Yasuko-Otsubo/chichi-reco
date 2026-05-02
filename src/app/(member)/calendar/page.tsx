@@ -57,12 +57,14 @@ export default function CalendarPage() {
     const fetcher = async () => {
       const fetchWithAuth = async (url: string): Promise<Response> => {
         const res = await fetch(url, {
-          headers: { "Content-Type": "application/json",
-      Authorization: `Bearer ${token}` },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!res.ok) {
-          throw new Error(`API error: ${res.status} ${url}`);
+          throw new Error("API error");
         }
 
         return res;
@@ -157,24 +159,24 @@ export default function CalendarPage() {
   });
   return (
     <>
-    <Calendar
-      calendarData={calendarData}
-      year={year}
-      month={month}
-      changeMonth={changeMonth}
-      todayYear={todayYear}
-      todayMonth={todayMonth}
-      todayDate={todayDate}
-      onDayClick={(cell) => setSelectedCell(cell)}
-    />
-     {selectedCell && (
-      <DetailModal
-      cell={selectedCell}
-      year={year}
-      month={month}
-      onClose={() => setSelectedCell(null)}
+      <Calendar
+        calendarData={calendarData}
+        year={year}
+        month={month}
+        changeMonth={changeMonth}
+        todayYear={todayYear}
+        todayMonth={todayMonth}
+        todayDate={todayDate}
+        onDayClick={(cell) => setSelectedCell(cell)}
       />
-     )}
-     </>
+      {selectedCell && (
+        <DetailModal
+          cell={selectedCell}
+          year={year}
+          month={month}
+          onClose={() => setSelectedCell(null)}
+        />
+      )}
+    </>
   );
 }
