@@ -1,7 +1,7 @@
 import styles from "@/app/_styles/Calendar.module.css";
 import { CalendarCell } from "@/types/calendar";
 import { RecordData } from "@/types/record";
-import { useEffect, useState } from "react";
+import { useWindowWidth } from "@/app/_hooks/useWindowWidth";
 
 interface Props {
   day: number | null;
@@ -19,14 +19,7 @@ export const CalendarCellItem: React.FC<Props> = ({
   isToday,
   onDayClick,
 }) => {
-  const [windowWidth, setWindowWidth] = useState(0);
-
-  useEffect(() => {
-    setWindowWidth(window.innerWidth);
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const width = useWindowWidth();
 
   const handleClick = () => {
     if (!day) return;
@@ -48,12 +41,12 @@ export const CalendarCellItem: React.FC<Props> = ({
       )}
 
       {/* 前回との差 */}
-      {windowWidth >= 320 && diff !== null && (
+      {width >= 320 && diff !== null && (
         <div
-          className={` text-center ${windowWidth >= 500 ? "text-sm" : windowWidth >= 375 ? "text-xs" : "text-[12px]"} ${diff > 0 ? "text-red-500" : diff < 0 ? "text-blue-500" : "text-333 font-normal"}`}
+          className={` text-center ${width >= 500 ? "text-sm" : width >= 375 ? "text-xs" : "text-[12px]"} ${diff > 0 ? "text-red-500" : diff < 0 ? "text-blue-500" : "text-333 font-normal"}`}
         >
           {/* 差分計算 */}
-          {windowWidth >= 375 && (diff > 0 ? "▲+" : diff < 0 ? "▼" : "±")}
+          {width >= 375 && (diff > 0 ? "▲+" : diff < 0 ? "▼" : "±")}
 
           {diff.toFixed(1)}
         </div>

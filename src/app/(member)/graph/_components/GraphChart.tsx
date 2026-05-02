@@ -1,7 +1,7 @@
 "use client";
 
+import { useWindowWidth } from "@/app/_hooks/useWindowWidth";
 import { RecordGraphData } from "@/types/record";
-import { useEffect, useState } from "react";
 import {
   Bar,
   CartesianGrid,
@@ -17,21 +17,9 @@ interface Props {
   range: string;
 }
 
-const useWindowWidth = () => {
-  const [width, setWidth] = useState(0);
-  useEffect(() => {
-    const update = () => setWidth(window.innerWidth);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-  return width;
-};
-
 export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
+  const width = useWindowWidth();
 
-  const width =  useWindowWidth();
-  
   const formatTick = (v: string) => {
     const date = new Date(v);
     if (range === "7days") {
@@ -100,8 +88,19 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
               stroke="#ccc"
               vertical={false}
             />
-            <Line yAxisId="left" dataKey="weight" stroke="var(--color-textColor)" dot={{ fill: "var(--color-textColor)" }}></Line>
-            <Bar yAxisId="right" dataKey="steps" fill="#E1E1E1" stroke="#BABABA" strokeWidth={0.3}></Bar>
+            <Line
+              yAxisId="left"
+              dataKey="weight"
+              stroke="var(--color-textColor)"
+              dot={{ fill: "var(--color-textColor)" }}
+            ></Line>
+            <Bar
+              yAxisId="right"
+              dataKey="steps"
+              fill="#E1E1E1"
+              stroke="#BABABA"
+              strokeWidth={0.3}
+            ></Bar>
           </ComposedChart>
         </ResponsiveContainer>
       </div>
