@@ -64,7 +64,7 @@ export default function CalendarPage() {
         });
 
         if (!res.ok) {
-          throw new Error("API error");
+          throw new Error(`API error: ${res.status} / ${url}`);
         }
 
         return res;

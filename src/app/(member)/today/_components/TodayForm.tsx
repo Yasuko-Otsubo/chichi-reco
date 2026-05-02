@@ -44,7 +44,7 @@ export const TodayForm: React.FC<Props> = ({
                 <p className="font-bold m-1 py-0 px-4">{prevRecord.weight}kg</p>
                 <p className="font-bold m-1 py-0 px-4">{prevRecord.steps}歩</p>
               </div>
-            )}{" "}
+            )}
             {/*ここにアコーディオン*/}
             <button onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? (
@@ -87,7 +87,7 @@ export const TodayForm: React.FC<Props> = ({
                     setSelectedDate(e.target.value);
                     register("date").onChange(e);
                   }}
-                />{" "}
+                />
                 <button
                   type="button"
                   onClick={() => {
@@ -111,7 +111,7 @@ export const TodayForm: React.FC<Props> = ({
                     {...register("weight")}
                   />
                   <span className="text-bbb ml-2 w-6">Kg</span>
-                </div> 
+                </div>
               </div>
               <div className="flex justify-between items-center text-sm xs:text-base h-10 py-1">
                 <label>歩数</label>
@@ -127,7 +127,8 @@ export const TodayForm: React.FC<Props> = ({
                 <label className="mb-2">一言メモ</label>
                 <textarea
                   className="border border-[var(--color-bgColor)] rounded-[10px] p-2"
-                  {...register("memo")}
+                  {...register("memo", { maxLength: 100 })}
+                  maxLength={100}
                 />
               </div>
               <div
