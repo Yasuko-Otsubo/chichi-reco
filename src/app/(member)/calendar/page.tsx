@@ -57,11 +57,12 @@ export default function CalendarPage() {
     const fetcher = async () => {
       const fetchWithAuth = async (url: string): Promise<Response> => {
         const res = await fetch(url, {
-          headers: { Authorization: token },
+          headers: { "Content-Type": "application/json",
+      Authorization: `Bearer ${token}` },
         });
 
         if (!res.ok) {
-          throw new Error("API error");
+          throw new Error(`API error: ${res.status} ${url}`);
         }
 
         return res;
