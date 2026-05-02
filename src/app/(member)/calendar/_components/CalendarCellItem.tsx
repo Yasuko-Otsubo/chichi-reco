@@ -31,7 +31,7 @@ export const CalendarCellItem: React.FC<Props> = ({
       onClick={handleClick}
     >
       {/* 空白マスか確認 */}
-      {day && <div className="text-xs mb-1 text-gray-500">{day}</div>}
+      {day && <div className="text-xs text-gray-500">{day}</div>}
 
       {/* 記録があるか確認 */}
       {record && (

@@ -32,6 +32,8 @@ export const Calendar: React.FC<Props> = ({
 }) => {
   const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 
+  const rows = Math.ceil(calendarData.length / 7);
+
   return (
     <>
       <h1 className="text-xl text-center py-4">カレンダー</h1>
@@ -52,7 +54,10 @@ export const Calendar: React.FC<Props> = ({
           </button>
         </div>
 
-        <div className={styles.calendar}>
+        <div
+          className={styles.calendar}
+          style={{ gridTemplateRows: `auto repeat(${rows}, 1fr)` }}
+        >
           {weekDays.map((day) => (
             <div key={day} className={styles.header}>
               {day}

@@ -3,15 +3,15 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 0;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: visible;
+  height: calc(95vh - 200px);
 }
 
 .cell {
   border: 1px solid #ddd;
   background-color: white;
-  min-height: 80px;
   font-size: 8px;
-  padding: 2px ;
+  padding: 2px;
   overflow: hidden;
   word-break: break-all;
 }
@@ -23,7 +23,6 @@
   text-align: center;
   background-color: white;
   padding: 5px 0;
-
 }
 
 .today {
