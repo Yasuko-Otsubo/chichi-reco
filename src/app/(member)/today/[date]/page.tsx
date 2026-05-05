@@ -20,7 +20,6 @@ export default function Page() {
 
   // ===== URLパラメータから日付を取得 =====
   const { date: paramDate } = useParams<{ date: string }>();
-  console.log(paramDate);
   // ===== 規定値を準備 =====
   const today = new Date().toISOString().slice(0, 10);
 
@@ -101,10 +100,6 @@ export default function Page() {
         if (!data) return;
         if (!data.record) return;
 
-        console.log("API data:", data);
-
-        if (!data.record) return;
-
         setRecord(data.record);
         reset({
           date: data.record.date.slice(0, 10),
@@ -126,7 +121,6 @@ export default function Page() {
   // ******* POST or PUT *******
   const onSubmit = async (values: TodayFormValues) => {
     if (!token) return;
-    console.log("submit values:", values);
 
     if (!values.weight && !values.steps && !values.memo) {
       alert("いづれかの項目を入力してください");
@@ -142,7 +136,6 @@ export default function Page() {
         steps: values.steps ? Number(values.steps) : null,
         memo: values.memo || null,
       };
-      console.log("body:", body);
 
       let res: Response;
 
