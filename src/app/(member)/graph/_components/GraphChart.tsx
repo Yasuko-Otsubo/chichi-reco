@@ -51,6 +51,9 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
     (_, i) => 40 + i * 10,
   );
 
+  const max = Math.max(...chartData.map((d) => d.steps ?? 0));
+  const domainMax = Math.ceil(max / 5000) * 5000;
+
   return (
     <>
       <div className="bg-white w-full rounded-[10px] h-[400px] mb-4">
@@ -78,9 +81,12 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
               yAxisId="right"
               orientation="right"
               width={35}
-              domain={([min, max]) => [min - 1000, max + 1000]}
+              domain={[0, domainMax]}
               tick={{ fontSize: 12 }}
-              ticks={[0, 2000, 4000, 6000, 8000, 10000]}
+              ticks={Array.from(
+                { length: domainMax / 5000 + 1 },
+                (_, i) => i * 5000,
+              )}
             />
             <CartesianGrid
               yAxisId="left"
