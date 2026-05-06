@@ -24,7 +24,7 @@ export default function Page() {
       email: data.email,
       password: data.password,
       options: {
-        emailRedirectTo: `http://localhost:3000/login`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/login`,
       },
     });
 
