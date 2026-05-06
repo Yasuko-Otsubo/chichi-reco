@@ -81,23 +81,23 @@ export const POST = async (request: NextRequest) => {
 };
 
 export const GET = async (request: NextRequest) => {
-  const user = await getAuthenticatedUser(request);
-  if (!user) {
-    return NextResponse.json<ApiResponse>(
-      { status: "NG", message: "認証されていません" },
-      { status: 401 },
-    );
-  }
-
-  const profile = await getProfileByUserId(user.id);
-  if (!profile) {
-    return NextResponse.json<ApiResponse>(
-      { status: "NG", message: "プロフィールが見つかりません" },
-      { status: 404 },
-    );
-  }
-
   try {
+    const user = await getAuthenticatedUser(request);
+    if (!user) {
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: "認証されていません" },
+        { status: 401 },
+      );
+    }
+
+    const profile = await getProfileByUserId(user.id);
+    if (!profile) {
+      return NextResponse.json<ApiResponse>(
+        { status: "NG", message: "プロフィールが見つかりません" },
+        { status: 404 },
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     // 表示した記録の前日のデータを取得する
     const before = searchParams.get("before");
