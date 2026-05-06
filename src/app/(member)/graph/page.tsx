@@ -8,11 +8,11 @@ export default function GraphPage() {
   const { chartData, range, setRange } = useGraphData();
 
   const tagClass = (r: string) =>
-    `py-1 mx-[3px] w-full shadow-[0_6px_4px_-2px_rgba(0,0,0,0.2)] transition-all active:translate-y-0.5 active:shadow-none ${range === r ? "bg-tagChoice text-white" : "bg-white"}`;
+    `py-1 mx-[3px] w-full text-xs xs:text-sm md:text-base shadow-[0_6px_4px_-2px_rgba(0,0,0,0.2)] transition-all active:translate-y-0.5 active:shadow-none ${range === r ? "bg-tagChoice text-white" : "bg-white"}`;
 
   return (
     <>
-      <h1 className="text-xl text-center py-6">グラフ</h1>
+      <h1 className="text-xl text-center py-4">グラフ</h1>
       <div className="w-full ">
         <div className="flex justify-between text-base mb-6">
           <button

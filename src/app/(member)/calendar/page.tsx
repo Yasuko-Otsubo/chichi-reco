@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 //import styles from "@/app/_styles/Calendar.module.css";
 import { Calendar } from "./_components/Calendar";
 import { RecordData, RecordsResponse } from "@/types/record";
+import { CalendarCell } from "@/types/calendar";
+import { DetailModal } from "./_components/DetailModal";
 
 export default function CalendarPage() {
   // ===== auth =====
@@ -46,17 +48,23 @@ export default function CalendarPage() {
   const todayMonth = today.getMonth() + 1;
   const todayDate = today.getDate();
 
+  // ===== 日付選択 =====
+  const [selectedCell, setSelectedCell] = useState<CalendarCell | null>(null);
+
   useEffect(() => {
     if (!token) return;
 
     const fetcher = async () => {
       const fetchWithAuth = async (url: string): Promise<Response> => {
         const res = await fetch(url, {
-          headers: { Authorization: token },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!res.ok) {
-          throw new Error("API error");
+          throw new Error(`API error: ${res.status} / ${url}`);
         }
 
         return res;
@@ -150,14 +158,25 @@ export default function CalendarPage() {
     return { day, record, diff };
   });
   return (
-    <Calendar
-      calendarData={calendarData}
-      year={year}
-      month={month}
-      changeMonth={changeMonth}
-      todayYear={todayYear}
-      todayMonth={todayMonth}
-      todayDate={todayDate}
-    />
+    <>
+      <Calendar
+        calendarData={calendarData}
+        year={year}
+        month={month}
+        changeMonth={changeMonth}
+        todayYear={todayYear}
+        todayMonth={todayMonth}
+        todayDate={todayDate}
+        onDayClick={(cell) => setSelectedCell(cell)}
+      />
+      {selectedCell && (
+        <DetailModal
+          cell={selectedCell}
+          year={year}
+          month={month}
+          onClose={() => setSelectedCell(null)}
+        />
+      )}
+    </>
   );
 }

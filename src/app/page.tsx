@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function IntroPage() {
   const btnClass =
-    "text-xl bg-choiceBtn text-bbb py-4 px-20 rounded-lg transition mb-16";
+    "text-xl bg-choiceBtn text-bbb py-4 px-20 rounded-lg transition mb-16 hover:ring-2 hover:ring-inset hover:ring-boxColor";
 
   const iconLinkClass =
     "pl-4 py-2  flex justify-center items-center flex-col text-xs";

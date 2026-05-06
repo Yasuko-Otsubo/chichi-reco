@@ -1,5 +1,6 @@
 "use client";
 
+import { useWindowWidth } from "@/app/_hooks/useWindowWidth";
 import { RecordGraphData } from "@/types/record";
 import {
   Bar,
@@ -17,6 +18,8 @@ interface Props {
 }
 
 export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
+  const width = useWindowWidth();
+
   const formatTick = (v: string) => {
     const date = new Date(v);
     if (range === "7days") {
@@ -36,7 +39,10 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
       return "";
     }
     if (range === "1year") {
-      return `${date.getMonth() + 1}月`;
+      const month = date.getMonth() + 1;
+      if (width >= 500) return `${month}月`;
+      if (width >= 400) return `${month}`;
+      return month % 2 === 1 ? `${month}` : "";
     }
     return `${date.getFullYear()}年`;
   };
@@ -44,7 +50,9 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
     { length: (100 - 40) / 10 + 1 },
     (_, i) => 40 + i * 10,
   );
-  const stepsTicks = Array.from({ length: 6 }, (_, i) => i * 2000);
+
+  const max = Math.max(...chartData.map((d) => d.steps ?? 0));
+  const domainMax = Math.ceil(max / 5000) * 5000;
 
   return (
     <>
@@ -73,9 +81,12 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
               yAxisId="right"
               orientation="right"
               width={35}
-              domain={([min, max]) => [min - 1000, max + 1000]}
+              domain={[0, domainMax]}
               tick={{ fontSize: 12 }}
-              ticks={[0, 2000, 4000, 6000, 8000, 10000]}
+              ticks={Array.from(
+                { length: domainMax / 5000 + 1 },
+                (_, i) => i * 5000,
+              )}
             />
             <CartesianGrid
               yAxisId="left"
@@ -83,8 +94,19 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
               stroke="#ccc"
               vertical={false}
             />
-            <Line yAxisId="left" dataKey="weight" stroke="var(--color-textColor)" dot={{ fill: "var(--color-textColor)" }}></Line>
-            <Bar yAxisId="right" dataKey="steps" fill="pink"></Bar>
+            <Line
+              yAxisId="left"
+              dataKey="weight"
+              stroke="var(--color-textColor)"
+              dot={{ fill: "var(--color-textColor)" }}
+            ></Line>
+            <Bar
+              yAxisId="right"
+              dataKey="steps"
+              fill="#E1E1E1"
+              stroke="#BABABA"
+              strokeWidth={0.3}
+            ></Bar>
           </ComposedChart>
         </ResponsiveContainer>
       </div>

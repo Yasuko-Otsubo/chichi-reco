@@ -39,10 +39,10 @@ export default function Page() {
   return (
     <>
       <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full bg-bgColor ">
-        <h1 className="text-2xl">ログイン</h1>
+        <h1 className="text-xl mb-8">新規登録</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white rounded-[15px] p-10 space-y-4 w-full max-w-[400px]"
+        className="w-[300px] sm:w-[450px] bg-white rounded-[15px] p-10 x-auto space-y-4 max-w-[400px]"
         >
           <Input
             label="メールアドレス"
@@ -57,12 +57,12 @@ export default function Page() {
             label="パスワード"
             type="password"
             placeholder="••••••••"
-            className="bg-white"
+            className="bg-white mb-6"
             error={errors.password?.message}
             {...register("password", { required: "パスワードは必須です" })}
           />
 
-          <Button type="submit" fullWidth disabled={isSubmitting}>
+          <Button variant="member" type="submit" fullWidth disabled={isSubmitting}>
             登録
           </Button>
         </form>

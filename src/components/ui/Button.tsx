@@ -1,7 +1,7 @@
 import { cn } from "@/_utils/utils";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "danger" | "custom" | "member";
   fullWidth?: boolean;
 }
 
@@ -19,6 +19,8 @@ export const Button = ({
     primary: "bg-blue-600 text-white hover:bg-blue-700",
     secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
     danger: "bg-red-600 text-white hover:bg-red-700",
+    custom: "bg-textColor text-white hover:bg-[#A2DAE7]",
+    member: "bg-decisionBtn border border-[var(--color-boxColor)] rounded-[15px] w-[70%] p-2 hover:bg-[var(--color-textColor)] hover:text-white",
   };
   return (
     <button

@@ -34,7 +34,7 @@ export default function HowtoPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(values),
       });
@@ -65,7 +65,6 @@ export default function HowtoPage() {
               <span>{getValues("name")}</span>
             ) : (
               <>
-                {" "}
                 <input
                   className={inputClass}
                   type="text"
@@ -111,7 +110,6 @@ export default function HowtoPage() {
               <span>{getValues("content")}</span>
             ) : (
               <>
-                {" "}
                 <input
                   className={inputClass}
                   type="text"

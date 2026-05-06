@@ -103,9 +103,6 @@ export const PUT = async (
       memo,
     }: UpdateRecordRequestBody = await request.json();
 
-    console.log("weight:", weight);
-    console.log("steps:", steps);
-
     //record取得
     const record = await prisma.record.findFirst({
       where: {

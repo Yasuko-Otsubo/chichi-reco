@@ -16,7 +16,7 @@ export const useGraphData = () => {
         const res = await fetch(`/api/records?range=${range}`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         });
 
