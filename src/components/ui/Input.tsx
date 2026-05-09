@@ -6,6 +6,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   description?: string;
   required?: boolean;
+  labelClassName?: string;
 }
 
 export const Input = ({
@@ -14,11 +15,12 @@ export const Input = ({
   description,
   required,
   className,
+  labelClassName,
   ...props
 }: InputProps) => {
   return (
     <div className="space-y-1 background-color">
-      {label && <Label required={required}>{label}</Label>}
+      {label && <Label required={required} className={labelClassName}>{label}</Label>}
 
       <input
         required={required}

@@ -37,10 +37,11 @@ export default function Page() {
       <h1 className="text-xl mb-8">ログイン</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-[300px] sm:w-[450px] bg-white rounded-[15px] p-10 x-auto space-y-4 max-w-[400px]"
+          className="w-[350px] xs:w-[450px] bg-white rounded-[15px] p-10 x-auto space-y-4 "
       >
         <Input
           label="メールアドレス"
+          labelClassName="text-center block text-base"
           type="email"
           placeholder="name@company.com"
           error={errors.email?.message}
@@ -49,6 +50,7 @@ export default function Page() {
 
         <Input
           label="パスワード"
+          labelClassName="text-center block text-base"
           type="password"
           placeholder="••••••••"
           className="bg-white mb-6"
