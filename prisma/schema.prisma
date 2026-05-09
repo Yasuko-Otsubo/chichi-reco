@@ -1,0 +1,62 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/app/generated/prisma/client"
+  }
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+//プロフィールテーブル
+model Profile {
+  id                    Int         @id @default(autoincrement())
+  name                  String?
+  supabaseUserId        String      @unique @map("supabase_user_id")
+  height                Float?
+  targetWeight          Float?      @map("target_weight")
+  records               Record[]
+
+  @@map("profiles")
+
+}
+
+//記録テーブル
+model Record {
+  id                    Int          @id @default(autoincrement())
+  date                  DateTime     
+  weight                Float?
+  steps                 Int?
+  memo                  String?
+  profileId             Int
+  profile               Profile      @relation(fields: [profileId], references: [id])
+
+  createdAt DateTime @default(now())   // ← POST した瞬間の時刻
+  updatedAt DateTime? @updatedAt
+
+  @@unique([profileId, date])  // ← ユーザーごとに日付は一意
+  @@map("records")
+}
+
+//faqテーブル
+model Faq {
+  id                    Int           @id @default(autoincrement())
+  question              String
+  answer                String
+
+  @@map("faqs")
+}
+
+//お問い合わせテーブル
+model Contact {
+  id                    Int           @id @default(autoincrement())
+  name                  String
+  email                 String        
+  content               String
+  createdAt             DateTime      @default(now())
+
+  @@map("contact")
+}
