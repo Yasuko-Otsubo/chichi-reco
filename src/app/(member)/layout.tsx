@@ -19,10 +19,12 @@ export default function IntroLayout({
 }) {
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} bg-bgColor text-gray-900 antialiased h-screen flex flex-col overflow-hidden`}
+      className={`${geistSans.variable} ${geistMono.variable} bg-bgColor text-gray-900 antialiased h-dvh flex flex-col overflow-hidden`}
     >
       {/* 共通ページ専用の構成 */}
-      <div className=" flex-1 overflow-hidden w-[80%] mx-auto">{children}</div>
+      <div className=" w-[90%] xs:w-[80%] mx-auto overflow-y-auto">
+        {children}
+      </div>
       <div className="flex justify-center pb-6">
         <Nav />
       </div>
