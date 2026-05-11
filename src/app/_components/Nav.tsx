@@ -9,7 +9,7 @@ export const Nav: React.FC = () => {
   const pathname = usePathname();
 
   const linkClass = (href: string) =>
-    `flex flex-col items-center justify-center pt-2 pb-1 text-sm xs:text-base flex-1 ${
+    `flex flex-col items-center justify-center pt-2 pb-1 text-sm flex-1 ${
       pathname.startsWith(href)
         ? "text-textColor font-extrabold border-t-2 border-textColor pointer-events-none"
         : "text-textColor"
@@ -22,7 +22,7 @@ export const Nav: React.FC = () => {
           alt="入力ボタン"
           width={30}
           height={30}
-          className="mb-2 w-6 h-6 xs:w-7 xs:h-7 sm:w-[30px] sm:h-[30px] "
+          className="mb-2 w-6 h-6 "
         />
         入力
       </Link>
@@ -32,7 +32,7 @@ export const Nav: React.FC = () => {
           alt="カレンダー"
           width={30}
           height={30}
-          className="mb-2 w-6 h-6 xs:w-7 xs:h-7 sm:w-[30px] sm:h-[30px]"
+          className="mb-2 w-6 h-6"
         />
         カレンダー
       </Link>
@@ -42,7 +42,7 @@ export const Nav: React.FC = () => {
           alt="グラフ"
           width={30}
           height={30}
-          className="mb-2 w-6 h-6 xs:w-7 xs:h-7 sm:w-[30px] sm:h-[30px]"
+          className="mb-2 w-6 h-6"
         />
         グラフ
       </Link>
@@ -52,7 +52,7 @@ export const Nav: React.FC = () => {
           alt="設定"
           width={30}
           height={30}
-          className="mb-2 w-6 h-6 xs:w-7 xs:h-7 sm:w-[30px] sm:h-[30px]"
+          className="mb-2 w-6 h-6"
         />
         設定
       </Link>

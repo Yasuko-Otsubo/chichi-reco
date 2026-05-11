@@ -79,7 +79,7 @@ export const TodayForm: React.FC<Props> = ({
                   ＜
                 </button>
                 <input
-                  className="mx-2 border border-gray-500 rounded-[15px] text-base px-2 xs:px-4 py-2 sm:px-6 my-2 sm:mx-6"
+                  className="mx-2 border border-gray-500 rounded-[15px] text-base px-2 xs:px-4 py-2"
                   type="date"
                   max={today}
                   {...register("date")}
@@ -107,7 +107,7 @@ export const TodayForm: React.FC<Props> = ({
                 <label className="text-base">体重</label>
                 <div className="flex items-center">
                   <input
-                    className="w-[150px] xs:w-[200px] text-xl px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    className="w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  "
                     {...register("weight")}
                   />
                   <span className="text-bbb text-base ml-2 w-6">Kg</span>
@@ -117,7 +117,7 @@ export const TodayForm: React.FC<Props> = ({
                 <label className="text-base">歩数</label>
                 <div className="flex items-center">
                   <input
-                    className="w-[150px] xs:w-[200px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    className="w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10 "
                     {...register("steps")}
                   />
                   <span className="text-bbb text-base ml-2 w-6">歩</span>

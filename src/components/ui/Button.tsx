@@ -21,6 +21,7 @@ export const Button = ({
     danger: "bg-red-600 text-white hover:bg-red-700",
     custom: "bg-textColor text-white hover:bg-[#A2DAE7]",
     member: "bg-decisionBtn border border-[var(--color-boxColor)] rounded-[15px] w-[70%] p-2 hover:bg-[var(--color-textColor)] hover:text-white",
+    guest: "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-300",
   };
   return (
     <button
