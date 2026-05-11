@@ -35,20 +35,6 @@ export default function Page() {
     router.replace("/today");
   };
 
-  // ゲストログイン処理
-  const handleGuestLogin = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: GUEST_EMAIL,
-      password: GUEST_PASSWORD,
-    });
-
-    if (error) {
-      alert("ゲストログインに失敗しました");
-      return;
-    }
-    router.replace("/today");
-  };
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-start pt-[100px] w-full bg-bgColor ">
       <h1 className="text-xl mb-8">ログイン</h1>
