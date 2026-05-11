@@ -175,6 +175,14 @@ export default function CalendarPage() {
           year={year}
           month={month}
           onClose={() => setSelectedCell(null)}
+          token={token}
+          onSave={() => {
+            setSelectedCell(null);
+            setRecords([]);
+            const current = currentMonth;
+            setCurrentMonth("");
+            setTimeout(() => setCurrentMonth(current), 0);
+          }}
         />
       )}
     </>
