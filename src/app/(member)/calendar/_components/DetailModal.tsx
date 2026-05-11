@@ -120,14 +120,14 @@ export const DetailModal = ({
         </div>
 
         <button
-          className="border border-boxColor bg-decisionBtn rounded-[5px] py-1"
+          className="border border-boxColor bg-decisionBtn rounded-[5px] py-1 cursor-pointer"
           onClick={handleSave}
           disabled={isSubmitting}
         >
           保存する
         </button>
         <button
-          className="border border-boxColor bg-decisionBtn rounded-[5px]"
+          className="border border-boxColor bg-decisionBtn rounded-[5px] cursor-pointer"
           onClick={onClose}
         >
           閉じる

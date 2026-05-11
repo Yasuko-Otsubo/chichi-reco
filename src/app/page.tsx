@@ -7,7 +7,7 @@ export default function IntroPage() {
   const router = useRouter();
 
   const btnClass =
-    "text-base bg-choiceBtn text-bbb py-2 px-15 rounded-lg transition mb-6 hover:ring-2 hover:ring-inset hover:ring-boxColor";
+    "text-base bg-choiceBtn text-bbb py-2 px-15 rounded-lg cursor-pointer transition mb-6 hover:ring-2 hover:ring-inset hover:ring-boxColor";
 
 
   const iconLinkClass =

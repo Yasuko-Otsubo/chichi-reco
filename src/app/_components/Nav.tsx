@@ -11,9 +11,13 @@ export const Nav: React.FC = () => {
   const linkClass = (href: string) =>
     `flex flex-col items-center justify-center pt-2 pb-1 text-sm flex-1 ${
       pathname.startsWith(href)
-        ? "text-textColor font-extrabold border-t-2 border-textColor pointer-events-none"
+        ? "text-textColor font-extrabold pointer-events-none"
         : "text-textColor"
     }`;
+
+  const selectLinkClass = (href: string) =>
+    pathname.startsWith(href) ? "text-[#B98E1B]" : "";
+
   return (
     <div className="flex w-[90%] xs:w-[80%] bg-white rounded-[15px]">
       <Link href="/today" className={linkClass("/today")}>
@@ -24,7 +28,7 @@ export const Nav: React.FC = () => {
           height={30}
           className="mb-2 w-6 h-6 "
         />
-        入力
+        <span className={selectLinkClass("/today")}>入力</span>
       </Link>
       <Link href="/calendar" className={linkClass("/calendar")}>
         <Image
@@ -34,7 +38,7 @@ export const Nav: React.FC = () => {
           height={30}
           className="mb-2 w-6 h-6"
         />
-        カレンダー
+        <span className={selectLinkClass("/calendar")}>カレンダー</span>
       </Link>
       <Link href="/graph" className={linkClass("/graph")}>
         <Image
@@ -44,7 +48,7 @@ export const Nav: React.FC = () => {
           height={30}
           className="mb-2 w-6 h-6"
         />
-        グラフ
+        <span className={selectLinkClass("/graph")}>グラフ</span>
       </Link>
       <Link href="/settings" className={linkClass("/settings")}>
         <Image
@@ -54,7 +58,7 @@ export const Nav: React.FC = () => {
           height={30}
           className="mb-2 w-6 h-6"
         />
-        設定
+        <span className={selectLinkClass("/settings")}>設定</span>
       </Link>
     </div>
   );
