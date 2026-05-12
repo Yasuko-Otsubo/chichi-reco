@@ -122,7 +122,7 @@ export default function Page() {
   const onSubmit = async (values: TodayFormValues) => {
     if (!token) return;
 
-    if (!values.weight && !values.steps && !values.memo) {
+    if (!values.weight && !values.steps) {
       alert("いづれかの項目を入力してください");
       return;
     }

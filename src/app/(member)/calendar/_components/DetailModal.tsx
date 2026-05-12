@@ -30,7 +30,7 @@ export const DetailModal = ({
 
   const handleSave = async () => {
     if (!token) return;
-    if (!weight && !steps && !memo) {
+    if (!weight && !steps) {
       alert("いずれかを入力してください");
       return;
     }
