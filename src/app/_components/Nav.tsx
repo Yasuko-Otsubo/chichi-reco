@@ -11,9 +11,9 @@ export const Nav: React.FC = () => {
   const linkClass = (href: string) =>
     `flex flex-col items-center justify-center pt-2 pb-1 text-sm flex-1 ${
       pathname.startsWith(href)
-        ? "text-textColor font-extrabold pointer-events-none"
+        ? "text-textColor font-extrabold"
         : "text-textColor"
-    }`;
+    } ${pathname === href ? "pointer-events-none" : " "}`;
 
   const selectLinkClass = (href: string) =>
     pathname.startsWith(href) ? "text-[#B98E1B]" : "";
