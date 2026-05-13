@@ -51,7 +51,7 @@ export default function CalendarPage() {
   // ===== 日付選択 =====
   const [selectedCell, setSelectedCell] = useState<CalendarCell | null>(null);
 
-  const [refetchFlag, setReftchFlag] = useState(0);
+  const [refetchFlag, setRefetchFlag] = useState(0);
 
   useEffect(() => {
     if (!token) return;
@@ -181,7 +181,7 @@ export default function CalendarPage() {
           onSave={() => {
             setSelectedCell(null);
             setRecords([]);
-            setReftchFlag(prev => prev + 1);
+            setRefetchFlag(prev => prev + 1);
           }}
         />
       )}
