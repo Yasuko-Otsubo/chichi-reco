@@ -11,9 +11,6 @@ type LoginInput = {
   password: string;
 };
 
-const GUEST_EMAIL = process.env.NEXT_PUBLIC_GUEST_EMAIL!;
-const GUEST_PASSWORD = process.env.NEXT_PUBLIC_GUEST_PASSWORD!;
-
 export default function Page() {
   const router = useRouter();
   const {
