@@ -42,7 +42,7 @@ export default function Page() {
         <h1 className="text-xl mb-8">新規登録</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-[350px] xs:w-[450px] bg-white rounded-[15px] p-10 x-auto space-y-4 "
+          className="w-[350px] bg-white rounded-[15px] p-10 x-auto space-y-4 "
         >
           <Input
             label="メールアドレス"
