@@ -31,7 +31,7 @@ export const DetailModal = ({
   const handleSave = async () => {
     if (!token) return;
     if (!weight && !steps) {
-      alert("いずれかを入力してください");
+      alert("体重または歩数を入力してください");
       return;
     }
 
@@ -67,6 +67,40 @@ export const DetailModal = ({
     } catch (error) {
       console.error(error);
       alert("記録に失敗しました");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  //delete
+  const handleDelete = async () => {
+    if (!token) return;
+    if (!record || record.id === 0) {
+      alert("削除する記録がありません");
+      return;
+    }
+    if (!confirm("削除しますか？")) return;
+
+    try {
+      setIsSubmitting(true);
+      const res = await fetch(`/api/records/${dateString}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        alert("削除に失敗しました");
+        return;
+      }
+
+      alert("削除しました");
+      onSave();
+    } catch (error) {
+      console.error(error);
+      alert("削除に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -126,6 +160,15 @@ export const DetailModal = ({
         >
           保存する
         </button>
+        {record && record.id !== 0 && (
+          <button
+            className="rounded-[5px] py-1 cursor-pointer text-red-400 border border-red-300"
+            onClick={handleDelete}
+            disabled={isSubmitting}
+          >
+            削除する
+          </button>
+        )}
         <button
           className="border border-boxColor bg-decisionBtn rounded-[5px] cursor-pointer"
           onClick={onClose}
