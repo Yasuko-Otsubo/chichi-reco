@@ -162,7 +162,7 @@ export const DetailModal = ({
         </button>
         {record && record.id !== 0 && (
           <button
-            className="rounded-[5px] py-1 cursor-pointer text-red-400 border border-red-300"
+            className="rounded-[5px] py-1 cursor-pointer text-red-400 border border-red-300 hover:bg-red-400 hover:text-white"
             onClick={handleDelete}
             disabled={isSubmitting}
           >
