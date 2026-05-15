@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Nav } from "../_components/Nav";
 import React from "react";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export default function IntroLayout({
       </div>
       <div className="flex justify-center pb-6">
         <Nav />
+        <Toaster />
       </div>
     </div>
   );
