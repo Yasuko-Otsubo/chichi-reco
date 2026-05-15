@@ -12,6 +12,7 @@ import {
 import { useForm } from "react-hook-form";
 import { TodayFormValues } from "@/types/form";
 import { ApiResponse } from "@/types/api";
+import toast from "react-hot-toast";
 
 export default function Page() {
   // ===== auth =====
@@ -123,7 +124,7 @@ export default function Page() {
     if (!token) return;
 
     if (!values.weight && !values.steps) {
-      alert("いづれかの項目を入力してください");
+      toast.error("いづれかの項目を入力してください");
       return;
     }
 
@@ -159,7 +160,7 @@ export default function Page() {
           record.date.slice(0, 10) === values.date;
 
         if (isSame) {
-          alert("変更がないため更新しませんでした");
+          toast.error("変更がないため更新しませんでした");
           router.push(`/today/${paramDate}`);
           return;
         }
@@ -177,19 +178,19 @@ export default function Page() {
       if (!res.ok) {
         const text = await res.text();
         if (!text) {
-          alert("POSTに失敗しました");
+          toast.error("POSTに失敗しました");
           return;
         }
         const errorData = JSON.parse(text) as ApiResponse;
-        alert(errorData.message);
+        toast.error(errorData.message);
         return;
       }
 
       router.push(`/calendar?month=${currentMonth}`);
-      alert("記録しました");
+      toast.success("記録しました");
     } catch (error) {
       console.error("記録に失敗しました:", error);
-      alert("記録に失敗しました");
+      toast.error("記録に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -209,12 +210,12 @@ export default function Page() {
         },
       });
 
-      alert("記録を削除しました");
+      toast.success("記録を削除しました");
 
       router.push(`/calendar?month=${currentMonth}`);
     } catch (error) {
       console.error("記録の削除に失敗しました:", error);
-      alert("記録の削除に失敗しました");
+      toast.error("記録の削除に失敗しました");
     } finally {
       setIsSubmitting(false);
     }

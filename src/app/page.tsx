@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "./_libs/supabase";
+import toast from "react-hot-toast";
+
 export default function IntroPage() {
   const router = useRouter();
 
@@ -26,7 +28,7 @@ export default function IntroPage() {
     });
 
     if (error) {
-      alert("ゲストログインに失敗しました");
+      toast.error("ゲストログインに失敗しました");
       return;
     }
     router.replace("/today");

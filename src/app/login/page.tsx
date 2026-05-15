@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "../_libs/supabase";
+import toast from "react-hot-toast";
 
 type LoginInput = {
   email: string;
@@ -26,7 +27,7 @@ export default function Page() {
     });
 
     if (error) {
-      alert("ログインに失敗しました");
+      toast.error("ログインに失敗しました");
       return;
     }
     router.replace("/today");

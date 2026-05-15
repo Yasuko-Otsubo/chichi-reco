@@ -1,5 +1,6 @@
 import { CalendarCell } from "@/types/calendar";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 type Props = {
   cell: CalendarCell;
@@ -31,7 +32,7 @@ export const DetailModal = ({
   const handleSave = async () => {
     if (!token) return;
     if (!weight && !steps) {
-      alert("体重または歩数を入力してください");
+      toast.error("体重または歩数を入力してください");
       return;
     }
 
@@ -58,15 +59,15 @@ export const DetailModal = ({
       });
 
       if (!res.ok) {
-        alert("記録に失敗しました");
+        toast.error("記録に失敗しました");
         return;
       }
 
-      alert("記録しました");
+      toast.success("記録しました");
       onSave();
     } catch (error) {
       console.error(error);
-      alert("記録に失敗しました");
+      toast.error("記録に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -76,7 +77,7 @@ export const DetailModal = ({
   const handleDelete = async () => {
     if (!token) return;
     if (!record || record.id === 0) {
-      alert("削除する記録がありません");
+      toast.error("削除する記録がありません");
       return;
     }
     if (!confirm("削除しますか？")) return;
@@ -92,15 +93,15 @@ export const DetailModal = ({
       });
 
       if (!res.ok) {
-        alert("削除に失敗しました");
+        toast.error("削除に失敗しました");
         return;
       }
 
-      alert("削除しました");
+      toast.success("削除しました");
       onSave();
     } catch (error) {
       console.error(error);
-      alert("削除に失敗しました");
+      toast.error("削除に失敗しました");
     } finally {
       setIsSubmitting(false);
     }

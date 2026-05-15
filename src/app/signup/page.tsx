@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { supabase } from "../_libs/supabase";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type SignupInput = {
   email: string;
@@ -29,10 +30,10 @@ export default function Page() {
     });
 
     if (error) {
-      alert("登録に失敗しました");
+      toast.error("登録に失敗しました");
       return;
     } else {
-      alert("確認メールを送りました");
+      toast.success("確認メールを送りました");
       router.replace("/");
     }
   };
