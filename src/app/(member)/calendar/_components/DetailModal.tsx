@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarCell } from "@/types/calendar";
+import { CreateRecordRequestBody } from "@/types/record";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -27,7 +28,7 @@ export const DetailModal = ({
   token,
   onSave,
 }: Props) => {
-    const { day, record } = cell;
+  const { day, record } = cell;
 
   const {
     register,
@@ -38,22 +39,21 @@ export const DetailModal = ({
       weight: record?.weight?.toString() ?? "",
       steps: record?.steps?.toString() ?? "",
       memo: record?.memo ?? "",
-    }
+    },
   });
 
   const detailLabel = `${year}年${month}月${day}日`;
   const dateString = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
 
   const handleSave = handleSubmit(async (values) => {
     if (!token) return;
     if (!values.weight && !values.steps) {
       toast.error("体重または歩数を入力してください");
       return;
-  }
+    }
 
     try {
-      const body = {
+      const body: CreateRecordRequestBody = {
         date: dateString,
         weight: values.weight ? Number(values.weight) : null,
         steps: values.steps ? Number(values.steps) : null,
@@ -83,7 +83,7 @@ export const DetailModal = ({
     } catch (error) {
       console.error(error);
       toast.error("記録に失敗しました");
-    } 
+    }
   });
 
   //delete
@@ -114,7 +114,7 @@ export const DetailModal = ({
     } catch (error) {
       console.error(error);
       toast.error("削除に失敗しました");
-    } 
+    }
   };
 
   return (
