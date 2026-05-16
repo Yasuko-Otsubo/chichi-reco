@@ -1,5 +1,7 @@
+"use client";
+
 import { CalendarCell } from "@/types/calendar";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -11,6 +13,12 @@ type Props = {
   onSave: () => void;
 };
 
+type DefaultValues = {
+  weight: string;
+  steps: string;
+  memo: string;
+};
+
 export const DetailModal = ({
   cell,
   year,
@@ -19,30 +27,37 @@ export const DetailModal = ({
   token,
   onSave,
 }: Props) => {
-  const { day, record } = cell;
+    const { day, record } = cell;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<DefaultValues>({
+    defaultValues: {
+      weight: record?.weight?.toString() ?? "",
+      steps: record?.steps?.toString() ?? "",
+      memo: record?.memo ?? "",
+    }
+  });
 
   const detailLabel = `${year}年${month}月${day}日`;
   const dateString = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-  const [weight, setWeight] = useState(record?.weight?.toString() ?? "");
-  const [steps, setSteps] = useState(record?.steps?.toString() ?? "");
-  const [memo, setMemo] = useState(record?.memo?.toString() ?? "");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSave = async () => {
+  const handleSave = handleSubmit(async (values) => {
     if (!token) return;
-    if (!weight && !steps) {
+    if (!values.weight && !values.steps) {
       toast.error("体重または歩数を入力してください");
       return;
-    }
+  }
 
     try {
-      setIsSubmitting(true);
       const body = {
         date: dateString,
-        weight: weight ? Number(weight) : null,
-        steps: steps ? Number(steps) : null,
-        memo: memo || null,
+        weight: values.weight ? Number(values.weight) : null,
+        steps: values.steps ? Number(values.steps) : null,
+        memo: values.memo || null,
       };
 
       const method = record && record.id !== 0 ? "PUT" : "POST";
@@ -68,10 +83,8 @@ export const DetailModal = ({
     } catch (error) {
       console.error(error);
       toast.error("記録に失敗しました");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    } 
+  });
 
   //delete
   const handleDelete = async () => {
@@ -83,7 +96,6 @@ export const DetailModal = ({
     if (!confirm("削除しますか？")) return;
 
     try {
-      setIsSubmitting(true);
       const res = await fetch(`/api/records/${dateString}`, {
         method: "DELETE",
         headers: {
@@ -102,9 +114,7 @@ export const DetailModal = ({
     } catch (error) {
       console.error(error);
       toast.error("削除に失敗しました");
-    } finally {
-      setIsSubmitting(false);
-    }
+    } 
   };
 
   return (
@@ -124,8 +134,7 @@ export const DetailModal = ({
             <input
               type="number"
               className="w-[120px] border border-bgColor rounded-[10px] px-2 h-9 text-right"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
+              {...register("weight")}
             />
             <span>kg</span>
           </div>
@@ -137,8 +146,7 @@ export const DetailModal = ({
             <input
               type="number"
               className="w-[120px] border border-bgColor rounded-[10px] px-2 h-9 text-right"
-              value={steps}
-              onChange={(e) => setSteps(e.target.value)}
+              {...register("steps")}
             />
             <span>歩</span>
           </div>
@@ -148,8 +156,7 @@ export const DetailModal = ({
           <label>メモ</label>
           <textarea
             className="border border-bgColor rounded-[10px] p-2"
-            value={memo}
-            onChange={(e) => setMemo(e.target.value)}
+            {...register("memo")}
             maxLength={100}
           />
         </div>
