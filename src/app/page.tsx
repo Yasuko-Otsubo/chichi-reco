@@ -1,9 +1,16 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { supabase } from "./_libs/supabase";
+import toast from "react-hot-toast";
 
 export default function IntroPage() {
+  const router = useRouter();
+
   const btnClass =
-    "text-xl bg-choiceBtn text-bbb py-4 px-20 rounded-lg transition mb-16 hover:ring-2 hover:ring-inset hover:ring-boxColor";
+    "text-base bg-choiceBtn text-bbb py-2 px-15 rounded-lg cursor-pointer transition mb-6 hover:ring-2 hover:ring-inset hover:ring-boxColor";
+
 
   const iconLinkClass =
     "pl-4 py-2  flex justify-center items-center flex-col text-xs";
@@ -14,10 +21,23 @@ export default function IntroPage() {
     { title: "✅ グラフで変化が見える", desc: "日々の進捗が一目でわかる" },
   ];
 
+  const handleGuestLogin = async () => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: process.env.NEXT_PUBLIC_GUEST_EMAIL!,
+      password: process.env.NEXT_PUBLIC_GUEST_PASSWORD!,
+    });
+
+    if (error) {
+      toast.error("ゲストログインに失敗しました");
+      return;
+    }
+    router.replace("/today");
+  };
+
   return (
-    <main className="flex flex-col items-center justify-center  text-center bg-gradient-to-b">
+    <main className="flex flex-col items-center justify-center  text-center max-w-xl mx-auto">
       <header className="flex justify-between w-full px-6 py-1 items-center">
-        <h1 className="text-xl sm:text-2xl">父レコ</h1>
+        <h1 className="text-xl">父レコ</h1>
         <div className="flex">
           <Link href="/signup" className={iconLinkClass}>
             <Image
@@ -25,7 +45,7 @@ export default function IntroPage() {
               alt="新規登録アイコン"
               width={26}
               height={26}
-              className="w-5 h-5 sm:w-8 sm:h-8"
+              className="w-5 h-5"
             />
             新規登録
           </Link>
@@ -35,14 +55,14 @@ export default function IntroPage() {
               alt="ログインアイコン"
               width={26}
               height={26}
-              className="w-5 h-5 sm:w-8 sm:h-8"
+              className="w-5 h-5"
             />
             ログイン
           </Link>
         </div>
       </header>
 
-      <div className="w-full aspect-[3/2] relative mb-8">
+      <div className="w-full aspect-[3/2] relative mb-4">
         <Image
           src="/top-hero-bg.png"
           alt="父レコのロゴ"
@@ -50,22 +70,26 @@ export default function IntroPage() {
           className="object-cover"
         />
       </div>
-      <h2 className="text-2xl tracking-tight mb-8 text-gray-900 dark:text-white ">
+      <h2 className="text-xl tracking-tight mb-6 text-gray-900 dark:text-white ">
         毎日の健康を簡単記録
       </h2>
-      <p className="text-sm  text-gray-700 dark:text-gray-300 max-w-xl mb-10">
+      <p className="text-sm  text-gray-700 dark:text-gray-300 max-w-xl mb-5">
         体重や歩数を記録するだけで、グラフで見える！
+        <br />
         今日から始める優しい健康習慣
       </p>
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col items-center mb-10">
         <Link href="/signup" className={btnClass}>
-          今すぐ始める
+          新規登録して始める
         </Link>
+        <button onClick={handleGuestLogin} className={btnClass}>
+          ゲストで試してみる
+        </button>
       </div>
-      <div className="text-left w-[80%] xs:w-[55%] mb-20">
+      <div className="text-left w-[80%] xs:w-[70%] mb-20">
         {subtitles.map((t) => (
           <div key={t.title}>
-            <div className="text-xl sm:text-2xl mb-2">{t.title}</div>
+            <div className="text-xl  mb-2">{t.title}</div>
             <p className="text-sm sm:text-base mb-6">{t.desc}</p>
           </div>
         ))}
@@ -95,7 +119,7 @@ export default function IntroPage() {
       </div>
       <div className="flex flex-col sm:flex-row gap-4">
         <Link href="/signup" className={btnClass}>
-          今すぐ始める
+          新規登録して始める
         </Link>
       </div>
 
@@ -107,7 +131,7 @@ export default function IntroPage() {
               alt="新規登録アイコン"
               width={26}
               height={26}
-              className="w-6 h-6 sm:w-8 sm:h-8"
+              className="w-6 h-6"
             />
             新規登録
           </Link>
@@ -117,7 +141,7 @@ export default function IntroPage() {
               alt="ログインアイコン"
               width={26}
               height={26}
-              className="w-6 h-6 sm:w-8 sm:h-8"
+              className="w-6 h-6"
             />
             ログイン
           </Link>

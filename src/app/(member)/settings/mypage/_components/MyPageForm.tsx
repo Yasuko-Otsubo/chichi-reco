@@ -36,7 +36,7 @@ export const MyPageForm: React.FC<Props> = ({
   return (
     <>
       <h1 className="text-xl text-center py-4">マイページ</h1>
-      <div className="bg-white rounded-[15px] py-4 sm:py-8 px-4 mb-4 overflow-y-scroll max-h-[70vh]">
+      <div className="bg-white rounded-[15px] py-4 px-4 mb-4 overflow-y-scroll max-h-[70vh]">
         <form onSubmit={handleFormSubmit} className="text-center">
           <div className="flex flex-col mb-6">
             <label>名前</label>

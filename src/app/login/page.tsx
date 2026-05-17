@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "../_libs/supabase";
+import toast from "react-hot-toast";
 
 type LoginInput = {
   email: string;
@@ -26,7 +27,7 @@ export default function Page() {
     });
 
     if (error) {
-      alert("ログインに失敗しました");
+      toast.error("ログインに失敗しました");
       return;
     }
     router.replace("/today");
@@ -37,10 +38,11 @@ export default function Page() {
       <h1 className="text-xl mb-8">ログイン</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-[300px] sm:w-[450px] bg-white rounded-[15px] p-10 x-auto space-y-4 max-w-[400px]"
+          className="w-[350px] bg-white rounded-[15px] p-10 x-auto space-y-4 "
       >
         <Input
           label="メールアドレス"
+          labelClassName="text-center block text-sm"
           type="email"
           placeholder="name@company.com"
           error={errors.email?.message}
@@ -49,6 +51,7 @@ export default function Page() {
 
         <Input
           label="パスワード"
+          labelClassName="text-center block text-sm"
           type="password"
           placeholder="••••••••"
           className="bg-white mb-6"

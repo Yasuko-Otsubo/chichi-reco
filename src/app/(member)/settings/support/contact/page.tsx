@@ -4,6 +4,7 @@ import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { ContactFormValues } from "@/types/form";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export default function HowtoPage() {
   const { token } = useSupabaseSession();
@@ -41,11 +42,11 @@ export default function HowtoPage() {
 
       if (res.ok) {
         const data = await res.json();
-        alert(data.message);
+        toast.success(data.message);
         return true;
       }
     } catch (error) {
-      alert("送信に失敗しました");
+      toast.error("送信に失敗しました");
     }
   };
 
