@@ -20,10 +20,10 @@ export default function IntroLayout({
 }) {
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} bg-bgColor text-gray-900 antialiased flex flex-col overflow-hidden`}
+      className={`${geistSans.variable} ${geistMono.variable} bg-bgColor text-gray-900 antialiased flex flex-col`}
     >
       {/* 共通ページ専用の構成 */}
-      <div className=" w-[90%] xs:w-[80%] mx-auto overflow-y-auto">
+      <div className=" w-[90%] xs:w-[80%] mx-auto overflow-y-auto flex-1">
         {children}
       </div>
       <div className="flex justify-center pb-6">
