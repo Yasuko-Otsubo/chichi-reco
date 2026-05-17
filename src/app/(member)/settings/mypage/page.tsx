@@ -12,9 +12,18 @@ import { MyPageForm } from "./_components/MyPageForm";
 import { MyPageFormValues } from "@/types/form";
 import { supabase } from "@/app/_libs/supabase";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { session, token } = useSupabaseSession();
+  const router = useRouter();
+
+  const isGuest = session?.user.email === process.env.NEXT_PUBLIC_GUEST_EMAIL;
+  useEffect(() => {
+    if (isGuest) {
+      router.replace("/settings");
+    }
+  }, [isGuest, router]);
 
   const defaultValues = {
     name: "",
@@ -23,7 +32,12 @@ export default function Page() {
   };
 
   const [profile, setProfile] = useState<ProfileFields | null>(null);
-  const { register, handleSubmit, reset, formState: { isSubmitting} } = useForm<MyPageFormValues>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<MyPageFormValues>({
     defaultValues,
   });
 
@@ -36,7 +50,9 @@ export default function Page() {
       },
     });
     const data: ProfileResponse = await res.json();
-    if (data.profiles) {setProfile(data.profiles[0]);}
+    if (data.profiles) {
+      setProfile(data.profiles[0]);
+    }
   }, [token]);
 
   useEffect(() => {
@@ -75,7 +91,6 @@ export default function Page() {
     }
 
     try {
-
       const body: UpdateProfileRequest = {
         name: values.name || null,
         height: values.height ? Number(values.height) : null,
