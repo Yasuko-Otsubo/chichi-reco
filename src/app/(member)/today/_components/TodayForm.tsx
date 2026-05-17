@@ -41,8 +41,8 @@ export const TodayForm: React.FC<Props> = ({
           <div className="flex justify-center items-center flex-col">
             {prevRecord && (
               <div className="flex justify-center">
-                <p className="font-bold m-1 py-0 px-4">{prevRecord.weight}kg</p>
-                <p className="font-bold m-1 py-0 px-4">{prevRecord.steps}歩</p>
+                <p className="font-bold m-1 py-0 px-4 text-[#003767] text-base">{prevRecord.weight}kg</p>
+                <p className="font-bold m-1 py-0 px-4 text-[#003767] text-base">{prevRecord.steps}歩</p>
               </div>
             )}
             {/*ここにアコーディオン*/}
