@@ -32,6 +32,10 @@ export const TodayForm: React.FC<Props> = ({
   const [isOpen, setIsOpen] = useState(false);
   const today = new Date().toISOString().split("T")[0];
 
+  const formatDate = (dateStr: string) => {
+    const [y, m, d] = dateStr.slice(0, 10).split("-");
+    return `${y}年${Number(m)}月${Number(d)}日`;
+  };
   return (
     <>
       <div className="h-full flex flex-col overflow-hidden">
@@ -40,13 +44,24 @@ export const TodayForm: React.FC<Props> = ({
           <div className="text-sm">前回の記録</div>
           <div className="flex justify-center items-center flex-col">
             {prevRecord && (
-              <div className="flex justify-center">
-                <p className="font-bold m-1 py-0 px-4">{prevRecord.weight}kg</p>
-                <p className="font-bold m-1 py-0 px-4">{prevRecord.steps}歩</p>
+              <div className="flex justify-center flex-col items-center">
+                <p className="text-xs text-gray-500 mb-2">
+                  {formatDate(prevRecord.date)}
+                </p>
+                <div className="flex justify-center">
+                  <p className="font-bold m-1 py-0 px-4 text-[#003767] text-base">
+                    {prevRecord.weight}
+                    <span className="text-xs ml-1">kg</span>
+                  </p>
+                  <p className="font-bold m-1 py-0 px-4 text-[#003767] text-base">
+                    {prevRecord.steps}
+                    <span className="text-xs ml-1">歩</span>
+                  </p>
+                </div>
               </div>
             )}
             {/*ここにアコーディオン*/}
-            <button onClick={() => setIsOpen(!isOpen)}>
+            <button onClick={() => setIsOpen(!isOpen)} className="text-xs">
               {isOpen ? (
                 <>
                   一言メモ <span className="font-bold">{"－"}</span>
@@ -79,7 +94,7 @@ export const TodayForm: React.FC<Props> = ({
                   ＜
                 </button>
                 <input
-                  className="mx-2 border border-gray-500 rounded-[15px] text-base px-2 xs:px-4 py-2"
+                  className="mx-2 border border-gray-500 rounded-[15px] text-base px-2 xs:px-4 py-2 w-[180px]"
                   type="date"
                   max={today}
                   {...register("date")}

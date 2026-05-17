@@ -43,7 +43,7 @@ export const CalendarCellItem: React.FC<Props> = ({
       {/* 前回との差 */}
       {width >= 320 && diff !== null && (
         <div
-          className={` text-center text-[clamp(8px,1.8vw,12px)] ${diff > 0 ? "text-red-500" : diff < 0 ? "text-blue-500" : "text-333 font-normal"}`}
+          className={` text-center text-[12px] ${diff > 0 ? "text-red-500" : diff < 0 ? "text-blue-500" : "text-333 font-normal"}`}
         >
           {/* 差分計算 */}
           {width >= 375 && (diff > 0 ? "▲+" : diff < 0 ? "▼" : "±")}
