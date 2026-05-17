@@ -94,7 +94,7 @@ export const TodayForm: React.FC<Props> = ({
                   ＜
                 </button>
                 <input
-                  className="mx-2 border border-gray-500 rounded-[15px] text-base px-2 xs:px-4 py-2 w-[180px] flex justify-center "
+                  className="mx-2 border border-gray-500 rounded-[15px] text-base px-2 xs:px-4 py-2"
                   type="date"
                   max={today}
                   {...register("date")}
