@@ -55,6 +55,24 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    if (weight !== null && weight !== undefined) {
+      if (weight < 20 || weight > 200) {
+        return NextResponse.json<ApiResponse>(
+          { status: "NG", message: "20~200の範囲で入力してください"},
+          { status: 400 },
+        );
+      }
+    }
+
+    if (steps !== null && steps !== undefined) {
+      if (steps < 0 || steps > 40000) {
+        return NextResponse.json<ApiResponse> (
+          { status: "NG", message: "0～40,000の範囲で入力してください"},
+          { status: 400 },
+        )
+      }
+    }
+
     const data = await prisma.record.create({
       data: {
         profileId: profile.id,
