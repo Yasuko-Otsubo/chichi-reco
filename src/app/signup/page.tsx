@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { supabase } from "../_libs/supabase";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type SignupInput = {
   email: string;
@@ -29,10 +30,10 @@ export default function Page() {
     });
 
     if (error) {
-      alert("登録に失敗しました");
+      toast.error("登録に失敗しました");
       return;
     } else {
-      alert("確認メールを送りました");
+      toast.success("確認メールを送りました");
       router.replace("/");
     }
   };
@@ -42,19 +43,21 @@ export default function Page() {
         <h1 className="text-xl mb-8">新規登録</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
-        className="w-[300px] sm:w-[450px] bg-white rounded-[15px] p-10 x-auto space-y-4 max-w-[400px]"
+          className="w-[350px] bg-white rounded-[15px] p-10 x-auto space-y-4 "
         >
           <Input
             label="メールアドレス"
+            labelClassName="text-center block text-base"
             type="email"
             placeholder="name@company.com"
-            className="bg-white"
+            className="bg-white mb-4"
             error={errors.email?.message}
             {...register("email", { required: "メールアドレスは必須です" })}
           />
 
           <Input
             label="パスワード"
+            labelClassName="text-center block text-base"
             type="password"
             placeholder="••••••••"
             className="bg-white mb-6"
@@ -62,7 +65,12 @@ export default function Page() {
             {...register("password", { required: "パスワードは必須です" })}
           />
 
-          <Button variant="member" type="submit" fullWidth disabled={isSubmitting}>
+          <Button
+            variant="member"
+            type="submit"
+            fullWidth
+            disabled={isSubmitting}
+          >
             登録
           </Button>
         </form>

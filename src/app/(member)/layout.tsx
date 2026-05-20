@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Nav } from "../_components/Nav";
 import React from "react";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,12 +20,15 @@ export default function IntroLayout({
 }) {
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} bg-bgColor text-gray-900 antialiased h-screen flex flex-col overflow-hidden`}
+      className={`${geistSans.variable} ${geistMono.variable} bg-bgColor text-gray-900 antialiased flex flex-col`}
     >
       {/* 共通ページ専用の構成 */}
-      <div className=" flex-1 overflow-hidden w-[80%] mx-auto">{children}</div>
+      <div className=" w-[90%] xs:w-[80%] mx-auto overflow-y-auto flex-1">
+        {children}
+      </div>
       <div className="flex justify-center pb-6">
         <Nav />
+        <Toaster />
       </div>
     </div>
   );

@@ -6,14 +6,24 @@ import {
   ProfileResponse,
   UpdateProfileRequest,
 } from "@/types/profiles";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MyPageForm } from "./_components/MyPageForm";
 import { MyPageFormValues } from "@/types/form";
 import { supabase } from "@/app/_libs/supabase";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { session, token } = useSupabaseSession();
+  const router = useRouter();
+
+  const isGuest = session?.user.email === process.env.NEXT_PUBLIC_GUEST_EMAIL;
+  useEffect(() => {
+    if (isGuest) {
+      router.replace("/settings");
+    }
+  }, [isGuest, router]);
 
   const defaultValues = {
     name: "",
@@ -22,11 +32,16 @@ export default function Page() {
   };
 
   const [profile, setProfile] = useState<ProfileFields | null>(null);
-  const { register, handleSubmit, reset, formState: { isSubmitting} } = useForm<MyPageFormValues>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<MyPageFormValues>({
     defaultValues,
   });
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     if (!token) return;
     const res = await fetch(`/api/profiles`, {
       headers: {
@@ -35,13 +50,15 @@ export default function Page() {
       },
     });
     const data: ProfileResponse = await res.json();
-    if (data.profiles) setProfile(data.profiles[0]);
-  };
+    if (data.profiles) {
+      setProfile(data.profiles[0]);
+    }
+  }, [token]);
 
   useEffect(() => {
     if (!token) return;
     fetchProfile();
-  }, [token]);
+  }, [token, fetchProfile]);
 
   useEffect(() => {
     if (profile) {
@@ -59,7 +76,7 @@ export default function Page() {
     if (!token) return;
 
     if (!values.name && !values.height && !values.targetWeight) {
-      alert("いづれかの項目を入力してください");
+      toast.error("いずれかの項目を入力してください");
       return;
     }
 
@@ -74,7 +91,6 @@ export default function Page() {
     }
 
     try {
-
       const body: UpdateProfileRequest = {
         name: values.name || null,
         height: values.height ? Number(values.height) : null,
@@ -92,15 +108,15 @@ export default function Page() {
 
       if (res.ok) {
         const data = await res.json();
-        alert(data.message);
+        toast.success(data.message);
         await fetchProfile();
         return true;
       } else {
-        alert("変更はありませんでした");
+        toast.error("変更はありませんでした");
         return false;
       }
     } catch {
-      alert("更新に失敗しました");
+      toast.error("更新に失敗しました");
     }
   };
 

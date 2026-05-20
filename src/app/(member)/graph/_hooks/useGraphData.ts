@@ -3,13 +3,13 @@ import { RecordData, RecordsResponse } from "@/types/record";
 import { useEffect, useMemo, useState } from "react";
 
 export const useGraphData = () => {
-  const { token } = useSupabaseSession();
+  const { token, isLoding } = useSupabaseSession();
 
   const [range, setRange] = useState("7days");
   const [records, setRecords] = useState<RecordData[]>([]);
 
   useEffect(() => {
-    if (!token) return;
+    if (isLoding ||!token) return;
 
     const fetcher = async () => {
       try {
@@ -30,7 +30,7 @@ export const useGraphData = () => {
       }
     };
     fetcher();
-  }, [token, range]);
+  }, [token, range, isLoding]);
 
   // 6month, 1year, 3yearの平均関数
   const calcAverage = (matched: RecordData[]) => {
