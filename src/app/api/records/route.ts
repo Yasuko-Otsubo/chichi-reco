@@ -10,6 +10,7 @@ import {
 import type { Record } from "@/app/generated/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiResponse } from "@/types/api";
+import { isValidWeight, isValidSteps } from "@/_utils/validation";
 
 const formatRecords = (records: Record[]): RecordData[] => {
   return records.map((record) => ({
@@ -55,23 +56,19 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    if (weight !== null && weight !== undefined) {
-      if (weight < 20 || weight > 200) {
+    if (weight !== null && weight !== undefined && !isValidWeight(weight)) {
         return NextResponse.json<ApiResponse>(
           { status: "NG", message: "20~200の範囲で入力してください"},
           { status: 400 },
         );
       }
-    }
 
-    if (steps !== null && steps !== undefined) {
-      if (steps < 0 || steps > 40000) {
+    if (steps !== null && steps !== undefined && !isValidSteps(steps)) {
         return NextResponse.json<ApiResponse> (
           { status: "NG", message: "0～40,000の範囲で入力してください"},
           { status: 400 },
         )
       }
-    }
 
     const data = await prisma.record.create({
       data: {
