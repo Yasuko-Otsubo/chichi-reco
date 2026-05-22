@@ -46,6 +46,7 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
     return `${date.getFullYear()}年`;
   };
 
+  //　体重のメモリ計算
   const weights = chartData
     .map((d) => d.weight)
     .filter((w) => w !== null) as number[];
@@ -56,14 +57,30 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
   const weightMax = Math.min(200, Math.ceil((maxWeight + 10) / 10) * 10);
 
   const weightRange = weightMax - weightMin;
-  const interval = weightRange <= 60 ? 10 : weightRange <= 90 ? 20 : 30;
+  const intervalWeight = weightRange <= 60 ? 10 : weightRange <= 90 ? 20 : 30;
   const weightTicks = Array.from(
-    { length: (weightMax - weightMin) / interval + 1 },
-    (_, i) => weightMin + i * interval,
+    { length: (weightMax - weightMin) / intervalWeight + 1 },
+    (_, i) => weightMin + i * intervalWeight,
   );
 
-  const max = Math.max(...chartData.map((d) => d.steps ?? 0));
-  const domainMax = Math.ceil(max / 5000) * 5000;
+  //　歩数のメモリ計算
+  const stepsMemori = chartData
+    .map((d) => d.steps)
+    .filter((s) => s !== null) as number[];
+  //const minSteps = stepsMemori.length > 0 ? Math.min(...stepsMemori) : 0;
+  const maxSteps = stepsMemori.length > 0 ? Math.max(...stepsMemori) : 5000;
+
+  const stepsMin = 0;
+  const roughMax = Math.min(40000, Math.ceil((maxSteps + 500) / 500) * 500);
+
+  const stepsRange = roughMax - stepsMin;
+  const intervalSteps =
+    stepsRange <= 5000 ? 1000 : stepsRange <= 10000 ? 3000 : 5000;
+  const stepsMax = Math.ceil(roughMax / intervalSteps) * intervalSteps;
+  const stepsTicks = Array.from(
+    { length: (stepsMax - stepsMin) / intervalSteps + 1 },
+    (_, i) => stepsMin + i * intervalSteps,
+  );
 
   return (
     <>
@@ -92,12 +109,9 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
               yAxisId="right"
               orientation="right"
               width={35}
-              domain={[0, domainMax]}
+              domain={[stepsMin, stepsMax]}
               tick={{ fontSize: 12 }}
-              ticks={Array.from(
-                { length: domainMax / 5000 + 1 },
-                (_, i) => i * 5000,
-              )}
+              ticks={stepsTicks}
             />
             <CartesianGrid
               yAxisId="left"

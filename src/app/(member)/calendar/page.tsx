@@ -180,7 +180,7 @@ export default function CalendarPage() {
           token={token}
           onSave={() => {
             setSelectedCell(null);
-            setRefetchFlag(prev => prev + 1);
+            setRefetchFlag((prev) => prev + 1);
           }}
         />
       )}
