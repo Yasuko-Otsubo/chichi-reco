@@ -28,7 +28,7 @@ export default function IntroPage() {
     });
 
     if (error) {
-      toast.error("ゲストログインに失敗しました");
+      toast.error("デモページのログインに失敗しました");
       return;
     }
     router.replace("/today");
@@ -83,7 +83,7 @@ export default function IntroPage() {
           新規登録して始める
         </Link>
         <button onClick={handleGuestLogin} className={btnClass}>
-          ゲストで試してみる
+          デモを試してみる
         </button>
       </div>
       <div className="text-left w-[80%] xs:w-[70%] mb-20">

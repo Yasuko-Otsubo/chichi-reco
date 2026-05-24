@@ -169,7 +169,10 @@ export default function CalendarPage() {
         todayYear={todayYear}
         todayMonth={todayMonth}
         todayDate={todayDate}
-        onDayClick={(cell) => setSelectedCell(cell)}
+        onDayClick={(cell) => {
+          if (today < new Date(year, month - 1, cell.day)) return;
+          setSelectedCell(cell);
+        }}
       />
       {selectedCell && (
         <DetailModal
@@ -180,7 +183,7 @@ export default function CalendarPage() {
           token={token}
           onSave={() => {
             setSelectedCell(null);
-            setRefetchFlag(prev => prev + 1);
+            setRefetchFlag((prev) => prev + 1);
           }}
         />
       )}
