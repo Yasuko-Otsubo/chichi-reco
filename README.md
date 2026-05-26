@@ -64,7 +64,7 @@ https://chichi-reco.vercel.app/
 
 
 
-## インフラ構成
+### インフラ構成
 
 ```mermaid
 graph TD
