@@ -108,6 +108,7 @@ export const TodayForm: React.FC<Props> = ({
                 <div className="flex items-center">
                   <input
                     className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="66.5"
                     {...register("weight")}
                   />
                   <span className="text-bbb ml-2 w-6">Kg</span>
@@ -118,6 +119,7 @@ export const TodayForm: React.FC<Props> = ({
                 <div className="flex items-center">
                   <input
                     className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="2500"
                     {...register("steps")}
                   />
                   <span className="text-bbb ml-2 w-6">歩</span>
