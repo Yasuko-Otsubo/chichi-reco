@@ -9,6 +9,7 @@ import {
   UpdateRecordRequestBody,
 } from "@/types/record";
 import { ApiResponse } from "@/types/api";
+import { isValidSteps, isValidWeight } from "@/_utils/validation";
 
 const formatRecord = (record: Record): RecordData => {
   return {
@@ -137,6 +138,20 @@ export const PUT = async (
     const numSteps =
       steps === null || steps === undefined ? null : Number(steps);
 
+      if (weight !== undefined && weight !== null && !isValidWeight(weight)) {
+        return NextResponse.json<ApiResponse>(
+          { status: "NG", message: "体重は20kg以上200kg以下で入力してください"},
+          { status: 400 },
+        );
+      }
+
+      if (steps !== undefined && steps !== null && !isValidSteps(steps)) {
+        return NextResponse.json<ApiResponse> (
+          { status: "NG", message: "歩数は0~40000歩の間で入力してください"},
+          { status: 400 },
+        );
+      }
+
     if (newDate !== undefined) updateData.date = new Date(newDate);
     if (numWeight === null) {
       updateData.weight = null;
@@ -212,7 +227,7 @@ export const DELETE = async (
   if (!user) {
     return NextResponse.json<ApiResponse>(
       { status: "NG", message: "認証されていません" },
-      { status: 40 },
+      { status: 401 },
     );
   }
   const profile = await getProfileByUserId(user.id);

@@ -51,6 +51,8 @@ export default function CalendarPage() {
   // ===== 日付選択 =====
   const [selectedCell, setSelectedCell] = useState<CalendarCell | null>(null);
 
+  const [refetchFlag, setRefetchFlag] = useState(0);
+
   useEffect(() => {
     if (!token) return;
 
@@ -89,7 +91,7 @@ export default function CalendarPage() {
       setRecords(unique);
     };
     fetcher();
-  }, [prevMonth, currentMonth, token]);
+  }, [prevMonth, currentMonth, token, refetchFlag]);
 
   // ===== カレンダー用データ準備 =====
   // ===== レコードを日付順に並べる =====
@@ -167,7 +169,10 @@ export default function CalendarPage() {
         todayYear={todayYear}
         todayMonth={todayMonth}
         todayDate={todayDate}
-        onDayClick={(cell) => setSelectedCell(cell)}
+        onDayClick={(cell) => {
+          if (today < new Date(year, month - 1, cell.day)) return;
+          setSelectedCell(cell);
+        }}
       />
       {selectedCell && (
         <DetailModal
@@ -175,6 +180,11 @@ export default function CalendarPage() {
           year={year}
           month={month}
           onClose={() => setSelectedCell(null)}
+          token={token}
+          onSave={() => {
+            setSelectedCell(null);
+            setRefetchFlag((prev) => prev + 1);
+          }}
         />
       )}
     </>
