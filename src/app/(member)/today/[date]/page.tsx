@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { TodayFormValues } from "@/types/form";
 import { ApiResponse } from "@/types/api";
 import toast from "react-hot-toast";
+import { isValidSteps, isValidWeight } from "@/_utils/validation";
 
 export default function Page() {
   // ===== auth =====
@@ -139,6 +140,15 @@ export default function Page() {
       };
 
       let res: Response;
+
+      if (body.weight !== null && body.weight !== undefined && !isValidWeight(body.weight)) {
+        toast.error("20~200kgの間で入力してください")
+        return;
+      }
+      if (body.steps !== null && body.steps !== undefined && !isValidSteps(body.steps)) {
+        toast.error("0~40000歩の間で入力してください")
+        return;
+      }
 
       if (!record || record.id === 0) {
         // ******* POST *******

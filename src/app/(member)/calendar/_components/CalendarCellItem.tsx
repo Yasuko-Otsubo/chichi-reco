@@ -17,9 +17,12 @@ export const CalendarCellItem: React.FC<Props> = ({
   record,
   diff,
   isToday,
+  year,
+  month,
   onDayClick,
 }) => {
   const width = useWindowWidth();
+  const today = new Date();
 
   const handleClick = () => {
     if (!day) return;
@@ -27,7 +30,7 @@ export const CalendarCellItem: React.FC<Props> = ({
   };
   return (
     <div
-      className={`${styles.cell} ${isToday ? styles.today : ""} ${day ? "cursor-pointer" : ""}`}
+      className={`${styles.cell} ${isToday ? styles.today : ""} ${day && new Date(year, month - 1, day) > today ? "cursor-default" : "cursor-pointer"}`}
       onClick={handleClick}
     >
       {/* 空白マスか確認 */}
