@@ -212,7 +212,7 @@ export const DELETE = async (
   if (!user) {
     return NextResponse.json<ApiResponse>(
       { status: "NG", message: "認証されていません" },
-      { status: 40 },
+      { status: 401 },
     );
   }
   const profile = await getProfileByUserId(user.id);

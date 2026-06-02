@@ -40,7 +40,6 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
     }
     if (range === "1year") {
       const month = date.getMonth() + 1;
-      if (width >= 500) return `${month}月`;
       if (width >= 400) return `${month}`;
       return month % 2 === 1 ? `${month}` : "";
     }
