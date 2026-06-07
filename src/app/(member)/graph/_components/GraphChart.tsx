@@ -7,6 +7,7 @@ import {
   CartesianGrid,
   ComposedChart,
   Line,
+  ReferenceLine,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -15,9 +16,14 @@ import {
 interface Props {
   chartData: RecordGraphData[];
   range: string;
+  targetWeight?: number | null;
 }
 
-export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
+export const GraphChart: React.FC<Props> = ({
+  chartData,
+  range,
+  targetWeight,
+}) => {
   const width = useWindowWidth();
 
   const formatTick = (v: string) => {
@@ -132,6 +138,14 @@ export const GraphChart: React.FC<Props> = ({ chartData, range }) => {
               stroke="#BABABA"
               strokeWidth={0.3}
             ></Bar>
+            {targetWeight && (
+              <ReferenceLine
+                yAxisId="left"
+                y={targetWeight}
+                stroke="red"
+                strokeDasharray="4 4"
+              ></ReferenceLine>
+            )}
           </ComposedChart>
         </ResponsiveContainer>
       </div>
