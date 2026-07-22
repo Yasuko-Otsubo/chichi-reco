@@ -166,7 +166,7 @@ export default function CalendarPage() {
   });
   return (
     <>
-          <h1 className="text-xl text-center py-4">カレンダー</h1>
+      <h1 className="text-xl text-center py-4">カレンダー</h1>
 
       <div className="bg-white text-center py-2 mb-4 rounded-[10px]">
         <button onClick={() => changeMonth(-1)}>＜</button>
@@ -211,16 +211,28 @@ export default function CalendarPage() {
       )}
 
       {view === "list" && (
-        <div>
-          {calendarData
-            .filter((item) => item.day !== null)
-            .map((item) => (
-              <div key={item.day} className="bg-white pt-2 text-sm">
-                {item.day}: {item.record?.weight}kg / {item.record?.steps}歩 /{" "}
-                {item.record?.memo}
-              </div>
-            ))}
-        </div>
+        <table className="w-full [&_th]:p-1 [&_td]:p-2 [&_th]:border-1 [&_td]:border-1 [&_th]:border-t-0 [&_tr>:first-child]:border-l-0 [&_tr>:last-child]:border-r-0">
+          <thead>
+            <tr>
+              <th className="w-12">日付</th>
+              <th className="w-15">体重</th>
+              <th className="w-20">歩数</th>
+              <th className="">メモ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {calendarData
+              .filter((item) => item.day !== null)
+              .map((item) => (
+                <tr key={item.day} className="bg-white pt-2 text-sm">
+                  <td className="border-1 border-l-0">{item.day}日</td>
+                  <td className="border-1">{item.record?.weight != null ? `${item.record.weight}kg` : ""}</td>
+                  <td className="border-1">{item.record?.steps != null ? `${item.record.steps}歩` : "" }</td>
+                  <td className="border-1 border-r-0">{item.record?.memo}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       )}
       {selectedCell && (
         <DetailModal
