@@ -164,6 +164,7 @@ export const PUT = async (
     } else if (!Number.isNaN(numSteps)) {
       updateData.steps = numSteps;
     }
+    if (memo !== undefined) updateData.memo = memo;
 
     //更新項目がない場合は返す
     if (Object.keys(updateData).length === 0) {
