@@ -13,7 +13,6 @@ interface Props {
   calendarData: CalendarData[];
   year: number;
   month: number;
-  changeMonth: (diff: number) => void;
   todayYear: number;
   todayMonth: number;
   todayDate: number;
@@ -24,7 +23,6 @@ export const Calendar: React.FC<Props> = ({
   calendarData,
   year,
   month,
-  changeMonth,
   todayYear,
   todayMonth,
   todayDate,
@@ -36,24 +34,7 @@ export const Calendar: React.FC<Props> = ({
 
   return (
     <>
-      <h1 className="text-xl text-center py-4">カレンダー</h1>
       <div className="w-[100%] mx-auto mb-2">
-        <div className="bg-white text-center py-2 mb-4 rounded-[10px]">
-          <button onClick={() => changeMonth(-1)}>＜</button>
-          <span className="text-xl font-medium px-8">
-            {year}年 {month}月
-          </span>
-          <button
-            onClick={() => changeMonth(1)}
-            disabled={year === todayYear && month === todayMonth}
-            className={
-              year === todayYear && month === todayMonth ? "text-gray-300" : ""
-            }
-          >
-            ＞
-          </button>
-        </div>
-
         <div
           className={styles.calendar}
           style={{ gridTemplateRows: `auto repeat(${rows}, 1fr)` }}
