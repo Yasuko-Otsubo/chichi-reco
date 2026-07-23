@@ -211,7 +211,7 @@ export default function CalendarPage() {
       )}
 
       {view === "list" && (
-        <table className="w-full [&_th]:p-1 [&_td]:p-2 [&_th]:border-1 [&_td]:border-1 [&_th]:border-t-0 [&_tr>:first-child]:border-l-0 [&_tr>:last-child]:border-r-0">
+        <table className="w-full mb-2 [&_th]:p-1 [&_td]:p-2 [&_th]:border-1 [&_td]:border-1 [&_th]:border-t-0 [&_tr>:first-child]:border-l-0 [&_tr>:last-child]:border-r-0">
           <thead>
             <tr>
               <th className="w-12">日付</th>
