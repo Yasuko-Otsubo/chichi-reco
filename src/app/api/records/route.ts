@@ -18,6 +18,10 @@ const formatRecords = (records: Record[]): RecordData[] => {
     date: record.date.toISOString(),
     weight: record.weight,
     steps: record.steps,
+    morningSystolic: record.morningSystolic,
+    morningDiastolic: record.morningDiastolic,
+    eveningSystolic: record.eveningSystolic,
+    eveningDiastolic: record.eveningDiastolic,
     memo: record.memo,
   }));
 };
@@ -41,7 +45,7 @@ export const POST = async (request: NextRequest) => {
 
   try {
     const body: CreateRecordRequestBody = await request.json();
-    const { date, weight, steps, memo } = body;
+    const { date, weight, steps, memo, morningSystolic, morningDiastolic, eveningSystolic, eveningDiastolic } = body;
 
     const inputDate = new Date(date);
     inputDate.setHours(0, 0, 0, 0);
@@ -76,6 +80,10 @@ export const POST = async (request: NextRequest) => {
         date: new Date(date),
         weight,
         steps,
+        morningSystolic,
+        morningDiastolic,
+        eveningSystolic,
+        eveningDiastolic,
         memo,
       },
     });
