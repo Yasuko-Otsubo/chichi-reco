@@ -9,14 +9,7 @@ import {
   UpdateRecordRequestBody,
 } from "@/types/record";
 import { ApiResponse } from "@/types/api";
-import {
-  isValidEveningDiastolic,
-  isValidEveningSystolic,
-  isValidMorningDiastolic,
-  isValidMorningSystolic,
-  isValidSteps,
-  isValidWeight,
-} from "@/_utils/validation";
+import { validateRecordFields } from "@/_utils/validation";
 
 const formatRecord = (record: Record): RecordData => {
   return {
@@ -159,20 +152,16 @@ export const PUT = async (
     const numSteps =
       steps === null || steps === undefined ? null : Number(steps);
 
-    if (weight !== undefined && weight !== null && !isValidWeight(weight)) {
-      return NextResponse.json<ApiResponse>(
-        { status: "NG", message: "体重は20kg以上200kg以下で入力してください" },
-        { status: 400 },
-      );
-    }
+    const validationError = validateRecordFields({
+      weight,
+      steps,
+      morningSystolic,
+      morningDiastolic,
+      eveningSystolic,
+      eveningDiastolic,
+    });
 
-    if (steps !== undefined && steps !== null && !isValidSteps(steps)) {
-      return NextResponse.json<ApiResponse>(
-        { status: "NG", message: "歩数は0~40000歩の間で入力してください" },
-        { status: 400 },
-      );
-    }
-
+    if (validationError) return validationError;
     const numMorningSystolic =
       morningSystolic === null || morningSystolic === undefined
         ? null
@@ -189,50 +178,6 @@ export const PUT = async (
       eveningDiastolic === null || eveningDiastolic === undefined
         ? null
         : Number(eveningDiastolic);
-
-    if (
-      morningSystolic !== undefined &&
-      morningSystolic !== null &&
-      !isValidMorningSystolic(morningSystolic)
-    ) {
-      return NextResponse.json<ApiResponse>(
-        { status: "NG", message: "血圧は30~300の間で入力してください" },
-        { status: 400 },
-      );
-    }
-
-    if (
-      morningDiastolic !== undefined &&
-      morningDiastolic !== null &&
-      !isValidMorningDiastolic(morningDiastolic)
-    ) {
-      return NextResponse.json<ApiResponse>(
-        { status: "NG", message: "血圧は30~300の間で入力してください" },
-        { status: 400 },
-      );
-    }
-
-    if (
-      eveningSystolic !== undefined &&
-      eveningSystolic !== null &&
-      !isValidEveningSystolic(eveningSystolic)
-    ) {
-      return NextResponse.json<ApiResponse>(
-        { status: "NG", message: "血圧は30~300の間で入力してください" },
-        { status: 400 },
-      );
-    }
-
-    if (
-      eveningDiastolic !== undefined &&
-      eveningDiastolic !== null &&
-      !isValidEveningDiastolic(eveningDiastolic)
-    ) {
-      return NextResponse.json<ApiResponse>(
-        { status: "NG", message: "血圧は30~300の間で入力してください" },
-        { status: 400 },
-      );
-    }
 
     if (newDate !== undefined) updateData.date = new Date(newDate);
     if (numWeight === null) {
@@ -283,10 +228,14 @@ export const PUT = async (
     const isSame =
       (numWeight === undefined || numWeight === record.weight) &&
       (numSteps === undefined || numSteps === record.steps) &&
-      (numMorningSystolic === undefined || numMorningSystolic === record.morningSystolic) &&
-      (numMorningDiastolic === undefined || numMorningDiastolic === record.morningDiastolic) &&
-      (numEveningSystolic === undefined || numEveningSystolic === record.eveningSystolic) &&
-      (numEveningDiastolic === undefined || numEveningDiastolic === record.eveningDiastolic) &&
+      (numMorningSystolic === undefined ||
+        numMorningSystolic === record.morningSystolic) &&
+      (numMorningDiastolic === undefined ||
+        numMorningDiastolic === record.morningDiastolic) &&
+      (numEveningSystolic === undefined ||
+        numEveningSystolic === record.eveningSystolic) &&
+      (numEveningDiastolic === undefined ||
+        numEveningDiastolic === record.eveningDiastolic) &&
       (memo === undefined || memo === record.memo) &&
       (newDate === undefined ||
         new Date(newDate).getTime() === record.date.getTime());
