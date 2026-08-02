@@ -7,17 +7,17 @@ export const isValidSteps = (steps: number) => {
 }
 
 export const isValidMorningSystolic = (morningSystolic: number) => {
-  return morningSystolic >= 70 && morningSystolic <= 200;
+  return morningSystolic >= 30 && morningSystolic <= 300;
 }
 
 export const isValidMorningDiastolic = (morningDiastolic: number) => {
-  return morningDiastolic >= 70 && morningDiastolic <= 200;
+  return morningDiastolic >= 30 && morningDiastolic <= 300;
 }
 
 export const isValidEveningSystolic = (eveningSystolic: number) => {
-  return eveningSystolic >= 70 && eveningSystolic <= 200;
+  return eveningSystolic >= 30 && eveningSystolic <= 300;
 }
 
 export const isValidEveningDiastolic = (eveningDiastolic: number) => {
-  return eveningDiastolic >= 70 && eveningDiastolic <= 200;
+  return eveningDiastolic >= 30 && eveningDiastolic <= 300;
 }
