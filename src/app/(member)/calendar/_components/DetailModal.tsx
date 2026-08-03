@@ -1,6 +1,6 @@
 "use client";
 
-import { isValidSteps, isValidWeight } from "@/_utils/validation";
+import { getRecordValidationMessage } from "@/_utils/validation";
 import { CalendarCell } from "@/types/calendar";
 import { CreateRecordRequestBody } from "@/types/record";
 import { useForm } from "react-hook-form";
@@ -81,20 +81,9 @@ export const DetailModal = ({
         memo: values.memo || null,
       };
 
-      if (
-        body.weight !== null &&
-        body.weight !== undefined &&
-        !isValidWeight(body.weight)
-      ) {
-        toast.error("20~200kgの間で入力してください");
-        return;
-      }
-      if (
-        body.steps !== null &&
-        body.steps !== undefined &&
-        !isValidSteps(body.steps)
-      ) {
-        toast.error("0~40000歩の間で入力してください");
+      const errorMessage = getRecordValidationMessage(body)
+      if (errorMessage) {
+        toast.error(errorMessage);
         return;
       }
 
