@@ -113,3 +113,58 @@ export const validateRecordFields = (fields: {
   }
   return null;
 };
+
+export const getRecordValidationMessage = (fields: {
+  weight?: number | null;
+  steps?: number | null;
+  morningSystolic?: number | null;
+  morningDiastolic?: number | null;
+  eveningSystolic?: number | null;
+  eveningDiastolic?: number | null;
+}): string | null => {
+  const {
+    weight,
+    steps,
+    morningSystolic,
+    morningDiastolic,
+    eveningSystolic,
+    eveningDiastolic,
+  } = fields;
+
+  if (weight !== null && weight !== undefined && !isValidWeight(weight)) {
+    return "20~200の範囲で入力してください";
+  }
+  if (steps !== null && steps !== undefined && !isValidSteps(steps)) {
+    return "0~40000の範囲で入力してください";
+  }
+  if (
+    morningSystolic !== null &&
+    morningSystolic !== undefined &&
+    !isValidMorningSystolic(morningSystolic)
+  ) {
+    return "30~300の範囲で入力してください";
+  }
+  if (
+    morningDiastolic !== null &&
+    morningDiastolic !== undefined &&
+    !isValidMorningDiastolic(morningDiastolic)
+  ) {
+    return "30~300の範囲で入力してください";
+  }
+  if (
+    eveningSystolic !== null &&
+    eveningSystolic !== undefined &&
+    !isValidEveningSystolic(eveningSystolic)
+  ) {
+    return "30~300の範囲で入力してください";
+  }
+  if (
+    eveningDiastolic !== null &&
+    eveningDiastolic !== undefined &&
+    !isValidEveningDiastolic(eveningDiastolic)
+  ) {
+    return "30~300の範囲で入力してください";
+  }
+
+  return null;
+};
