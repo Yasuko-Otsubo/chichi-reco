@@ -2,6 +2,10 @@ export type TodayFormValues = {
   date: string;
   weight?: string;
   steps?: string;
+  morningSystolic?: string;
+  morningDiastolic?: string;
+  eveningSystolic?: string;
+  eveningDiastolic?: string;
   memo?: string;
 };
 
