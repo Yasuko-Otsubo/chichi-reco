@@ -18,6 +18,10 @@ type Props = {
 type DefaultValues = {
   weight: string;
   steps: string;
+  morningSystolic: string;
+  morningDiastolic: string;
+  eveningSystolic: string;
+  eveningDiastolic: string;
   memo: string;
 };
 
@@ -39,6 +43,10 @@ export const DetailModal = ({
     defaultValues: {
       weight: record?.weight?.toString() ?? "",
       steps: record?.steps?.toString() ?? "",
+      morningSystolic: record?.morningSystolic?.toString() ?? "",
+      morningDiastolic: record?.morningDiastolic?.toString() ?? "",
+      eveningSystolic: record?.eveningSystolic?.toString() ?? "",
+      eveningDiastolic: record?.eveningDiastolic?.toString() ?? "",
       memo: record?.memo ?? "",
     },
   });
@@ -58,14 +66,34 @@ export const DetailModal = ({
         date: dateString,
         weight: values.weight ? Number(values.weight) : null,
         steps: values.steps ? Number(values.steps) : null,
+        morningSystolic: values.morningSystolic
+          ? Number(values.morningSystolic)
+          : null,
+        morningDiastolic: values.morningDiastolic
+          ? Number(values.morningDiastolic)
+          : null,
+        eveningSystolic: values.eveningSystolic
+          ? Number(values.eveningSystolic)
+          : null,
+        eveningDiastolic: values.eveningDiastolic
+          ? Number(values.eveningDiastolic)
+          : null,
         memo: values.memo || null,
       };
 
-      if (body.weight !== null && body.weight !== undefined && !isValidWeight(body.weight)) {
+      if (
+        body.weight !== null &&
+        body.weight !== undefined &&
+        !isValidWeight(body.weight)
+      ) {
         toast.error("20~200kgの間で入力してください");
         return;
       }
-      if (body.steps !== null && body.steps !== undefined && !isValidSteps(body.steps)){
+      if (
+        body.steps !== null &&
+        body.steps !== undefined &&
+        !isValidSteps(body.steps)
+      ) {
         toast.error("0~40000歩の間で入力してください");
         return;
       }
@@ -159,6 +187,41 @@ export const DetailModal = ({
               {...register("steps")}
             />
             <span>歩</span>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <label>朝の血圧</label>
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              className="w-[120px] border border-bgColor rounded-[10px] px-2 h-9 text-right"
+              {...register("morningSystolic")}
+            />
+            <span>/</span>
+            <input
+              type="number"
+              className="w-[120px] border border-bgColor rounded-[10px] px-2 h-9 text-right"
+              {...register("morningDiastolic")}
+            />
+            <span>mmHg</span>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <label>夕方の血圧</label>
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              className="w-[120px] border border-bgColor rounded-[10px] px-2 h-9 text-right"
+              {...register("eveningSystolic")}
+            />
+            <span>/</span>
+            <input
+              type="number"
+              className="w-[120px] border border-bgColor rounded-[10px] px-2 h-9 text-right"
+              {...register("eveningDiastolic")}
+            />
+            <span>mmHg</span>
           </div>
         </div>
 
