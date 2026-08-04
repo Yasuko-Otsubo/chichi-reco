@@ -140,6 +140,42 @@ export const TodayForm: React.FC<Props> = ({
                   <span className="text-bbb text-base ml-2 w-6">歩</span>
                 </div>
               </div>
+              <div className="flex justify-between items-center xs:text-base h-10 py-1">
+                <label className="text-base">血圧（朝）</label>
+                <div className="flex items-center">
+                  <input
+                    className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="2500"
+                    {...register("morningSystolic")}
+                  />
+                  <span className="text-bbb text-base ml-2 w-6">/</span>
+                  <input
+                    className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="70"
+                    {...register("morningDiastolic")}
+                  />
+                  <span className="text-bbb text-base ml-2 w-6">mmHg</span>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center xs:text-base h-10 py-1">
+                <label className="text-base">血圧（夜）</label>
+                <div className="flex items-center">
+                  <input
+                    className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="2500"
+                    {...register("eveningSystolic")}
+                  />
+                  <span className="text-bbb text-base ml-2 w-6">/</span>
+                  <input
+                    className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="80"
+                    {...register("eveningDiastolic")}
+                  />
+                  <span className="text-bbb text-base ml-2 w-6">mmHg</span>
+                </div>
+              </div>
+
               <div className="text-left flex flex-col pt-1 mb-2">
                 <label className="mb-2">一言メモ</label>
                 <textarea
