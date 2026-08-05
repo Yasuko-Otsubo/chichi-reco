@@ -145,13 +145,13 @@ export const TodayForm: React.FC<Props> = ({
                 <div className="flex items-center">
                   <input
                     className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
-                    placeholder="2500"
+                    placeholder="120"
                     {...register("morningSystolic")}
                   />
                   <span className="text-bbb text-base ml-2 w-6">/</span>
                   <input
                     className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
-                    placeholder="70"
+                    placeholder="80"
                     {...register("morningDiastolic")}
                   />
                   <span className="text-bbb text-base ml-2 w-6">mmHg</span>
@@ -163,7 +163,7 @@ export const TodayForm: React.FC<Props> = ({
                 <div className="flex items-center">
                   <input
                     className="w-[100px] xs:w-[150px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
-                    placeholder="2500"
+                    placeholder="120"
                     {...register("eveningSystolic")}
                   />
                   <span className="text-bbb text-base ml-2 w-6">/</span>
