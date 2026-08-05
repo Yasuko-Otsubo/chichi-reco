@@ -191,6 +191,7 @@ export const PUT = async (
     } else if (!Number.isNaN(numSteps)) {
       updateData.steps = numSteps;
     }
+    if (memo !== undefined) updateData.memo = memo;
 
     if (numMorningSystolic === null) {
       updateData.morningSystolic = null;

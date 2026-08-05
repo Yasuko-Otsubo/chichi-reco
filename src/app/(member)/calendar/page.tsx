@@ -22,6 +22,11 @@ export default function CalendarPage() {
   // ===== 年月計算 =====
   const [year, month] = currentMonth.split("-").map(Number);
   const currentDate = new Date(year, month - 1, 1);
+  // ===== タグ =====
+  const [view, setView] = useState<"calendar" | "list">("calendar");
+
+  const tagClass = (v: string) =>
+    `py-3 mx-[3px] w-full text-xs ${view === v ? "bg-tagChoice text-white" : "bg-white"}`;
 
   // 関数化
   const formatMonth = (data: Date) => {
@@ -161,19 +166,74 @@ export default function CalendarPage() {
   });
   return (
     <>
-      <Calendar
-        calendarData={calendarData}
-        year={year}
-        month={month}
-        changeMonth={changeMonth}
-        todayYear={todayYear}
-        todayMonth={todayMonth}
-        todayDate={todayDate}
-        onDayClick={(cell) => {
-          if (today < new Date(year, month - 1, cell.day)) return;
-          setSelectedCell(cell);
-        }}
-      />
+      <h1 className="text-xl text-center py-4">カレンダー</h1>
+
+      <div className="bg-white text-center py-2 mb-4 rounded-[10px]">
+        <button onClick={() => changeMonth(-1)}>＜</button>
+        <span className="text-xl font-medium px-8">
+          {year}年 {month}月
+        </span>
+        <button
+          onClick={() => changeMonth(1)}
+          disabled={year === todayYear && month === todayMonth}
+          className={
+            year === todayYear && month === todayMonth ? "text-gray-300" : ""
+          }
+        >
+          ＞
+        </button>
+      </div>
+      <div className="flex justify-between text-base mb-4">
+        <button
+          className={tagClass("calendar")}
+          onClick={() => setView("calendar")}
+        >
+          カレンダー
+        </button>
+        <button className={tagClass("list")} onClick={() => setView("list")}>
+          リスト
+        </button>
+      </div>
+
+      {view === "calendar" && (
+        <Calendar
+          calendarData={calendarData}
+          year={year}
+          month={month}
+          todayYear={todayYear}
+          todayMonth={todayMonth}
+          todayDate={todayDate}
+          onDayClick={(cell) => {
+            if (today < new Date(year, month - 1, cell.day)) return;
+            setSelectedCell(cell);
+          }}
+        />
+      )}
+
+      {view === "list" && (
+        <table className="w-full mb-2 [&_th]:p-1 [&_td]:p-2 [&_th]:border-1 [&_td]:border-1 [&_th]:border-t-0 [&_tr>:first-child]:border-l-0 [&_tr>:last-child]:border-r-0">
+          <thead>
+            <tr>
+              <th className="w-12">日付</th>
+              <th className="w-15">体重</th>
+              <th className="w-20">歩数</th>
+              <th className="">メモ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {calendarData
+              .filter((item) => item.day !== null)
+              .map((item) => (
+                <tr key={item.day} className="bg-white pt-2 text-sm">
+                  <td className="border-1 border-l-0">{item.day}日</td>
+                  <td className="border-1">{item.record?.weight != null ? `${item.record.weight}kg` : ""}</td>
+                  <td className="border-1">{item.record?.steps != null ? `${item.record.steps}歩` : "" }</td>
+                  <td className="border-1 border-r-0">{item.record?.memo}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      )}
       {selectedCell && (
         <DetailModal
           cell={selectedCell}

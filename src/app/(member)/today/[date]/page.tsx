@@ -141,7 +141,7 @@ export default function Page() {
     if (!token) return;
 
     if (!values.weight && !values.steps) {
-      toast.error("いづれかの項目を入力してください");
+      toast.error("体重か歩数のどちらかは入力してください");
       return;
     }
 
