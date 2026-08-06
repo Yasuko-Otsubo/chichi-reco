@@ -19,7 +19,7 @@ export const Nav: React.FC = () => {
     pathname.startsWith(href) ? "text-[#B98E1B]" : "";
 
   return (
-    <div className="flex w-[90%] xs:w-[80%] bg-white rounded-[15px]">
+    <div className="flex w-[95%] xs:w-[90%] bg-white rounded-[15px]">
       <Link href="/today" className={linkClass("/today")}>
         <Image
           src="/pen.png"

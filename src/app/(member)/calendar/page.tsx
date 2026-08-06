@@ -225,9 +225,9 @@ export default function CalendarPage() {
               .filter((item) => item.day !== null)
               .map((item) => (
                 <tr key={item.day} className="bg-white pt-2 text-sm">
-                  <td className="border-1 border-l-0">{item.day}日</td>
+                  <td className="border-1 border-l-0 text-right">{item.day}日</td>
                   <td className="border-1">{item.record?.weight != null ? `${item.record.weight}kg` : ""}</td>
-                  <td className="border-1">{item.record?.steps != null ? `${item.record.steps}歩` : "" }</td>
+                  <td className="border-1 text-right">{item.record?.steps != null ? `${item.record.steps}歩` : "" }</td>
                   <td className="border-1 border-r-0">{item.record?.memo}</td>
                 </tr>
               ))}
