@@ -13,6 +13,7 @@
   padding: 2px;
   overflow: hidden;
   word-break: break-all;
+  min-height: 50px;
 }
 
 .header {
