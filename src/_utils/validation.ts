@@ -56,6 +56,19 @@ export const validateRecordFields = (fields: {
     );
   }
 
+  if ((morningSystolic != null) !== (morningDiastolic != null)) {
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message:
+          morningSystolic == null
+            ? "朝の最低血圧を入力してください"
+            : "朝の最高血圧を入力してください",
+      },
+      { status: 400 },
+    );
+  }
+
   if (
     morningSystolic !== undefined &&
     morningSystolic !== null &&
@@ -65,6 +78,19 @@ export const validateRecordFields = (fields: {
       {
         status: "NG",
         message: "朝の血圧（収縮期）は30～300の範囲で入力してください",
+      },
+      { status: 400 },
+    );
+  }
+
+  if ((eveningSystolic != null) !== (eveningDiastolic != null)) {
+    return NextResponse.json<ApiResponse>(
+      {
+        status: "NG",
+        message:
+          eveningSystolic == null
+            ? "夜の最低血圧を入力してください"
+            : "夜の最高血圧を入力してください",
       },
       { status: 400 },
     );
@@ -137,6 +163,12 @@ export const getRecordValidationMessage = (fields: {
   if (steps !== null && steps !== undefined && !isValidSteps(steps)) {
     return "0~40000の範囲で入力してください";
   }
+
+  if ((morningSystolic != null) !== (morningDiastolic != null)) {
+    return morningSystolic == null
+      ? "朝の最低血圧を入力してください"
+      : "朝の最高血圧を入力してください";
+  }
   if (
     morningSystolic !== null &&
     morningSystolic !== undefined &&
@@ -150,6 +182,11 @@ export const getRecordValidationMessage = (fields: {
     !isValidMorningDiastolic(morningDiastolic)
   ) {
     return "30~300の範囲で入力してください";
+  }
+  if ((eveningSystolic != null) !== (eveningDiastolic != null)) {
+    return eveningSystolic == null
+      ? "夜の最低血圧を入力してください"
+      : "夜の最高血圧を入力してください";
   }
   if (
     eveningSystolic !== null &&
