@@ -4,6 +4,10 @@ export type RecordData = {
   date: string
   weight: number | null
   steps: number | null
+  morningSystolic: number | null
+  morningDiastolic: number | null
+  eveningSystolic: number | null
+  eveningDiastolic: number | null
   memo: string | null
 }
 
@@ -24,6 +28,10 @@ export type UpdateRecordRequestBody = {
   date?: string;
   weight?: number | null;
   steps?: number | null;
+  morningSystolic?: number | null;
+  morningDiastolic?: number | null;
+  eveningSystolic?: number | null;
+  eveningDiastolic?: number | null;
   memo?: string | null;
 };
 
@@ -32,6 +40,10 @@ export type CreateRecordRequestBody = {
   date: string;
   weight: number | null;
   steps: number | null;
+  morningSystolic: number | null;
+  morningDiastolic: number | null;
+  eveningSystolic: number | null;
+  eveningDiastolic: number | null;
   memo: string | null;
 };
 

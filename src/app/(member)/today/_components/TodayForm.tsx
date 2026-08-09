@@ -38,7 +38,7 @@ export const TodayForm: React.FC<Props> = ({
   };
   return (
     <>
-      <div className="h-full flex flex-col overflow-hidden">
+      <div className="h-full flex flex-col">
         <h1 className="text-xl text-center py-4">今日の記録</h1>
         <div className=" bg-white rounded-[15px] mb-3 p-2">
           <div className="text-sm">前回の記録</div>
@@ -79,7 +79,7 @@ export const TodayForm: React.FC<Props> = ({
         </div>
         <div className="flex justify-center bg-white rounded-[15px]  mb-6 p-2">
           <form onSubmit={onSubmit} className="w-full text-center">
-            <div className="w-[80%] mx-auto flex flex-col gap-3">
+            <div className="w-[90%] mx-auto pt-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <button
                   type="button"
@@ -140,6 +140,42 @@ export const TodayForm: React.FC<Props> = ({
                   <span className="text-bbb text-base ml-2 w-6">歩</span>
                 </div>
               </div>
+              <div className="flex justify-between items-center gap-1 py-1">
+                <label className="text-base shrink-0">血圧（朝）</label>
+                <div className="flex items-center">
+                  <input
+                    className="w-[70px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="120"
+                    {...register("morningSystolic")}
+                  />
+                  <span className="text-bbb text-base ml-2 w-6">/</span>
+                  <input
+                    className="w-[70px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="80"
+                    {...register("morningDiastolic")}
+                  />
+                  <span className="text-bbb text-base ml-1">mmHg</span>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center gap-1 py-1">
+                <label className="text-base shrink-0">血圧（夜）</label>
+                <div className="flex items-center">
+                  <input
+                    className="w-[70px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="120"
+                    {...register("eveningSystolic")}
+                  />
+                  <span className="text-bbb text-base ml-2 w-6">/</span>
+                  <input
+                    className="w-[70px] px-2 text-right border border-[var(--color-bgColor)] rounded-[10px] h-10  sm:px-4"
+                    placeholder="80"
+                    {...register("eveningDiastolic")}
+                  />
+                  <span className="text-bbb text-base ml-1">mmHg</span>
+                </div>
+              </div>
+
               <div className="text-left flex flex-col pt-1 mb-2">
                 <label className="mb-2">一言メモ</label>
                 <textarea

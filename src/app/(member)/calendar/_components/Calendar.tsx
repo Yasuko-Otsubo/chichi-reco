@@ -21,7 +21,6 @@ interface Props {
 
 export const Calendar: React.FC<Props> = ({
   calendarData,
-  year,
   month,
   todayYear,
   todayMonth,

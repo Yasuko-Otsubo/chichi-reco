@@ -10,7 +10,7 @@ import {
 import type { Record } from "@/app/generated/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiResponse } from "@/types/api";
-import { isValidWeight, isValidSteps } from "@/_utils/validation";
+import { validateRecordFields } from "@/_utils/validation";
 
 const formatRecords = (records: Record[]): RecordData[] => {
   return records.map((record) => ({
@@ -18,6 +18,10 @@ const formatRecords = (records: Record[]): RecordData[] => {
     date: record.date.toISOString(),
     weight: record.weight,
     steps: record.steps,
+    morningSystolic: record.morningSystolic,
+    morningDiastolic: record.morningDiastolic,
+    eveningSystolic: record.eveningSystolic,
+    eveningDiastolic: record.eveningDiastolic,
     memo: record.memo,
   }));
 };
@@ -41,7 +45,16 @@ export const POST = async (request: NextRequest) => {
 
   try {
     const body: CreateRecordRequestBody = await request.json();
-    const { date, weight, steps, memo } = body;
+    const {
+      date,
+      weight,
+      steps,
+      memo,
+      morningSystolic,
+      morningDiastolic,
+      eveningSystolic,
+      eveningDiastolic,
+    } = body;
 
     const inputDate = new Date(date);
     inputDate.setHours(0, 0, 0, 0);
@@ -56,19 +69,16 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    if (weight !== null && weight !== undefined && !isValidWeight(weight)) {
-        return NextResponse.json<ApiResponse>(
-          { status: "NG", message: "20~200の範囲で入力してください"},
-          { status: 400 },
-        );
-      }
+    const validationError = validateRecordFields({
+      weight,
+      steps,
+      morningSystolic,
+      morningDiastolic,
+      eveningSystolic,
+      eveningDiastolic,
+    });
 
-    if (steps !== null && steps !== undefined && !isValidSteps(steps)) {
-        return NextResponse.json<ApiResponse> (
-          { status: "NG", message: "0～40,000の範囲で入力してください"},
-          { status: 400 },
-        )
-      }
+    if (validationError) return validationError;
 
     const data = await prisma.record.create({
       data: {
@@ -76,6 +86,10 @@ export const POST = async (request: NextRequest) => {
         date: new Date(date),
         weight,
         steps,
+        morningSystolic,
+        morningDiastolic,
+        eveningSystolic,
+        eveningDiastolic,
         memo,
       },
     });

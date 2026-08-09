@@ -214,9 +214,10 @@ export default function CalendarPage() {
         <table className="w-full mb-2 [&_th]:p-1 [&_td]:p-2 [&_th]:border-1 [&_td]:border-1 [&_th]:border-t-0 [&_tr>:first-child]:border-l-0 [&_tr>:last-child]:border-r-0">
           <thead>
             <tr>
-              <th className="w-12">日付</th>
+              <th className="text-sm">日付</th>
               <th className="w-15">体重</th>
               <th className="w-20">歩数</th>
+              <th className="">血圧</th>
               <th className="">メモ</th>
             </tr>
           </thead>
@@ -224,10 +225,35 @@ export default function CalendarPage() {
             {calendarData
               .filter((item) => item.day !== null)
               .map((item) => (
-                <tr key={item.day} className="bg-white pt-2 text-sm">
-                  <td className="border-1 border-l-0">{item.day}日</td>
-                  <td className="border-1">{item.record?.weight != null ? `${item.record.weight}kg` : ""}</td>
-                  <td className="border-1">{item.record?.steps != null ? `${item.record.steps}歩` : "" }</td>
+                <tr
+                  key={item.day}
+                  className="bg-white pt-2 text-sm cursor-pointer"
+                  onClick={() => {
+                    if (today < new Date(year, month - 1, item.day!)) return;
+                    setSelectedCell({ day: item.day!, record: item.record });
+                  }}
+                >
+                  <td className="border-1 border-l-0 text-right">{item.day}</td>
+                  <td className="border-1">
+                    {item.record?.weight != null
+                      ? `${item.record.weight}kg`
+                      : ""}
+                  </td>
+                  <td className="border-1 text-right">
+                    {item.record?.steps != null ? `${item.record.steps}歩` : ""}
+                  </td>
+                  <td className="border-1">
+                    <div className="min-h-[1.2em]">
+                      {item.record?.morningSystolic != null
+                        ? `${item.record.morningSystolic}/${item.record?.morningDiastolic}mmHg`
+                        : ""}
+                    </div>
+                    <div className="min-h-[1.2em]">
+                      {item.record?.eveningSystolic != null
+                        ? `${item.record.eveningSystolic}/${item.record?.eveningDiastolic}mmHg`
+                        : ""}
+                    </div>
+                  </td>
                   <td className="border-1 border-r-0">{item.record?.memo}</td>
                 </tr>
               ))}

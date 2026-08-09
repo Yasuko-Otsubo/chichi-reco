@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { TodayFormValues } from "@/types/form";
 import { ApiResponse } from "@/types/api";
 import toast from "react-hot-toast";
-import { isValidSteps, isValidWeight } from "@/_utils/validation";
+import { getRecordValidationMessage } from "@/_utils/validation";
 
 export default function Page() {
   // ===== auth =====
@@ -29,6 +29,10 @@ export default function Page() {
     date: paramDate ?? today,
     weight: "",
     steps: "",
+    morningSystolic: "",
+    morningDiastolic: "",
+    eveningSystolic: "",
+    eveningDiastolic: "",
     memo: "",
   };
 
@@ -84,6 +88,10 @@ export default function Page() {
             date: selectedDate,
             weight: null,
             steps: null,
+            morningSystolic: null,
+            morningDiastolic: null,
+            eveningSystolic: null,
+            eveningDiastolic: null,
             memo: null,
           };
           setRecord(emptyRecord);
@@ -91,6 +99,10 @@ export default function Page() {
             date: selectedDate,
             weight: "",
             steps: "",
+            morningSystolic: "",
+            morningDiastolic: "",
+            eveningSystolic: "",
+            eveningDiastolic: "",
             memo: "",
           });
           return;
@@ -107,6 +119,10 @@ export default function Page() {
           date: data.record.date.slice(0, 10),
           weight: data.record.weight?.toString() ?? "",
           steps: data.record.steps?.toString() ?? "",
+          morningSystolic: data.record.morningSystolic?.toString() ?? "",
+          morningDiastolic: data.record.morningDiastolic?.toString() ?? "",
+          eveningSystolic: data.record.eveningSystolic?.toString() ?? "",
+          eveningDiastolic: data.record.eveningDiastolic?.toString() ?? "",
           memo: data.record.memo ?? "",
         });
       } catch (error) {
@@ -136,17 +152,26 @@ export default function Page() {
         date: values.date,
         weight: values.weight ? Number(values.weight) : null,
         steps: values.steps ? Number(values.steps) : null,
+        morningSystolic: values.morningSystolic
+          ? Number(values.morningSystolic)
+          : null,
+        morningDiastolic: values.morningDiastolic
+          ? Number(values.morningDiastolic)
+          : null,
+        eveningSystolic: values.eveningSystolic
+          ? Number(values.eveningSystolic)
+          : null,
+        eveningDiastolic: values.eveningDiastolic
+          ? Number(values.eveningDiastolic)
+          : null,
         memo: values.memo || null,
       };
 
       let res: Response;
 
-      if (body.weight !== null && body.weight !== undefined && !isValidWeight(body.weight)) {
-        toast.error("20~200kgの間で入力してください")
-        return;
-      }
-      if (body.steps !== null && body.steps !== undefined && !isValidSteps(body.steps)) {
-        toast.error("0~40000歩の間で入力してください")
+      const errorMessage = getRecordValidationMessage(body);
+      if (errorMessage) {
+        toast.error(errorMessage);
         return;
       }
 
@@ -166,6 +191,18 @@ export default function Page() {
         const isSame =
           record.weight === (values.weight ? Number(values.weight) : null) &&
           record.steps === (values.steps ? Number(values.steps) : null) &&
+          record.morningSystolic ===
+            (values.morningSystolic ? Number(values.morningSystolic) : null) &&
+          record.morningDiastolic ===
+            (values.morningDiastolic
+              ? Number(values.morningDiastolic)
+              : null) &&
+          record.eveningSystolic ===
+            (values.eveningSystolic ? Number(values.eveningSystolic) : null) &&
+          record.eveningDiastolic ===
+            (values.eveningDiastolic
+              ? Number(values.eveningDiastolic)
+              : null) &&
           record.memo === (values.memo || null) &&
           record.date.slice(0, 10) === values.date;
 
