@@ -12,7 +12,7 @@ datasource db {
 model Profile {
   id             Int      @id @default(autoincrement())
   name           String?
-  supabaseUserId String?  @unique @map("supabase_user_id") @db.Uuid
+  supabaseUserId String   @unique @map("supabase_user_id") @db.Uuid
   height         Float?
   targetWeight   Float?   @map("target_weight")
   records        Record[]
